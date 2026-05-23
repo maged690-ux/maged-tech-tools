@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>ماجد تك - جاري التحويل...</title>
+    <style>
+        body { font-family: sans-serif; background: #0b0e14; color: white; text-align: center; padding-top: 50px; }
+        #counter { font-size: 4em; color: #007bff; margin: 20px; }
+    </style>
+</head>
+<body>
+    <h1>أهلاً بك في ماجد تك</h1>
+    <p>سيتم تحويلك للفيديو بعد:</p>
+    <div id="counter">5</div>
+
+    <script>
+        let count = 5;
+        const counterElement = document.getElementById('counter');
+        const timer = setInterval(() => {
+            count--;
+            counterElement.innerText = count;
+            if (count <= 0) {
+                clearInterval(timer);
+                window.location.href = "https://www.youtube.com/"; // ضع رابط اليوتيوب هنا لاحقاً
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
