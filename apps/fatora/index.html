@@ -6,10 +6,8 @@
     <style>
         body { font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 15px; }
         .card { background: #151f32; padding: 20px; border-radius: 20px; max-width: 500px; margin: auto; }
-        /* ستايل زر النبذة المنسدل */
         .collapsible { background: #1e293b; color: #38bdf8; cursor: pointer; padding: 15px; width: 100%; border: none; text-align: right; border-radius: 10px; font-weight: bold; margin-bottom: 10px; }
         .content { padding: 0 15px; display: none; overflow: hidden; background: #0f172a; border-radius: 10px; font-size: 13px; color: #cbd5e1; }
-        
         input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; background: #0b0f19; color: white; box-sizing: border-box; }
         button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
         .btn-main { background: #38bdf8; color: #0b0f19; }
@@ -24,13 +22,7 @@
 
     <button class="collapsible" onclick="toggleInfo()">ℹ️ ما هو هذا التطبيق؟</button>
     <div id="infoContent" class="content">
-        <p>هذا النظام هو أداة رقمية شاملة لإدارة فواتيرك ومتابعة زبائنك بسهولة:</p>
-        <ul>
-            <li>إدارة الفواتير والطلبات.</li>
-            <li>إرسال التحديثات للزبائن مباشرة عبر واتساب.</li>
-            <li>نظام استعلام خاص للزبائن برقم الفاتورة.</li>
-            <li>خصوصية عالية: بياناتك محفوظة محلياً في جهازك.</li>
-        </ul>
+        <p>نظام رقمي لإدارة فواتيرك، وتحديث حالة الأغراض، وإرسال تنبيهات واتساب للزبائن فوراً.</p>
     </div>
 
     <div class="tab">
@@ -39,23 +31,21 @@
     </div>
 
     <div id="owner" style="display:none;">
-        <input type="text" id="adminSearchCode" placeholder="بحث عن فاتورة للتعديل">
-        <button style="background:#475569; color:white" onclick="adminSearch()">بحث</button>
+        <input type="text" id="adminSearchCode" placeholder="أدخل الكود للبحث أو التعديل">
+        <button style="background:#475569; color:white" onclick="adminSearch()">بحث عن فاتورة</button>
         <hr style="border:0; border-top:1px solid #22314d; margin:10px 0;">
         <input type="text" id="phone" placeholder="رقم واتساب الزبون">
         <input type="text" id="code" placeholder="رقم الفاتورة">
         <input type="text" id="name" placeholder="اسم الزبون/الغرض">
         <input type="text" id="status" placeholder="حالة العمل">
         <button class="btn-main" onclick="saveData()">حفظ الفاتورة</button>
+        <button style="background:#ef4444; color:white" onclick="deleteData()">حذف هذه الفاتورة</button>
         <button style="background:#25d366; color:white" onclick="sendToCustomer()">إرسال التحديث للزبون</button>
     </div>
 
     <div id="client" style="display:none;">
         <input type="text" id="searchCode" placeholder="رقم فاتورتك للبحث">
         <button class="btn-main" onclick="search()">بحث</button>
-        <hr style="border:0; border-top:1px solid #22314d; margin:20px 0;">
-        <input type="text" id="suggestion" placeholder="اقتراح تحسين لماجد تك">
-        <button style="background:#6366f1; color:white" onclick="sendSuggestion()">إرسال اقتراح</button>
         <div id="result" style="margin-top:15px; padding:10px; background:#1e293b; display:none; border-radius:10px;"></div>
     </div>
 </div>
@@ -74,7 +64,20 @@
         let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
         db[code] = {name: document.getElementById('name').value, status: document.getElementById('status').value, phone: document.getElementById('phone').value};
         localStorage.setItem('myBizData', JSON.stringify(db));
-        alert("تم حفظ البيانات!");
+        alert("تم الحفظ!");
+    }
+    function deleteData() {
+        let code = document.getElementById('code').value;
+        let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
+        if(db[code]) {
+            delete db[code];
+            localStorage.setItem('myBizData', JSON.stringify(db));
+            alert("تم حذف الفاتورة!");
+            document.getElementById('code').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('status').value = '';
+            document.getElementById('phone').value = '';
+        } else { alert("الفاتورة غير موجودة."); }
     }
     function adminSearch() {
         let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
@@ -97,11 +100,6 @@
         let data = db[document.getElementById('searchCode').value];
         res.style.display = 'block';
         res.innerHTML = data ? `الاسم: ${data.name}<br>الحالة: ${data.status}` : "كود غير موجود.";
-    }
-    function sendSuggestion() {
-        let phone = "963966199420";
-        let text = document.getElementById('suggestion').value;
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent("اقتراح: " + text)}`, '_blank');
     }
 </script>
 </body>
