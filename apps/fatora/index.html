@@ -2,447 +2,78 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تطبيق منبه الأدوات العالمي - Maged Tech</title>
-    
-    <link rel="icon" type="image/png" href="icon.png">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#151f32">
-    <meta name="apple-mobile-web-app-title" content="Maged Tech">
-    <meta name="theme-color" content="#151f32">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فاتورة ماجد تك - النظام الشامل</title>
     <style>
-        :root {
-            --bg-main: #0b0f19;
-            --card-bg: #151f32;
-            --primary: #38bdf8;
-            --text-light: #f8fafc;
-            --text-muted: #64748b;
-            --green: #10b981;
-            --blue: #0088cc;
-            --gray: #4b5563;
-            --border-color: #22314d;
-            --red: #f43f5e;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-main);
-            color: var(--text-light);
-            margin: 0;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .app-shell {
-            width: 100%;
-            max-width: 460px;
-            background: var(--card-bg);
-            padding: 22px;
-            border-radius: 26px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-            border: 1px solid var(--border-color);
-            box-sizing: border-box;
-            position: relative;
-        }
-
-        .mode-switch {
-            display: flex;
-            background: #0b0f19;
-            padding: 5px;
-            border-radius: 14px;
-            margin-bottom: 25px;
-            border: 1px solid var(--border-color);
-        }
-
-        .switch-btn {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: 0.2s ease;
-        }
-
-        .switch-btn.active {
-            color: #0b0f19;
-            background: var(--primary);
-        }
-
-        .view-panel {
-            display: none;
-        }
-
-        .view-panel.active {
-            display: block;
-        }
-
-        .input-block {
-            margin-bottom: 16px;
-        }
-
-        .input-block label {
-            display: block;
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-
-        .phone-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        .phone-row select {
-            flex: 1;
-            max-width: 110px;
-        }
-
-        .phone-row input {
-            flex: 2;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            background: #0b0f19;
-            color: #fff;
-            font-size: 15px;
-            box-sizing: border-box;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-
-        .btn-full {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            margin-top: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary { background: var(--primary); color: #0b0f19; }
-        .btn-success { background: var(--green); color: #fff; }
-        .btn-telegram { background: var(--blue); color: #fff; }
-        .btn-sms { background: var(--gray); color: #fff; }
-        .btn-danger { background: var(--red); color: #fff; }
-
-        .status-tracker-box {
-            margin-top: 22px;
-            padding: 18px;
-            background: #0b0f19;
-            border-radius: 16px;
-            border-right: 5px solid var(--primary);
-            display: none;
-        }
-
-        .progress-track {
-            height: 6px;
-            background: #1e293b;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 15px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .shop-tag {
-            text-align: center;
-            font-size: 12px;
-            color: var(--primary);
-            background: rgba(56, 189, 248, 0.1);
-            padding: 6px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .action-group {
-            margin-top: 15px;
-            border-top: 1px dashed var(--border-color);
-            padding-top: 10px;
-        }
-
-        .archive-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(11, 15, 25, 0.85);
-            z-index: 999;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            width: 100%;
-            max-width: 400px;
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-        }
+        :root { --primary: #38bdf8; --bg: #0b0f19; --card: #151f32; --text: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: var(--card); padding: 20px; border-radius: 20px; }
+        .btn { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        .btn-m { background: var(--primary); }
+        .btn-c { background: #10b981; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #22314d; background: #0b0f19; color: white; box-sizing: border-box; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<div class="app-shell">
-    <div class="shop-tag" id="display-shop-name">متجر النشاط الحاضر: Maged Tech</div>
-
-    <div class="mode-switch">
-        <button class="switch-btn active" id="tab-cust" onclick="changeMode('customer')">🕵️ تتبع الزبون</button>
-        <button class="switch-btn" id="tab-mgr" onclick="changeMode('manager')">💼 لوحة المدير العام</button>
-    </div>
-
-    <div id="panel-customer" class="view-panel active">
-        <div class="input-block">
-            <input type="text" id="cust-search-id" placeholder="أدخل رقم الإيصال أو كود التتبع للتأكد...">
-        </div>
-        <button class="btn-full btn-primary" onclick="clientFetchStatus()">تتبع حالة الأداة الآن</button>
-
-        <div class="status-tracker-box" id="status-result-display">
-            <h3 id="out-tool" style="margin:0 0 8px 0; font-size: 17px;"></h3>
-            <p id="out-status" style="margin:5px 0; color: var(--primary); font-size: 15px; font-weight: bold;"></p>
-            <p id="out-shop" style="margin:5px 0; font-size: 13px; color: var(--text-muted);"></p>
-            <small id="out-time" style="color: var(--text-muted); display: block; margin-top: 6px;"></small>
-            <div class="progress-track"><div class="progress-fill" id="out-progress"></div></div>
-        </div>
-    </div>
-
-    <div id="panel-manager" class="view-panel">
-        <div class="input-block">
-            <label>اسم المحل الخاص بك (يظهر في الرسائل):</label>
-            <input type="text" id="cfg-shop-name" value="Maged Tech" oninput="syncShopName()">
-        </div>
-
-        <div class="input-block">
-            <label>طبيعة عمل المحل/المهنة:</label>
-            <select id="cfg-profession">
-                <option value="tech">صيانة إلكترونيات وموبايل 📱</option>
-                <option value="car">صيانة وميكانيك سيارات 🚗</option>
-                <option value="tailor">خياطة وتفصيل ملابس 🧥</option>
-                <option value="furniture">نجارة وتفصيل موبيليا 🪵</option>
-                <option value="other">غير ذلك ✨</option>
-            </select>
-        </div>
-
-        <div class="input-block">
-            <label>اسم الأداة / الغرض المستلم:</label>
-            <input type="text" id="mgr-tool-name" placeholder="مثال: شاشة Samsung S23">
-        </div>
-
-        <div class="input-block">
-            <label>رقم هاتف الزبون (عالمي):</label>
-            <div class="phone-row">
-                <select id="mgr-country-code">
-                    <option value="963">سوريا 🇸🇾 (+963)</option>
-                    <option value="966">السعودية 🇸🇦 (+966)</option>
-                    <option value="962">الأردن 🇯🇴 (+962)</option>
-                    <option value="964">العراق 🇮🇶 (+964)</option>
-                    <option value="20">مصر 🇪🇬 (+20)</option>
-                    <option value="971">الإمارات 🇦🇪 (+971)</option>
-                </select>
-                <input type="tel" id="mgr-phone" placeholder="9xxxxxxxx">
-            </div>
-        </div>
-
-        <div class="input-block">
-            <label>رقم الإيصال (كود تتبع فريد):</label>
-            <input type="text" id="mgr-receipt-id" placeholder="مثال: 7044">
-        </div>
-
-        <div class="input-block">
-            <label>تعيين حالة المنبه الفوري:</label>
-            <select id="mgr-status-select">
-                <option value="15|تم الاستلام بنجاح وجاري فحص الأداة 📥">📥 تم الاستلام</option>
-                <option value="50|الأداة قيد الإصلاح والمعاينة الفنية حالياً 🛠️">🛠️ قيد الإصلاح والمعاينة</option>
-                <option value="40|العمل متوقف مؤقتاً بلانتظار ⏳">⏳ بلانتظار</option>
-                <option value="60|تم الفحص وبانتظار رد وموافقة الزبون 📞">📞 بانتظار رد</option>
-                <option value="100|الأداة جاهزة ومجربة تماماً وقيد التسليم ✅">✅ جاهز وقيد التسليم</option>
-                <option value="0|نعتذر، الغرض غير قابل للإصلاح والتعديل ❌">❌ غير قابل للإصلاح</option>
-            </select>
-        </div>
-
-        <div class="action-group">
-            <button class="btn-full btn-success" onclick="triggerAction('whatsapp')">🟢 المعالجة والإرسال عبر واتساب</button>
-            <button class="btn-full btn-telegram" onclick="triggerAction('telegram')">🔵 المشاركة عبر تليجرام</button>
-            <button class="btn-full btn-sms" onclick="triggerAction('sms')">📋 نسخ نص الرسالة (SMS)</button>
-        </div>
-    </div>
+<div class="container" id="main-menu">
+    <h2 style="text-align:center;">مرحباً بك في ماجد تك</h2>
+    <button class="btn btn-m" onclick="showPanel('panel-manager')">💼 أنا صاحب الورشة (إدارة)</button>
+    <button class="btn btn-c" onclick="showPanel('panel-customer')">🕵️ أنا زبون (تتبع فاتورة)</button>
 </div>
 
-<div class="archive-modal" id="archiveModal">
-    <div class="modal-content">
-        <h3 style="margin-top: 0; color: var(--primary);">🗄️ خيارات أرشفة وحفظ الطلب</h3>
-        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">الرسالة جاهزة! اختر طريقة حفظ وتوثيق بيانات هذا الإيصال في النظام:</p>
-        
-        <button class="btn-full btn-success" onclick="executeArchive('draft')">💾 حفظ كمسودة عمل بالتطبيق</button>
-        <button class="btn-full btn-primary" onclick="executeArchive('computer')">📥 رفع وتحميل كملف للحاسب</button>
-        <button class="btn-full btn-danger" onclick="executeArchive('ignore')">❌ تجاهل الأرشفة (إرسال فقط)</button>
-    </div>
+<div class="container hidden" id="panel-customer">
+    <h3>تتبع طلبك</h3>
+    <input type="text" id="track-id" placeholder="أدخل رقم الإيصال">
+    <button class="btn btn-c" onclick="trackReceipt()">بحث</button>
+    <div id="result"></div>
+    <button class="btn" onclick="location.reload()">رجوع للقائمة</button>
+</div>
+
+<div class="container hidden" id="panel-manager">
+    <h3>لوحة الإدارة</h3>
+    <input type="text" id="m-id" placeholder="رقم الإيصال">
+    <input type="text" id="m-name" placeholder="اسم الجهاز">
+    <input type="text" id="m-status" placeholder="الحالة (مثال: جاهز)">
+    <button class="btn btn-m" onclick="saveReceipt()">حفظ الفاتورة</button>
+    <div id="receipt-list"></div>
+    <button class="btn" onclick="location.reload()">رجوع للقائمة</button>
 </div>
 
 <script>
-    let currentChannel = ''; 
-
-    function changeMode(mode) {
-        let tabCust = document.getElementById('tab-cust');
-        let tabMgr = document.getElementById('tab-mgr');
-        let panelCust = document.getElementById('panel-customer');
-        let panelMgr = document.getElementById('panel-manager');
-
-        if(mode === 'customer') {
-            tabCust.classList.add('active');
-            tabMgr.classList.remove('active');
-            panelCust.classList.add('active');
-            panelMgr.classList.remove('active');
-        } else {
-            tabMgr.classList.add('active');
-            tabCust.classList.remove('active');
-            panelMgr.classList.add('active');
-            panelCust.classList.remove('active');
-        }
+    function showPanel(id) {
+        document.getElementById('main-menu').classList.add('hidden');
+        document.getElementById(id).classList.remove('hidden');
+        if(id === 'panel-manager') renderList();
     }
 
-    function syncShopName() {
-        let name = document.getElementById('cfg-shop-name').value || "منبه الأدوات";
-        document.getElementById('display-shop-name').innerText = "متجر النشاط الحاضر: " + name;
+    function saveReceipt() {
+        let id = document.getElementById('m-id').value;
+        let data = { name: document.getElementById('m-name').value, status: document.getElementById('m-status').value };
+        localStorage.setItem('rec_' + id, JSON.stringify(data));
+        alert("تم الحفظ!");
+        renderList();
     }
 
-    function triggerAction(channel) {
-        let id = document.getElementById('mgr-receipt-id').value.trim();
-        let name = document.getElementById('mgr-tool-name').value.trim();
-        let phone = document.getElementById('mgr-phone').value.trim();
-
-        if(!id || !name || !phone) {
-            alert("⚠️ فضلاً، املأ اسم الأداة، رقم الإيصال، ورقم هاتف الزبون أولاً!");
-            return;
-        }
-
-        currentChannel = channel;
-        document.getElementById('archiveModal').style.display = 'flex'; 
+    function trackReceipt() {
+        let id = document.getElementById('track-id').value;
+        let data = JSON.parse(localStorage.getItem('rec_' + id));
+        document.getElementById('result').innerHTML = data ? `الجهاز: ${data.name} <br> الحالة: ${data.status}` : "غير موجود";
     }
 
-    function executeArchive(archiveType) {
-        let id = document.getElementById('mgr-receipt-id').value.trim();
-        let name = document.getElementById('mgr-tool-name').value.trim();
-        let cc = document.getElementById('mgr-country-code').value;
-        let phone = document.getElementById('mgr-phone').value.trim();
-        let shopName = document.getElementById('cfg-shop-name').value || "Maged Tech";
-        let statusData = document.getElementById('mgr-status-select').value.split('|');
-
-        if(phone.startsWith('0')) { phone = phone.substring(1); }
-
-        let record = {
-            name: name,
-            shop: shopName,
-            status: statusData[1],
-            progress: statusData[0],
-            time: new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'}) + " | " + new Date().toLocaleDateString('ar-EG')
-        };
-
-        if (archiveType === 'draft') {
-            localStorage.setItem('global_alert_db_' + id, JSON.stringify(record));
-            alert("💾 تم حفظ الإيصال كمسودة عمل ثابتة في ذاكرة التطبيق.");
-        } 
-        else if (archiveType === 'computer') {
-            localStorage.setItem('global_alert_db_' + id, JSON.stringify(record)); 
-            
-            let fileContent = `--- إيصال صيانة مؤرشف ---\nالمحل: ${shopName}\nرقم الإيصال: ${id}\nالأداة/الجهاز: ${name}\nالهاتف: +${cc}${phone}\nالحالة: ${statusData[1]}\nالتوقيت: ${record.time}\n------------------------`;
-            let blob = new Blob([fileContent], { type: "text/plain;charset=utf-8" });
-            let link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = `Receipt_${id}_Archive.txt`;
-            link.click();
-            alert("📥 تم تحميل مستند الفاتورة بنجاح كملف نصي على حاسوبك.");
-        } 
-        else if (archiveType === 'ignore') {
-            alert("⚠️ تم تخطي الأرشفة بطلبك، سيتم توجيهك للإرسال المباشر فقط.");
-        }
-
-        document.getElementById('archiveModal').style.display = 'none';
-
-        let rawMsg = `مرحباً بك! تم تسجيل طلبك بنجاح لدى [${shopName}].\n\n📦 الأداة/الجهاز: ${name}\n🎫 رقم الإيصال للتتبع: ${id}\n⚡ الحالة الحالية: ${statusData[1]}\n\nتفقد حالة طلبك مباشرة بفتح التطبيق وإدخال رقم الإيصال الخاص بك.`;
-        let encodedMsg = encodeURIComponent(rawMsg);
-
-        if(currentChannel === 'whatsapp') {
-            window.open(`https://wa.me/${cc}${phone}?text=${encodedMsg}`, '_blank');
-        } 
-        else if(currentChannel === 'telegram') {
-            window.open(`https://t.me/share/url?url=${encodeURIComponent('كود: ' + id)}&text=${encodedMsg}`, '_blank');
-        } 
-        else if(currentChannel === 'sms') {
-            navigator.clipboard.writeText(rawMsg).then(() => {
-                alert("📋 تم نسخ النص للحافظة! يمكنك الآن لصقه في رسائل الـ SMS.");
-            });
-        }
-
-        if (archiveType !== 'ignore') {
-            changeMode('customer');
-            document.getElementById('cust-search-id').value = id;
-            clientFetchStatus();
-        }
-    }
-
-    function clientFetchStatus() {
-        let code = document.getElementById('cust-search-id').value.trim();
-        let displayBox = document.getElementById('status-result-display');
-
-        if(!code) { return; }
-
-        let data = localStorage.getItem('global_alert_db_' + code);
-
-        if(data) {
-            let obj = JSON.parse(data);
-            document.getElementById('out-tool').innerText = "📦 الغرض/الأداة: " + obj.name;
-            document.getElementById('out-status').innerText = "⏰ المنبه الحالي: " + obj.status;
-            document.getElementById('out-shop').innerText = "🏪 المركز المسؤول: " + obj.shop;
-            document.getElementById('out-time').innerText = "📅 " + obj.time;
-            document.getElementById('out-progress').style.width = obj.progress + "%";
-            displayBox.style.display = "block";
-
-            if(obj.progress === "100") {
-                displayBox.style.borderRightColor = "var(--green)";
-            } else if(obj.progress === "0") {
-                displayBox.style.borderRightColor = "var(--red)";
-            } else {
-                displayBox.style.borderRightColor = "var(--primary)";
+    function renderList() {
+        let html = "<h4>السجلات الحالية:</h4>";
+        for(let i=0; i<localStorage.length; i++) {
+            let key = localStorage.key(i);
+            if(key.startsWith('rec_')) {
+                let val = JSON.parse(localStorage.getItem(key));
+                html += `<p>${key.replace('rec_','')} | ${val.name} | ${val.status}</p>`;
             }
-        } else {
-            alert("❌ عذراً، هذا الكود غير مؤرشف أو تم حذفه.");
-            displayBox.style.display = "none";
         }
+        document.getElementById('receipt-list').innerHTML = html;
     }
 </script>
+
 </body>
 </html>
