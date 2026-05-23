@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>فاتورة ماجد تك - النظام المطور</title>
+    <title>فاتورة ماجد تك - النظام الاحترافي</title>
     <style>
         :root { --primary: #38bdf8; --bg: #0b0f19; --card: #151f32; --text: #f8fafc; --green: #10b981; }
         body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 15px; }
@@ -20,26 +20,27 @@
 <div class="container" id="menu">
     <h3 style="text-align:center;">إدارة ماجد تك للصيانة</h3>
     <button class="btn btn-m" onclick="show('mgr')">💼 لوحة المدير</button>
-    <button class="btn btn-c" onclick="show('cust')">🕵️ تتبع غرضك</button>
+    <button class="btn btn-c" onclick="show('cust')">🕵️ تتبع الغرض</button>
 </div>
 
 <div class="container hidden" id="mgr">
-    <h3>إصدار إيصال / تحديث</h3>
+    <h3>إصدار / تحديث إيصال</h3>
     <input type="text" id="m-id" placeholder="رقم الفاتورة">
-    <input type="text" id="m-item" placeholder="اسم المادة/الجهاز">
+    <input type="text" id="m-item" placeholder="اسم المادة">
+    <input type="text" id="m-phone" placeholder="رقم واتساب الزبون (مثال: 9639xxxxxx)">
     <select id="m-status">
         <option value="تم الاستلام">تم الاستلام 📥</option>
         <option value="قيد الإصلاح">قيد الإصلاح 🛠️</option>
         <option value="بانتظار قطعة غيار">بانتظار قطعة غيار ⚙️</option>
         <option value="جاهز للتسليم">جاهز للتسليم ✅</option>
     </select>
-    <input type="text" id="m-phone" placeholder="رقم واتساب الزبون">
     <button class="btn btn-m" onclick="save()">حفظ البيانات</button>
+    <button class="btn btn-c" onclick="sendToCustomer()">إرسال إشعار للزبون</button>
     <button class="btn" onclick="location.reload()">رجوع</button>
 </div>
 
 <div class="container hidden" id="cust">
-    <h3>بحث عن حالة الغرض</h3>
+    <h3>استعلام عن الحالة</h3>
     <input type="text" id="c-search" placeholder="رقم الفاتورة أو اسم المادة">
     <button class="btn btn-c" onclick="track()">بحث</button>
     <div id="res" class="result-box hidden"></div>
@@ -51,22 +52,29 @@
 
     function save() {
         let id = document.getElementById('m-id').value;
-        let item = document.getElementById('m-item').value;
-        let data = { item, status: document.getElementById('m-status').value, phone: document.getElementById('m-phone').value };
+        let data = { item: document.getElementById('m-item').value, status: document.getElementById('m-status').value, phone: document.getElementById('m-phone').value };
         localStorage.setItem('rec_' + id, JSON.stringify(data));
-        localStorage.setItem('name_' + item.toLowerCase(), id); // فهرس للاسم
-        alert("تم الحفظ!");
+        localStorage.setItem('name_' + data.item.toLowerCase(), id);
+        alert("تم حفظ الفاتورة بنجاح!");
+    }
+
+    function sendToCustomer() {
+        let id = document.getElementById('m-id').value;
+        let phone = document.getElementById('m-phone').value;
+        let item = document.getElementById('m-item').value;
+        let status = document.getElementById('m-status').value;
+        
+        let msg = `مرحباً! بخصوص طلبك (${item}) - رقم الفاتورة (${id}): الحالة الآن هي "${status}". نرجو منك متابعة الحالة أو مراجعتنا لاستلام الغرض إذا كان جاهزاً. شكراً لتعاملك مع ماجد تك!`;
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     function track() {
         let q = document.getElementById('c-search').value.toLowerCase();
-        let resDiv = document.getElementById('res');
         let id = localStorage.getItem('rec_' + q) ? q : localStorage.getItem('name_' + q);
-        
         let d = JSON.parse(localStorage.getItem('rec_' + id));
         if(d) {
-            resDiv.innerHTML = `المادة: ${d.item}<br>الحالة: <b>${d.status}</b>`;
-            resDiv.classList.remove('hidden');
+            document.getElementById('res').innerHTML = `المادة: ${d.item}<br>الحالة: <b>${d.status}</b>`;
+            document.getElementById('res').classList.remove('hidden');
         } else {
             alert("لا يوجد غرض بهذا الاسم أو الرقم");
         }
