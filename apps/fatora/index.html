@@ -2,78 +2,75 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فاتورة ماجد تك - النظام الشامل</title>
+    <title>فاتورة ماجد تك - النظام المطور</title>
     <style>
-        :root { --primary: #38bdf8; --bg: #0b0f19; --card: #151f32; --text: #f8fafc; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-        .container { max-width: 500px; margin: auto; background: var(--card); padding: 20px; border-radius: 20px; }
-        .btn { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; }
-        .btn-m { background: var(--primary); }
-        .btn-c { background: #10b981; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #22314d; background: #0b0f19; color: white; box-sizing: border-box; }
+        :root { --primary: #38bdf8; --bg: #0b0f19; --card: #151f32; --text: #f8fafc; --green: #10b981; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 15px; }
+        .container { max-width: 450px; margin: auto; background: var(--card); padding: 20px; border-radius: 20px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #22314d; background: #0b0f19; color: white; box-sizing: border-box; }
+        .btn { width: 100%; padding: 14px; margin: 8px 0; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .btn-m { background: var(--primary); color: #0b0f19; }
+        .btn-c { background: var(--green); color: white; }
         .hidden { display: none; }
+        .result-box { padding: 15px; background: #0b0f19; border-radius: 10px; margin-top: 10px; border-right: 4px solid var(--primary); }
     </style>
 </head>
 <body>
 
-<div class="container" id="main-menu">
-    <h2 style="text-align:center;">مرحباً بك في ماجد تك</h2>
-    <button class="btn btn-m" onclick="showPanel('panel-manager')">💼 أنا صاحب الورشة (إدارة)</button>
-    <button class="btn btn-c" onclick="showPanel('panel-customer')">🕵️ أنا زبون (تتبع فاتورة)</button>
+<div class="container" id="menu">
+    <h3 style="text-align:center;">إدارة ماجد تك للصيانة</h3>
+    <button class="btn btn-m" onclick="show('mgr')">💼 لوحة المدير</button>
+    <button class="btn btn-c" onclick="show('cust')">🕵️ تتبع غرضك</button>
 </div>
 
-<div class="container hidden" id="panel-customer">
-    <h3>تتبع طلبك</h3>
-    <input type="text" id="track-id" placeholder="أدخل رقم الإيصال">
-    <button class="btn btn-c" onclick="trackReceipt()">بحث</button>
-    <div id="result"></div>
-    <button class="btn" onclick="location.reload()">رجوع للقائمة</button>
+<div class="container hidden" id="mgr">
+    <h3>إصدار إيصال / تحديث</h3>
+    <input type="text" id="m-id" placeholder="رقم الفاتورة">
+    <input type="text" id="m-item" placeholder="اسم المادة/الجهاز">
+    <select id="m-status">
+        <option value="تم الاستلام">تم الاستلام 📥</option>
+        <option value="قيد الإصلاح">قيد الإصلاح 🛠️</option>
+        <option value="بانتظار قطعة غيار">بانتظار قطعة غيار ⚙️</option>
+        <option value="جاهز للتسليم">جاهز للتسليم ✅</option>
+    </select>
+    <input type="text" id="m-phone" placeholder="رقم واتساب الزبون">
+    <button class="btn btn-m" onclick="save()">حفظ البيانات</button>
+    <button class="btn" onclick="location.reload()">رجوع</button>
 </div>
 
-<div class="container hidden" id="panel-manager">
-    <h3>لوحة الإدارة</h3>
-    <input type="text" id="m-id" placeholder="رقم الإيصال">
-    <input type="text" id="m-name" placeholder="اسم الجهاز">
-    <input type="text" id="m-status" placeholder="الحالة (مثال: جاهز)">
-    <button class="btn btn-m" onclick="saveReceipt()">حفظ الفاتورة</button>
-    <div id="receipt-list"></div>
-    <button class="btn" onclick="location.reload()">رجوع للقائمة</button>
+<div class="container hidden" id="cust">
+    <h3>بحث عن حالة الغرض</h3>
+    <input type="text" id="c-search" placeholder="رقم الفاتورة أو اسم المادة">
+    <button class="btn btn-c" onclick="track()">بحث</button>
+    <div id="res" class="result-box hidden"></div>
+    <button class="btn" onclick="location.reload()">رجوع</button>
 </div>
 
 <script>
-    function showPanel(id) {
-        document.getElementById('main-menu').classList.add('hidden');
-        document.getElementById(id).classList.remove('hidden');
-        if(id === 'panel-manager') renderList();
-    }
+    function show(p) { document.getElementById('menu').classList.add('hidden'); document.getElementById(p).classList.remove('hidden'); }
 
-    function saveReceipt() {
+    function save() {
         let id = document.getElementById('m-id').value;
-        let data = { name: document.getElementById('m-name').value, status: document.getElementById('m-status').value };
+        let item = document.getElementById('m-item').value;
+        let data = { item, status: document.getElementById('m-status').value, phone: document.getElementById('m-phone').value };
         localStorage.setItem('rec_' + id, JSON.stringify(data));
+        localStorage.setItem('name_' + item.toLowerCase(), id); // فهرس للاسم
         alert("تم الحفظ!");
-        renderList();
     }
 
-    function trackReceipt() {
-        let id = document.getElementById('track-id').value;
-        let data = JSON.parse(localStorage.getItem('rec_' + id));
-        document.getElementById('result').innerHTML = data ? `الجهاز: ${data.name} <br> الحالة: ${data.status}` : "غير موجود";
-    }
-
-    function renderList() {
-        let html = "<h4>السجلات الحالية:</h4>";
-        for(let i=0; i<localStorage.length; i++) {
-            let key = localStorage.key(i);
-            if(key.startsWith('rec_')) {
-                let val = JSON.parse(localStorage.getItem(key));
-                html += `<p>${key.replace('rec_','')} | ${val.name} | ${val.status}</p>`;
-            }
+    function track() {
+        let q = document.getElementById('c-search').value.toLowerCase();
+        let resDiv = document.getElementById('res');
+        let id = localStorage.getItem('rec_' + q) ? q : localStorage.getItem('name_' + q);
+        
+        let d = JSON.parse(localStorage.getItem('rec_' + id));
+        if(d) {
+            resDiv.innerHTML = `المادة: ${d.item}<br>الحالة: <b>${d.status}</b>`;
+            resDiv.classList.remove('hidden');
+        } else {
+            alert("لا يوجد غرض بهذا الاسم أو الرقم");
         }
-        document.getElementById('receipt-list').innerHTML = html;
     }
 </script>
-
 </body>
 </html>
