@@ -18,26 +18,28 @@
 
 <div class="card">
     <h2>فاتورة ماجد تك</h2>
-    <div class="info-box">نظامك الرقمي للفواتير والطلبات. أدر أعمالك وتابع زبائنك بسهولة، مع إمكانية تلقي الطلبات مباشرة.</div>
+    <div class="info-box">نظامك الرقمي للفواتير والطلبات. أدر أعمالك وتابع زبائنك بسهولة.</div>
 
     <div class="tab">
-        <button onclick="show('owner')">الإدارة</button>
-        <button onclick="show('client')">الاستعلام</button>
+        <button onclick="show('owner')">لوحة الإدارة</button>
+        <button onclick="show('client')">استعلام/طلب</button>
     </div>
 
     <div id="owner" style="display:none;">
+        <input type="text" id="phone" placeholder="رقم واتساب الزبون (مثال: 9639xxxxxx)">
         <input type="text" id="code" placeholder="رقم الفاتورة">
-        <input type="text" id="name" placeholder="اسم الزبون">
-        <input type="text" id="status" placeholder="حالة الغرض أو الطلب">
-        <button class="btn-main" onclick="saveData()">حفظ التحديث</button>
+        <input type="text" id="name" placeholder="اسم الزبون/الغرض">
+        <input type="text" id="status" placeholder="حالة العمل">
+        <button class="btn-main" onclick="saveData()">حفظ الفاتورة</button>
+        <button style="background:#25d366; color:white" onclick="sendToCustomer()">إرسال الحالة للزبون</button>
     </div>
 
     <div id="client" style="display:none;">
         <input type="text" id="searchCode" placeholder="رقم فاتورتك للبحث">
         <button class="btn-main" onclick="search()">بحث</button>
         <hr style="border:0; border-top:1px solid #22314d; margin:20px 0;">
-        <input type="text" id="newOrder" placeholder="أو أرسل طلب جديد (اكتب طلبك هنا)">
-        <button style="background:#25d366; color:white" onclick="sendOrder()">إرسال الطلب واتساب</button>
+        <input type="text" id="newOrder" placeholder="اكتب طلبك هنا (أرسل لماجد تك)">
+        <button style="background:#f59e0b; color:#0b0f19" onclick="sendOrder()">إرسال طلب جديد</button>
         <div id="result" style="margin-top:15px; padding:10px; background:#1e293b; display:none; border-radius:10px;"></div>
     </div>
 </div>
@@ -51,9 +53,21 @@
     function saveData() {
         let code = document.getElementById('code').value;
         let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
-        db[code] = {name: document.getElementById('name').value, status: document.getElementById('status').value};
+        db[code] = {
+            name: document.getElementById('name').value, 
+            status: document.getElementById('status').value,
+            phone: document.getElementById('phone').value
+        };
         localStorage.setItem('myBizData', JSON.stringify(db));
-        alert("تم الحفظ!");
+        alert("تم حفظ البيانات!");
+    }
+
+    function sendToCustomer() {
+        let phone = document.getElementById('phone').value;
+        let name = document.getElementById('name').value;
+        let status = document.getElementById('status').value;
+        let msg = `مرحباً، تحديث بخصوص طلبك (${name}): *${status}*.`;
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     function search() {
@@ -65,8 +79,7 @@
     }
 
     function sendOrder() {
-        // ضع هنا رقم الواتساب الخاص بك ليتم الإرسال إليه دائماً
-        let phone = "9639xxxxxxxx"; 
+        let phone = "9639xxxxxxxx"; // ضع رقمك هنا مرة واحدة
         let order = document.getElementById('newOrder').value;
         window.open(`https://wa.me/${phone}?text=${encodeURIComponent("طلب جديد: " + order)}`, '_blank');
     }
