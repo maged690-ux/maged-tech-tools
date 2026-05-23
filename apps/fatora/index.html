@@ -6,7 +6,10 @@
     <style>
         body { font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 15px; }
         .card { background: #151f32; padding: 20px; border-radius: 20px; max-width: 500px; margin: auto; }
-        .info-box { background: #1e293b; padding: 15px; border-radius: 15px; margin-bottom: 20px; border-right: 4px solid #38bdf8; font-size: 13px; line-height: 1.5; }
+        /* ستايل زر النبذة المنسدل */
+        .collapsible { background: #1e293b; color: #38bdf8; cursor: pointer; padding: 15px; width: 100%; border: none; text-align: right; border-radius: 10px; font-weight: bold; margin-bottom: 10px; }
+        .content { padding: 0 15px; display: none; overflow: hidden; background: #0f172a; border-radius: 10px; font-size: 13px; color: #cbd5e1; }
+        
         input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; background: #0b0f19; color: white; box-sizing: border-box; }
         button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
         .btn-main { background: #38bdf8; color: #0b0f19; }
@@ -18,51 +21,61 @@
 
 <div class="card">
     <h2>فاتورة ماجد تك</h2>
-    <div class="info-box">
-        نظام رقمي لإدارة الفواتير والطلبات. أدر أعمالك، ابحث عن فواتيرك، وتابع زبائنك بسهولة.
+
+    <button class="collapsible" onclick="toggleInfo()">ℹ️ ما هو هذا التطبيق؟</button>
+    <div id="infoContent" class="content">
+        <p>هذا النظام هو أداة رقمية شاملة لإدارة فواتيرك ومتابعة زبائنك بسهولة:</p>
+        <ul>
+            <li>إدارة الفواتير والطلبات.</li>
+            <li>إرسال التحديثات للزبائن مباشرة عبر واتساب.</li>
+            <li>نظام استعلام خاص للزبائن برقم الفاتورة.</li>
+            <li>خصوصية عالية: بياناتك محفوظة محلياً في جهازك.</li>
+        </ul>
     </div>
 
     <div class="tab">
-        <button onclick="show('owner')">لوحة الإدارة</button>
-        <button onclick="show('client')">استعلام الزبون</button>
+        <button onclick="show('owner')">الإدارة</button>
+        <button onclick="show('client')">استعلام زبون</button>
     </div>
 
     <div id="owner" style="display:none;">
-        <input type="text" id="adminSearchCode" placeholder="أدخل الكود للبحث أو التعديل">
-        <button style="background:#475569; color:white" onclick="adminSearch()">بحث عن فاتورة</button>
-        <hr style="border:0; border-top:1px solid #22314d; margin:15px 0;">
+        <input type="text" id="adminSearchCode" placeholder="بحث عن فاتورة للتعديل">
+        <button style="background:#475569; color:white" onclick="adminSearch()">بحث</button>
+        <hr style="border:0; border-top:1px solid #22314d; margin:10px 0;">
         <input type="text" id="phone" placeholder="رقم واتساب الزبون">
         <input type="text" id="code" placeholder="رقم الفاتورة">
         <input type="text" id="name" placeholder="اسم الزبون/الغرض">
         <input type="text" id="status" placeholder="حالة العمل">
-        <button class="btn-main" onclick="saveData()">حفظ/تحديث الفاتورة</button>
+        <button class="btn-main" onclick="saveData()">حفظ الفاتورة</button>
         <button style="background:#25d366; color:white" onclick="sendToCustomer()">إرسال التحديث للزبون</button>
     </div>
 
     <div id="client" style="display:none;">
         <input type="text" id="searchCode" placeholder="رقم فاتورتك للبحث">
         <button class="btn-main" onclick="search()">بحث</button>
-        <div id="result" style="margin-top:15px; padding:10px; background:#1e293b; display:none; border-radius:10px;"></div>
         <hr style="border:0; border-top:1px solid #22314d; margin:20px 0;">
-        <input type="text" id="suggestion" placeholder="ارسل اقتراح لماجد تك">
+        <input type="text" id="suggestion" placeholder="اقتراح تحسين لماجد تك">
         <button style="background:#6366f1; color:white" onclick="sendSuggestion()">إرسال اقتراح</button>
+        <div id="result" style="margin-top:15px; padding:10px; background:#1e293b; display:none; border-radius:10px;"></div>
     </div>
 </div>
 
 <script>
+    function toggleInfo() {
+        var content = document.getElementById("infoContent");
+        content.style.display = content.style.display === "block" ? "none" : "block";
+    }
     function show(tab) {
         document.getElementById('owner').style.display = tab === 'owner' ? 'block' : 'none';
         document.getElementById('client').style.display = tab === 'client' ? 'block' : 'none';
     }
-    
     function saveData() {
         let code = document.getElementById('code').value;
         let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
         db[code] = {name: document.getElementById('name').value, status: document.getElementById('status').value, phone: document.getElementById('phone').value};
         localStorage.setItem('myBizData', JSON.stringify(db));
-        alert("تم حفظ الفاتورة!");
+        alert("تم حفظ البيانات!");
     }
-
     function adminSearch() {
         let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
         let data = db[document.getElementById('adminSearchCode').value];
@@ -71,18 +84,13 @@
             document.getElementById('name').value = data.name;
             document.getElementById('status').value = data.status;
             document.getElementById('phone').value = data.phone;
-            alert("تم جلب البيانات!");
-        } else {
-            alert("الفاتورة غير موجودة.");
-        }
+        } else { alert("غير موجود"); }
     }
-
     function sendToCustomer() {
         let phone = document.getElementById('phone').value;
         let msg = `تحديث طلبك (${document.getElementById('name').value}): ${document.getElementById('status').value}.`;
         window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
-
     function search() {
         let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
         let res = document.getElementById('result');
@@ -90,9 +98,8 @@
         res.style.display = 'block';
         res.innerHTML = data ? `الاسم: ${data.name}<br>الحالة: ${data.status}` : "كود غير موجود.";
     }
-
     function sendSuggestion() {
-        let phone = "963966199420"; // ضع رقمك هنا
+        let phone = "963966199428";
         let text = document.getElementById('suggestion').value;
         window.open(`https://wa.me/${phone}?text=${encodeURIComponent("اقتراح: " + text)}`, '_blank');
     }
