@@ -2,60 +2,67 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>فاتورة ماجد تك - الرقمية</title>
+    <title>فاتورة ماجد تك - النظام المزدوج</title>
     <style>
         body { font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 20px; }
-        .card { background: #151f32; padding: 20px; border-radius: 20px; max-width: 500px; margin: auto; box-shadow: 0 10px 15px rgba(0,0,0,0.3); }
-        h2 { text-align: center; color: #38bdf8; }
+        .card { background: #151f32; padding: 20px; border-radius: 20px; max-width: 500px; margin: auto; }
         input { width: 100%; padding: 15px; margin: 8px 0; border-radius: 10px; border: 1px solid #22314d; background: #0b0f19; color: white; box-sizing: border-box; }
         button { width: 100%; padding: 15px; margin-top: 10px; background: #38bdf8; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #0b0f19; }
-        .list-item { background: #1e293b; padding: 15px; margin-top: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid #38bdf8; }
-        .delete-btn { color: #ef4444; cursor: pointer; font-size: 12px; }
+        .tab { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab button { background: #1e293b; color: white; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>فاتورة رقمية</h2>
-    <input type="text" id="name" placeholder="اسم الزبون / الغرض">
-    <input type="text" id="status" placeholder="حالة العمل (مثال: قيد المعالجة)">
-    <button onclick="saveData()">إضافة فاتورة جديدة</button>
-    
-    <div id="dataList" style="margin-top: 20px;"></div>
-    <button onclick="clearAll()" style="background:none; color:#64748b; font-size:12px; margin-top:20px;">مسح جميع الفواتير</button>
+    <h2>فاتورة ماجد تك الرقمية</h2>
+    <div class="tab">
+        <button onclick="show('owner')">صاحب المهنة</button>
+        <button onclick="show('client')">الزبون</button>
+    </div>
+
+    <div id="owner" style="display:none;">
+        <input type="text" id="code" placeholder="رقم الفاتورة/الكود">
+        <input type="text" id="name" placeholder="اسم الزبون/الغرض">
+        <input type="text" id="status" placeholder="حالة الغرض (مثال: قيد التصليح)">
+        <button onclick="saveInvoice()">إضافة/تحديث الفاتورة</button>
+    </div>
+
+    <div id="client" style="display:none;">
+        <input type="text" id="searchCode" placeholder="أدخل كود فاتورتك">
+        <button onclick="searchInvoice()">بحث عن حالتي</button>
+        <div id="result" style="margin-top:20px; padding:15px; border-radius:10px; background:#1e293b; display:none;"></div>
+    </div>
 </div>
 
 <script>
-    function saveData() {
+    function show(tab) {
+        document.getElementById('owner').style.display = tab === 'owner' ? 'block' : 'none';
+        document.getElementById('client').style.display = tab === 'client' ? 'block' : 'none';
+    }
+
+    function saveInvoice() {
+        let code = document.getElementById('code').value;
         let name = document.getElementById('name').value;
         let status = document.getElementById('status').value;
-        if(!name || !status) return alert("الرجاء تعبئة البيانات");
-        
-        let data = JSON.parse(localStorage.getItem('myBizData') || "[]");
-        data.push({name, status});
-        localStorage.setItem('myBizData', JSON.stringify(data));
-        
-        document.getElementById('name').value = '';
-        document.getElementById('status').value = '';
-        render();
+        let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
+        db[code] = {name, status};
+        localStorage.setItem('myBizData', JSON.stringify(db));
+        alert("تم حفظ الفاتورة برقم: " + code);
     }
 
-    function render() {
-        let data = JSON.parse(localStorage.getItem('myBizData') || "[]");
-        let list = document.getElementById('dataList');
-        list.innerHTML = data.map((item, index) => `
-            <div class="list-item">
-                <div><strong>${item.name}</strong><br><small>${item.status}</small></div>
-            </div>`).join('');
-    }
-
-    function clearAll() {
-        if(confirm("هل أنت متأكد من مسح جميع الفواتير؟")) {
-            localStorage.removeItem('myBizData');
-            render();
+    function searchInvoice() {
+        let code = document.getElementById('searchCode').value;
+        let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
+        let res = document.getElementById('result');
+        if(db[code]) {
+            res.style.display = 'block';
+            res.innerHTML = `<strong>الغرض:</strong> ${db[code].name}<br><strong>الحالة:</strong> ${db[code].status}`;
+        } else {
+            res.style.display = 'block';
+            res.innerHTML = "هذا الكود غير موجود، تأكد من الرقم أو تواصل مع صاحب المهنة.";
         }
     }
-    render();
 </script>
 </body>
 </html>
