@@ -2,40 +2,50 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>فاتورة ماجد تك - الإرسال الذكي</title>
+    <title>فاتورة ماجد تك - النظام الشامل</title>
     <style>
-        body { font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 20px; }
+        body { font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 15px; }
         .card { background: #151f32; padding: 20px; border-radius: 20px; max-width: 500px; margin: auto; }
-        input { width: 100%; padding: 15px; margin: 8px 0; border-radius: 10px; border: 1px solid #22314d; background: #0b0f19; color: white; box-sizing: border-box; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; background: #0b0f19; color: white; box-sizing: border-box; }
         button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
         .btn-main { background: #38bdf8; color: #0b0f19; }
-        .btn-social { background: #25d366; color: white; } /* واتساب */
-        .tab { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab button { background: #1e293b; color: white; }
+        .tab { display: flex; gap: 5px; margin-bottom: 20px; }
+        .tab button { background: #1e293b; color: white; flex: 1; padding: 8px; font-size: 12px; border-radius: 8px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>فاتورة ماجد تك</h2>
+    <h2>نظام الفواتير والطلبات الشامل</h2>
+    
+    <div style="font-size:10px; color:#64748b; margin-bottom:10px;">
+        <input type="text" id="myPhone" placeholder="رقم واتساب صاحب العمل (للاستلام)">
+        <button onclick="saveSettings()" style="background:#475569; color:white; padding:5px;">حفظ رقمي في التطبيق</button>
+    </div>
+
     <div class="tab">
-        <button onclick="show('owner')">إدارة (صاحب المهنة)</button>
-        <button onclick="show('client')">استعلام (الزبون)</button>
+        <button onclick="show('owner')">إدارة</button>
+        <button onclick="show('client')">استعلام</button>
+        <button onclick="show('order')">طلب جديد</button>
     </div>
 
     <div id="owner" style="display:none;">
-        <input type="text" id="phone" placeholder="رقم واتساب الزبون (مثال: 9639xxxxxx)">
         <input type="text" id="code" placeholder="رقم الفاتورة">
-        <input type="text" id="name" placeholder="الغرض">
-        <input type="text" id="status" placeholder="الحالة">
+        <input type="text" id="name" placeholder="اسم الزبون/الغرض">
+        <input type="text" id="status" placeholder="حالة العمل">
         <button class="btn-main" onclick="saveInvoice()">حفظ الفاتورة</button>
-        <button class="btn-social" onclick="sendWhatsApp()">إرسال حالة الفاتورة للزبون عبر واتساب</button>
     </div>
 
     <div id="client" style="display:none;">
-        <input type="text" id="searchCode" placeholder="أدخل رقم فاتورتك">
+        <input type="text" id="searchCode" placeholder="رقم فاتورتك">
         <button class="btn-main" onclick="searchInvoice()">بحث</button>
-        <div id="result" style="margin-top:20px; padding:15px; background:#1e293b; display:none;"></div>
+        <div id="result" style="margin-top:15px; padding:10px; background:#1e293b; display:none; border-radius:10px;"></div>
+    </div>
+
+    <div id="order" style="display:none;">
+        <input type="text" id="orderName" placeholder="اسمك">
+        <input type="text" id="orderDesc" placeholder="تفاصيل الطلب">
+        <button class="btn-main" onclick="sendOrder()">إرسال طلب لصاحب العمل</button>
     </div>
 </div>
 
@@ -43,39 +53,34 @@
     function show(tab) {
         document.getElementById('owner').style.display = tab === 'owner' ? 'block' : 'none';
         document.getElementById('client').style.display = tab === 'client' ? 'block' : 'none';
+        document.getElementById('order').style.display = tab === 'order' ? 'block' : 'none';
+    }
+    
+    function saveSettings() {
+        localStorage.setItem('myBizPhone', document.getElementById('myPhone').value);
+        alert("تم حفظ رقمك في التطبيق!");
     }
 
     function saveInvoice() {
-        let code = document.getElementById('code').value;
-        let phone = document.getElementById('phone').value;
-        let name = document.getElementById('name').value;
-        let status = document.getElementById('status').value;
         let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
-        db[code] = {name, status, phone};
+        db[document.getElementById('code').value] = {name: document.getElementById('name').value, status: document.getElementById('status').value};
         localStorage.setItem('myBizData', JSON.stringify(db));
-        alert("تم حفظ الفاتورة!");
-    }
-
-    function sendWhatsApp() {
-        let code = document.getElementById('code').value;
-        let phone = document.getElementById('phone').value;
-        let name = document.getElementById('name').value;
-        let status = document.getElementById('status').value;
-        let msg = `مرحباً، تحديث بخصوص طلبك (${name}): ${status}. يمكنك متابعة حالة طلبك عبر هذا الكود: ${code}`;
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        alert("تم الحفظ!");
     }
 
     function searchInvoice() {
-        let code = document.getElementById('searchCode').value;
         let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
         let res = document.getElementById('result');
-        if(db[code]) {
-            res.style.display = 'block';
-            res.innerHTML = `<strong>الغرض:</strong> ${db[code].name}<br><strong>الحالة:</strong> ${db[code].status}`;
-        } else {
-            res.style.display = 'block';
-            res.innerHTML = "كود غير موجود.";
-        }
+        let data = db[document.getElementById('searchCode').value];
+        res.style.display = 'block';
+        res.innerHTML = data ? `الغرض: ${data.name}<br>الحالة: ${data.status}` : "كود غير موجود.";
+    }
+
+    function sendOrder() {
+        let phone = localStorage.getItem('myBizPhone');
+        if(!phone) return alert("يرجى من صاحب العمل حفظ رقم الواتساب أولاً في الإعدادات!");
+        let msg = `طلب جديد من ${document.getElementById('orderName').value}: ${document.getElementById('orderDesc').value}`;
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 </script>
 </body>
