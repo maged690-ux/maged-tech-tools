@@ -2,98 +2,60 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>فاتورة ماجد تك - النظام الاحترافي</title>
+    <title>فاتورة ماجد تك - الرقمية</title>
     <style>
-        :root { --primary: #38bdf8; --bg: #0b0f19; --card: #151f32; --text: #f8fafc; --green: #10b981; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 15px; }
-        .container { max-width: 450px; margin: auto; background: var(--card); padding: 20px; border-radius: 20px; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #22314d; background: #0b0f19; color: white; box-sizing: border-box; }
-        .btn { width: 100%; padding: 14px; margin: 8px 0; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
-        .btn-m { background: var(--primary); color: #0b0f19; }
-        .btn-c { background: var(--green); color: white; }
-        .hidden { display: none; }
-        .result-box { padding: 15px; background: #0b0f19; border-radius: 10px; margin-top: 10px; border-right: 4px solid var(--primary); }
+        body { font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 20px; }
+        .card { background: #151f32; padding: 20px; border-radius: 20px; max-width: 500px; margin: auto; box-shadow: 0 10px 15px rgba(0,0,0,0.3); }
+        h2 { text-align: center; color: #38bdf8; }
+        input { width: 100%; padding: 15px; margin: 8px 0; border-radius: 10px; border: 1px solid #22314d; background: #0b0f19; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; margin-top: 10px; background: #38bdf8; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; color: #0b0f19; }
+        .list-item { background: #1e293b; padding: 15px; margin-top: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-right: 5px solid #38bdf8; }
+        .delete-btn { color: #ef4444; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
 
-<div class="container" id="menu">
-    <h3 style="text-align:center;">إدارة ماجد تك للصيانة</h3>
-    <button class="btn btn-m" onclick="show('mgr')">💼 لوحة المدير</button>
-    <button class="btn btn-c" onclick="show('cust')">🕵️ تتبع الغرض</button>
-</div>
-
-<div class="container hidden" id="mgr">
-    <h3>إصدار / تحديث إيصال</h3>
-    <input type="text" id="m-id" placeholder="رقم الفاتورة">
-    <input type="text" id="m-item" placeholder="اسم المادة">
-    <input type="text" id="m-phone" placeholder="رقم هاتف الزبون">
-    <select id="m-status">
-        <option value="تم الاستلام">تم الاستلام 📥</option>
-        <option value="قيد الإصلاح">قيد الإصلاح 🛠️</option>
-        <option value="بانتظار قطعة غيار">بانتظار قطعة غيار ⚙️</option>
-        <option value="جاهز للتسليم">جاهز للتسليم ✅</option>
-        <option value="غير قابل للإصلاح">غير قابل للإصلاح ❌</option>
-    </select>
-    <select id="m-method">
-        <option value="whatsapp">إرسال عبر واتساب</option>
-        <option value="telegram">إرسال عبر تليجرام</option>
-        <option value="sms">نسخ رسالة (SMS)</option>
-    </select>
-    <button class="btn btn-m" onclick="save()">حفظ البيانات</button>
-    <button class="btn btn-c" onclick="sendToCustomer()">إرسال إشعار للزبون</button>
-    <button class="btn" onclick="location.reload()">رجوع</button>
-</div>
-
-<div class="container hidden" id="cust">
-    <h3>استعلام عن الحالة</h3>
-    <input type="text" id="c-search" placeholder="رقم الفاتورة أو اسم المادة">
-    <button class="btn btn-c" onclick="track()">بحث</button>
-    <div id="res" class="result-box hidden"></div>
-    <button class="btn" onclick="location.reload()">رجوع</button>
+<div class="card">
+    <h2>فاتورة رقمية</h2>
+    <input type="text" id="name" placeholder="اسم الزبون / الغرض">
+    <input type="text" id="status" placeholder="حالة العمل (مثال: قيد المعالجة)">
+    <button onclick="saveData()">إضافة فاتورة جديدة</button>
+    
+    <div id="dataList" style="margin-top: 20px;"></div>
+    <button onclick="clearAll()" style="background:none; color:#64748b; font-size:12px; margin-top:20px;">مسح جميع الفواتير</button>
 </div>
 
 <script>
-    function show(p) { document.getElementById('menu').classList.add('hidden'); document.getElementById(p).classList.remove('hidden'); }
-
-    function save() {
-        let id = document.getElementById('m-id').value;
-        let data = { item: document.getElementById('m-item').value, status: document.getElementById('m-status').value, phone: document.getElementById('m-phone').value };
-        localStorage.setItem('rec_' + id, JSON.stringify(data));
-        localStorage.setItem('name_' + data.item.toLowerCase(), id);
-        alert("تم حفظ الفاتورة بنجاح!");
+    function saveData() {
+        let name = document.getElementById('name').value;
+        let status = document.getElementById('status').value;
+        if(!name || !status) return alert("الرجاء تعبئة البيانات");
+        
+        let data = JSON.parse(localStorage.getItem('myBizData') || "[]");
+        data.push({name, status});
+        localStorage.setItem('myBizData', JSON.stringify(data));
+        
+        document.getElementById('name').value = '';
+        document.getElementById('status').value = '';
+        render();
     }
 
-    function sendToCustomer() {
-        let id = document.getElementById('m-id').value;
-        let phone = document.getElementById('m-phone').value;
-        let item = document.getElementById('m-item').value;
-        let status = document.getElementById('m-status').value;
-        let method = document.getElementById('m-method').value;
-        
-        let msg = `مرحباً! بخصوص طلبك (${item}) - رقم الفاتورة (${id}): الحالة الآن هي "${status}". شكراً لتعاملك مع ماجد تك!`;
-        
-        if(method === 'whatsapp') {
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-        } else if(method === 'telegram') {
-            window.open(`https://t.me/share/url?url=&text=${encodeURIComponent(msg)}`, '_blank');
-        } else {
-            navigator.clipboard.writeText(msg);
-            alert("تم نسخ الرسالة، يمكنك لصقها في الـ SMS الآن.");
+    function render() {
+        let data = JSON.parse(localStorage.getItem('myBizData') || "[]");
+        let list = document.getElementById('dataList');
+        list.innerHTML = data.map((item, index) => `
+            <div class="list-item">
+                <div><strong>${item.name}</strong><br><small>${item.status}</small></div>
+            </div>`).join('');
+    }
+
+    function clearAll() {
+        if(confirm("هل أنت متأكد من مسح جميع الفواتير؟")) {
+            localStorage.removeItem('myBizData');
+            render();
         }
     }
-
-    function track() {
-        let q = document.getElementById('c-search').value.toLowerCase();
-        let id = localStorage.getItem('rec_' + q) ? q : localStorage.getItem('name_' + q);
-        let d = JSON.parse(localStorage.getItem('rec_' + id));
-        if(d) {
-            document.getElementById('res').innerHTML = `المادة: ${d.item}<br>الحالة: <b>${d.status}</b>`;
-            document.getElementById('res').classList.remove('hidden');
-        } else {
-            alert("لا يوجد غرض بهذا الاسم أو الرقم");
-        }
-    }
+    render();
 </script>
 </body>
 </html>
