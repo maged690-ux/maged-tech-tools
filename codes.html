@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أكواد ماجد تك</title>
+    <title>أكواد ماجد تك الشاملة</title>
     <style>
-        body { font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 20px; }
+        body { font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 15px; }
         .card { background: #151f32; padding: 20px; border-radius: 20px; max-width: 500px; margin: auto; }
         input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px; border: none; background: #0b0f19; color: white; box-sizing: border-box; }
         .code-item { background: #1e293b; padding: 12px; margin-bottom: 8px; border-radius: 10px; border-right: 4px solid #38bdf8; display: flex; justify-content: space-between; align-items: center; }
@@ -13,26 +13,40 @@
 </head>
 <body>
 <div class="card">
-    <h2 style="text-align:center;">أكواد فحص الأجهزة</h2>
-    <input type="text" id="searchInput" onkeyup="searchCodes()" placeholder="ابحث عن الجهاز (مثلاً: سامسونج، آيفون..)">
+    <h2 style="text-align:center;">مركز الأكواد الشامل</h2>
+    <input type="text" id="searchInput" onkeyup="searchCodes()" placeholder="ابحث باسم الجهاز أو نوع الفحص...">
     <div id="codesList"></div>
     <button onclick="window.location.href='index.html'" style="background:#475569; color:white; border:none; padding:12px; border-radius:10px; width:100%; margin-top:20px; font-weight:bold;">العودة للرئيسية</button>
 </div>
 
 <script>
     const allCodes = [
+        // سامسونج
         {device: "سامسونج", code: "*#0*#", desc: "فحص الشاشة واللمس"},
-        {device: "سامسونج", code: "*#0228#", desc: "معلومات البطارية"},
-        {device: "شاومي", code: "*#*#6484#*#*", desc: "قائمة الفحص الهندسي"},
+        {device: "سامسونج", code: "*#0228#", desc: "معلومات البطارية ومعايرة"},
+        {device: "سامسونج", code: "*#1234#", desc: "معلومات إصدار السوفتوير"},
+        // هواوي
+        {device: "هواوي", code: "*#*#2846579#*#*", desc: "القائمة الهندسية السرية"},
+        {device: "هواوي", code: "*#*#0000#*#*", desc: "معلومات الجهاز"},
+        // شاومي
+        {device: "شاومي", code: "*#*#6484#*#*", desc: "قائمة فحص المهندس (CIT)"},
+        {device: "شاومي", code: "*#*#4636#*#*", desc: "معلومات الشبكة والبطارية"},
+        // إنفينكس وتكنو (MTK)
+        {device: "إنفينكس/تكنو", code: "*#*#9646633#*#*", desc: "القائمة الهندسية MTK (شامل)"},
+        {device: "إنفينكس/تكنو", code: "*#*#83781#*#*", desc: "وضع الاختبار الهندسي"},
+        // آيفون
         {device: "آيفون", code: "*3001#12345#*", desc: "وضع الاختبار الهندسي"},
-        {device: "عام", code: "*#06#", desc: "عرض رقم IMEI"}
-        // يمكنك إضافة المئات هنا بنفس الطريقة
+        {device: "آيفون", code: "*#06#", desc: "عرض رقم IMEI"},
+        // عام
+        {device: "عام", code: "*#06#", desc: "عرض رقم IMEI"},
+        {device: "عام", code: "*#*#4636#*#*", desc: "معلومات الهاتف والشبكة"}
     ];
 
     function searchCodes() {
         let input = document.getElementById("searchInput").value.toLowerCase();
         let list = document.getElementById("codesList");
         let filtered = allCodes.filter(c => c.device.toLowerCase().includes(input) || c.desc.toLowerCase().includes(input));
+        
         list.innerHTML = filtered.map(c => `
             <div class="code-item">
                 <div><strong>${c.device}:</strong> ${c.desc}<br><span style="color:#38bdf8;">${c.code}</span></div>
@@ -40,7 +54,6 @@
             </div>
         `).join('');
     }
-    // عرض الكل عند فتح الصفحة
     searchCodes();
 </script>
 </body>
