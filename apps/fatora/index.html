@@ -27,12 +27,18 @@
     <h3>إصدار / تحديث إيصال</h3>
     <input type="text" id="m-id" placeholder="رقم الفاتورة">
     <input type="text" id="m-item" placeholder="اسم المادة">
-    <input type="text" id="m-phone" placeholder="رقم واتساب الزبون (مثال: 9639xxxxxx)">
+    <input type="text" id="m-phone" placeholder="رقم هاتف الزبون">
     <select id="m-status">
         <option value="تم الاستلام">تم الاستلام 📥</option>
         <option value="قيد الإصلاح">قيد الإصلاح 🛠️</option>
         <option value="بانتظار قطعة غيار">بانتظار قطعة غيار ⚙️</option>
         <option value="جاهز للتسليم">جاهز للتسليم ✅</option>
+        <option value="غير قابل للإصلاح">غير قابل للإصلاح ❌</option>
+    </select>
+    <select id="m-method">
+        <option value="whatsapp">إرسال عبر واتساب</option>
+        <option value="telegram">إرسال عبر تليجرام</option>
+        <option value="sms">نسخ رسالة (SMS)</option>
     </select>
     <button class="btn btn-m" onclick="save()">حفظ البيانات</button>
     <button class="btn btn-c" onclick="sendToCustomer()">إرسال إشعار للزبون</button>
@@ -63,9 +69,18 @@
         let phone = document.getElementById('m-phone').value;
         let item = document.getElementById('m-item').value;
         let status = document.getElementById('m-status').value;
+        let method = document.getElementById('m-method').value;
         
-        let msg = `مرحباً! بخصوص طلبك (${item}) - رقم الفاتورة (${id}): الحالة الآن هي "${status}". نرجو منك متابعة الحالة أو مراجعتنا لاستلام الغرض إذا كان جاهزاً. شكراً لتعاملك مع ماجد تك!`;
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        let msg = `مرحباً! بخصوص طلبك (${item}) - رقم الفاتورة (${id}): الحالة الآن هي "${status}". شكراً لتعاملك مع ماجد تك!`;
+        
+        if(method === 'whatsapp') {
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+        } else if(method === 'telegram') {
+            window.open(`https://t.me/share/url?url=&text=${encodeURIComponent(msg)}`, '_blank');
+        } else {
+            navigator.clipboard.writeText(msg);
+            alert("تم نسخ الرسالة، يمكنك لصقها في الـ SMS الآن.");
+        }
     }
 
     function track() {
