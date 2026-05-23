@@ -6,24 +6,38 @@
     <title>منصة ماجد تك - Maged Tech</title>
     <style>
         :root { --primary: #38bdf8; --bg: #0b0f19; --card: #151f32; --text: #f8fafc; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); text-align: center; padding: 20px; }
-        .card { background: var(--card); padding: 30px; border-radius: 20px; max-width: 400px; margin: auto; border: 1px solid #22314d; }
-        h1 { color: var(--primary); margin-bottom: 5px; }
-        .btn { display: block; width: 100%; padding: 15px; margin: 15px 0; background: var(--primary); color: #0b0f19; border: none; border-radius: 12px; text-decoration: none; font-weight: bold; transition: 0.3s; }
-        .btn:hover { opacity: 0.9; transform: scale(1.02); }
-        .social { margin-top: 25px; font-size: 14px; color: #94a3b8; }
-        .social a { color: var(--primary); text-decoration: none; margin: 0 5px; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); text-align: center; padding: 20px; margin: 0; }
+        .wrapper { max-width: 500px; margin: auto; padding-top: 50px; }
+        h1 { color: var(--primary); margin: 0; font-size: 28px; }
+        p { color: #94a3b8; margin-bottom: 30px; }
+        
+        /* تنسيق الأزرار المتجاورة */
+        .grid-container { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; }
+        .btn { flex: 1; padding: 20px 10px; background: var(--card); border: 1px solid #22314d; border-radius: 16px; color: var(--text); text-decoration: none; font-weight: bold; transition: 0.3s; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .btn:hover { border-color: var(--primary); }
+        .btn-active { background: var(--primary); color: #0b0f19; }
+        
+        .social { margin-top: 40px; font-size: 14px; color: #64748b; }
+        .social a { color: var(--primary); text-decoration: none; margin: 0 8px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="card">
+<div class="wrapper">
     <h1>Maged Tech</h1>
     <p>المنصة الذكية للخدمات والصيانة</p>
     
-    <a href="apps/fatora/index.html" class="btn">🎫 نظام الفاتورة الإلكترونية</a>
-    
-    <button class="btn" style="background:#64748b; color:white;" onclick="alert('قيد التطوير...')">تعليم صيانة الموبايل</button>
+    <div class="grid-container">
+        <a href="apps/fatora/index.html" class="btn btn-active">
+            <span>🎫</span>
+            <span style="margin-top:8px;">نظام الفاتورة</span>
+        </a>
+        
+        <div class="btn" onclick="alert('جاري العمل على شيء مميز، انتظرونا!')">
+            <span>🚀</span>
+            <span style="margin-top:8px;">قريباً...</span>
+        </div>
+    </div>
 
     <div class="social">
         <p>تابعنا على:</p>
