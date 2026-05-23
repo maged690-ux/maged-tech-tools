@@ -7,7 +7,7 @@
         body { font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 15px; }
         .card { background: #151f32; padding: 20px; border-radius: 20px; max-width: 500px; margin: auto; }
         .collapsible { background: #1e293b; color: #38bdf8; cursor: pointer; padding: 15px; width: 100%; border: none; text-align: right; border-radius: 10px; font-weight: bold; margin-bottom: 10px; }
-        .content { padding: 0 15px; display: none; overflow: hidden; background: #0f172a; border-radius: 10px; font-size: 13px; color: #cbd5e1; }
+        .content { padding: 10px; display: none; background: #0f172a; border-radius: 10px; font-size: 13px; color: #cbd5e1; margin-bottom: 15px; }
         input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: none; background: #0b0f19; color: white; box-sizing: border-box; }
         button { width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
         .btn-main { background: #38bdf8; color: #0b0f19; }
@@ -20,9 +20,12 @@
 <div class="card">
     <h2>فاتورة ماجد تك</h2>
 
-    <button class="collapsible" onclick="toggleInfo()">ℹ️ ما هو هذا التطبيق؟</button>
+    <button class="collapsible" onclick="toggleInfo()">ℹ️ شرح التطبيق وطرق التواصل</button>
     <div id="infoContent" class="content">
-        <p>نظام رقمي لإدارة فواتيرك، وتحديث حالة الأغراض، وإرسال تنبيهات واتساب للزبائن فوراً.</p>
+        <p><strong>فاتورة ماجد تك:</strong> نظامك الرقمي لإدارة الفواتير، تحديث حالة الأغراض، ومتابعة الزبائن. بديل احترافي وسريع عن الدفاتر الورقية.</p>
+        <p><strong>كيف يعمل؟</strong> الإدارة لحفظ وتحديث الفواتير، والاستعلام للزبائن للبحث عن فواتيرهم.</p>
+        <p><strong>للاقتراحات:</strong> يسعدنا سماع آرائكم لتطوير النظام، تواصلوا معنا عبر واتساب:</p>
+        <button onclick="window.open('https://wa.me/963966199428', '_blank')" style="background:#25d366; color:white; font-size:12px;">راسلنا على واتساب</button>
     </div>
 
     <div class="tab">
@@ -69,15 +72,7 @@
     function deleteData() {
         let code = document.getElementById('code').value;
         let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
-        if(db[code]) {
-            delete db[code];
-            localStorage.setItem('myBizData', JSON.stringify(db));
-            alert("تم حذف الفاتورة!");
-            document.getElementById('code').value = '';
-            document.getElementById('name').value = '';
-            document.getElementById('status').value = '';
-            document.getElementById('phone').value = '';
-        } else { alert("الفاتورة غير موجودة."); }
+        if(db[code]) { delete db[code]; localStorage.setItem('myBizData', JSON.stringify(db)); alert("تم الحذف!"); } else { alert("غير موجودة"); }
     }
     function adminSearch() {
         let db = JSON.parse(localStorage.getItem('myBizData') || "{}");
