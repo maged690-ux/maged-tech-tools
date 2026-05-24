@@ -25,7 +25,7 @@
             min-height: 100vh;
         }
 
-        /* زينة العيد بالخلفية */
+        /* زينة العيد بالخلفية للإنشاء */
         .eid-decor {
             position: fixed;
             top: -50px;
@@ -34,11 +34,13 @@
             animation: fall linear infinite;
             opacity: 0.12;
             pointer-events: none;
+            user-select: none;
         }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
         header { text-align: center; padding: 40px 20px 10px 20px; position: relative; z-index: 10; }
         header h1 { font-size: 2.4rem; margin: 0; color: var(--primary-color); }
+        header p { color: #94a3b8; font-size: 1rem; margin-top: 8px; }
 
         .workspace-section {
             max-width: 600px;
@@ -52,27 +54,32 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .workspace-section h3 { color: var(--eid-gold); text-align: center; margin-top: 0; font-family: 'Reem Kufi', sans-serif; }
+        .workspace-section h3 { color: var(--eid-gold); text-align: center; margin-top: 0; font-family: 'Reem Kufi', sans-serif; font-size: 1.6rem; }
 
         .input-group { margin-bottom: 18px; }
-        .input-group label { display: block; margin-bottom: 8px; color: var(--primary-color); font-weight: bold; }
+        .input-group label { display: block; margin-bottom: 8px; color: var(--primary-color); font-weight: bold; font-size: 0.95rem; }
         .input-group input, .input-group select, .input-group textarea {
-            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-family: 'Cairo', sans-serif; box-sizing: border-box;
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: #fff; font-family: 'Cairo', sans-serif; box-sizing: border-box; font-size: 1rem;
         }
+        .input-group textarea { resize: none; }
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus { outline: none; border-color: var(--primary-color); }
 
         .generate-btn {
-            width: 100%; background: linear-gradient(45deg, #f59e0b, #d97706); color: #fff; border: none; padding: 14px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s;
+            width: 100%; background: linear-gradient(45deg, #f59e0b, #d97706); color: #fff; border: none; padding: 14px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3); font-family: 'Cairo';
         }
         .generate-btn:hover { transform: translateY(-2px); opacity: 0.95; }
 
         .preview-box { display: none; margin-top: 25px; text-align: center; border-top: 2px dashed #334155; padding-top: 20px; }
-        .card-result-image { max-width: 100%; border-radius: 12px; border: 2px solid var(--eid-gold); box-shadow: 0 8px 25px rgba(0,0,0,0.5); }
+        .card-result-image { max-width: 100%; border-radius: 12px; border: 2px solid var(--eid-gold); box-shadow: 0 8px 25px rgba(0,0,0,0.5); margin-bottom: 15px; }
         .action-btns { display: flex; justify-content: center; gap: 12px; margin-top: 15px; flex-wrap: wrap; }
         
-        .btn { padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; color: white; cursor: pointer; border: none; font-family: 'Cairo'; }
+        .btn { padding: 11px 22px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; color: white; cursor: pointer; border: none; font-family: 'Cairo'; font-size: 0.95rem; }
         .btn-download { background: #059669; }
+        .btn-download:hover { background: #10b981; }
         .btn-share-link { background: #3b82f6; }
+        .btn-share-link:hover { background: #60a5fa; }
         .btn-share-wa { background: #25d366; }
+        .btn-share-wa:hover { background: #1ebd59; }
 
         /* ----------------------------------------------- */
         /* ستايل الشاشة التفاعلية للبطاقة الحية عند الفتح */
@@ -84,15 +91,15 @@
         
         /* حركة غلاف البطاقة النوابضة */
         .envelope {
-            width: 320px; height: 220px; background: #b91c1c; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; box-shadow: 0 15px 35px rgba(0,0,0,0.6); border: 3px solid var(--eid-gold); position: relative; z-index: 1002; transition: 0.5s; animation: pulse 2s infinite;
+            width: 320px; height: 220px; background: #b91c1c; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; box-shadow: 0 15px 35px rgba(0,0,0,0.6); border: 3px solid var(--eid-gold); position: relative; z-index: 1002; transition: 0.5s; animation: pulse 2s infinite; text-align: center; padding: 10px; box-sizing: border-box;
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
         
         /* البطاقة الداخلية المستعرضة للفرحة */
         #actualLiveCard {
-            display: none; max-width: 90%; width: 450px; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); position: relative; z-index: 1003; animation: slideUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            display: none; max-width: 90%; width: 450px; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); position: relative; z-index: 1003; animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-sizing: border-box;
         }
-        @keyframes slideUp { from { transform: translateY(100vh) scale(0.5); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(100vh) scale(0.6); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
         
         canvas#cardCanvas { display: none; }
     </style>
@@ -103,7 +110,7 @@
         <div id="eid-decor-container"></div>
         <header>
             <h1>مخبر ماجد تك <span style="color: var(--eid-gold);">|</span> Lab</h1>
-            <p>اصنع بطاقة معايدة تفاعلية حية بالألعاب النارية باسمك مخصصة للواتساب 🎆</p>
+            <p>بيئة اختبار وتطوير أدوات العيد التفاعلية الحية بالألعاب النارية 🎆</p>
         </header>
 
         <div class="workspace-section">
@@ -133,7 +140,7 @@
             <div class="input-group">
                 <label><i class="fa-solid fa-palette"></i> اختر مظهر وخلفية العيد:</label>
                 <select id="cardStyle">
-                    <option value="royal-dark">👑 فخامة ملكية (ليلي أسود ملكي مع زخارف ذهبية)</option>
+                    <option value="royal-dark">👑 fخامة ملكية (ليلي أسود ملكي مع زخارف ذهبية)</option>
                     <option value="emerald-gold">🟢 الزمرد الأخضر (أجواء عريقة تقليدية بالخط المذهب)</option>
                     <option value="modern-tech">⚡ تيل تقني معتق (ألوان رقمية تتماشى مع طابع ماجد تك)</option>
                 </select>
@@ -148,7 +155,7 @@
                 <div class="action-btns">
                     <a id="downloadLink" class="btn btn-download" download="Eid_Card_MagedTech.png"><i class="fa-solid fa-image"></i> حفظ كصورة ثابتة</a>
                     <button class="btn btn-share-link" onclick="previewLiveCardDirectly()"><i class="fa-solid fa-eye"></i> معاينة العرض الحي</button>
-                    <a id="whatsappLink" class="btn btn-share-wa" target="_blank"><i class="fa-brands fa-whatsapp"></i> إرسال الرابط الحي التفاعلي للواتساب</a>
+                    <a id="whatsappLink" class="btn btn-share-wa" target="_blank"><i class="fa-brands fa-whatsapp"></i> إرسال الرابط الحي للواتساب</a>
                 </div>
             </div>
         </div>
@@ -160,26 +167,32 @@
         
         <div class="envelope" id="clickableEnvelope" onclick="openLiveEnvelope()">
             <div style="font-size: 3.5rem;">✉️</div>
-            <h2 style="margin: 10px 0 5px 0; font-family: 'Reem Kufi'; color: var(--eid-gold);">لديك بطاقة تهنئة خاصة</h2>
-            <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">اضغط هنا لفتح المفاجأة 🎆</p>
+            <h2 style="margin: 10px 0 5px 0; font-family: 'Reem Kufi'; color: var(--eid-gold); font-size: 1.4rem;">لديك بطاقة تهنئة خاصة</h2>
+            <p style="margin: 0; font-size: 0.85rem; opacity: 0.8;">اضغط هنا لفتح المفاجأة 🎆</p>
         </div>
 
         <div id="actualLiveCard">
-            <h2 id="liveCardTitle" style="font-family: 'Reem Kufi'; font-size: 2.2rem; margin-top: 0;"></h2>
-            <p id="liveCardMsg" style="font-size: 1.15rem; line-height: 1.7; font-family: 'Tajawal'; color: #e2e8f0; white-space: pre-line;"></p>
+            <h2 id="liveCardTitle" style="font-family: 'Reem Kufi'; font-size: 2rem; margin-top: 0;"></h2>
+            <p id="liveCardMsg" style="font-size: 1.1rem; line-height: 1.7; font-family: 'Tajawal'; color: #e2e8f0; white-space: pre-line;"></p>
             
-            <div style="margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px;">
-                <p style="margin: 0; font-size: 0.9rem; color: var(--eid-gold);">✍️ من ومحبكم وعايدكم:</p>
-                <h3 id="liveCardSender" style="margin: 5px 0 0 0; font-size: 1.6rem; color: #fff;"></h3>
+            <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px;">
+                <p style="margin: 0; font-size: 0.85rem; color: var(--eid-gold);">✍️ من ومحبكم وعايدكم:</p>
+                <h3 id="liveCardSender" style="margin: 5px 0 0 0; font-size: 1.4rem; color: #fff;"></h3>
             </div>
             
-            <button class="btn btn-share-link" style="margin-top:25px; width:100%; justify-content:center;" onclick="window.location.href=window.location.pathname">
+            <button class="btn btn-share-link" style="margin-top:20px; width:100%; justify-content:center;" onclick="goToCreationPage()">
                 🎨 اصنع بطاقة متحركة باسمك أنت مجاناً
+            </button>
+            
+            <button class="btn" style="margin-top: 10px; width: 100%; justify-content: center; background: #475569;" onclick="closeLiveView()">
+                <i class="fa-solid fa-pen-to-square"></i> تعديل البيانات أو العودة
             </button>
         </div>
     </div>
 
     <script>
+        let fireworksInterval;
+
         // دالة إظهار وإخفاء حقل النص المخصص
         function toggleCustomTextarea() {
             document.getElementById('customTextContainer').style.display = (document.getElementById('textTemplateSelect').value === 'custom') ? 'block' : 'none';
@@ -203,7 +216,7 @@
             // 1. تشغيل الكانفاس لتوليد الصورة الثابتة احتياطاً للتحميل
             drawStaticCanvasCard(name, msg, style);
 
-            // 2. بناء وتوليد "الرابط الحي التفاعلي المخصص" لمشاركته على الواتس
+            // 2. بناء وتوليد "الرابط الحي التفاعلي المخصص"
             const currentUrl = window.location.href.split('?')[0]; 
             const liveLink = `${currentUrl}?view=live&name=${encodeURIComponent(name)}&style=${encodeURIComponent(style)}&msg=${encodeURIComponent(msg)}`;
 
@@ -220,7 +233,6 @@
             const style = document.getElementById('cardStyle').value;
             const msg = getMessageText(textType);
             
-            // تحويل الصفحة الحالية لتعرض نمط العرض الحي فوراً للمعاينة كأنك استقبلت الرابط
             setupLiveOverlay(name, style, msg);
         }
 
@@ -244,29 +256,17 @@
             }
             
             ctx.fillStyle = '#f3f4f6'; ctx.font = '26px "Tajawal"'; ctx.textAlign = 'center';
-            // دالة كتابة مبسطة لتفادي التداخل بالأسطر للصورة الثابتة
             let lines = message.split('\n');
             for(let i=0; i<lines.length; i++) { ctx.fillText(lines[i], 400, 380 + (i*45)); }
 
-            // التوقيع السفلي للصورة الثابتة
             ctx.fillStyle = '#ffffff'; ctx.font = 'bold 30px "Cairo"'; ctx.fillText(name, 400, 640);
             document.getElementById('finalCardImg').src = canvas.toDataURL('image/png');
             document.getElementById('downloadLink').href = canvas.toDataURL('image/png');
         }
 
         // -----------------------------------------------------------
-        // محرك تشغيل وقراءة الرابط المخصص والتحكم بالألعاب النارية والأنيميشن
+        // إدارة وتجهيز شاشة العرض الحي الذكي
         // -----------------------------------------------------------
-        function openLiveEnvelope() {
-            document.getElementById('clickableEnvelope').style.transform = 'scale(0) rotate(180deg)';
-            setTimeout(() => {
-                document.getElementById('clickableEnvelope').style.display = 'none';
-                document.getElementById('actualLiveCard').style.display = 'block';
-                // بدء إشعال الألعاب النارية في الخلفية بشكل كثيف ونشط دائم
-                startFireworksLoop();
-            }, 500);
-        }
-
         function setupLiveOverlay(name, style, msg) {
             document.getElementById('normalPage').style.display = 'none';
             const overlay = document.getElementById('liveViewOverlay');
@@ -276,7 +276,6 @@
             document.getElementById('liveCardSender').innerText = name;
             document.getElementById('liveCardMsg').innerText = msg;
 
-            // ضبط مظهر وتلوين كرت البوب أب المنبثق تماشياً مع الستايل المختار
             if (style === 'royal-dark') {
                 liveCard.style.background = '#030712'; liveCard.style.border = '2px solid #ffd700';
                 document.getElementById('liveCardTitle').innerText = "عِيد أضْحَى مُبَارَك 🌙";
@@ -290,9 +289,55 @@
                 document.getElementById('liveCardTitle').innerText = "أضحى مبارك سعيد ⚡";
                 document.getElementById('liveCardTitle').style.color = '#00adb5';
             }
+
+            // الحفاظ على خطوة العودة للمتصفح ومنع الخروج من الموقع
+            if (!window.location.search.includes('view=live')) {
+                history.pushState({ page: 'liveView' }, '', '');
+            }
         }
 
-        // محرك الألعاب النارية التفاعلية باستخدام Canvas ذكي
+        function openLiveEnvelope() {
+            document.getElementById('clickableEnvelope').style.transform = 'scale(0) rotate(180deg)';
+            setTimeout(() => {
+                document.getElementById('clickableEnvelope').style.display = 'none';
+                document.getElementById('actualLiveCard').style.display = 'block';
+                startFireworksLoop();
+            }, 400);
+        }
+
+        // إغلاق العرض الحي والرجوع لصفحة التعديل بسلاسة
+        function closeLiveView() {
+            document.getElementById('liveViewOverlay').style.display = 'none';
+            document.getElementById('normalPage').style.display = 'block';
+            
+            // تصفير وإيقاف الـ الألعاب النارية
+            if(fireworksInterval) clearInterval(fireworksInterval);
+            
+            // إعادة بناء الظرف المغلق للمرة القادمة
+            document.getElementById('clickableEnvelope').style.display = 'flex';
+            document.getElementById('clickableEnvelope').style.transform = 'scale(1) rotate(0deg)';
+            document.getElementById('actualLiveCard').style.display = 'none';
+            
+            // إذا كان الرابط الأساسي يحتوي على view=live نقوم بتنظيف الرابط
+            if (window.location.search.includes('view=live')) {
+                window.location.href = window.location.pathname;
+            }
+        }
+
+        function goToCreationPage() {
+            window.location.href = window.location.pathname;
+        }
+
+        // مراقبة ضغطة زر الرجوع الخاص بالنظام والموبايل لغلق الكرت تلقائياً
+        window.onpopstate = function(event) {
+            if (document.getElementById('liveViewOverlay').style.display === 'flex') {
+                closeLiveView();
+            }
+        };
+
+        // -----------------------------------------------------------
+        // محرك تشغيل وإطلاق الألعاب النارية في الخلفية
+        // -----------------------------------------------------------
         let fwCanvas, fwCtx, particles = [];
         function startFireworksLoop() {
             fwCanvas = document.getElementById('fireworksCanvas');
@@ -300,23 +345,23 @@
             resizeFwCanvas();
             window.addEventListener('resize', resizeFwCanvas);
             renderFireworks();
-            // إطلاق صواريخ ألعاب نارية تلقائية كل ثانية بمواقع عشوائية بالخلفية
-            setInterval(() => {
-                createFirework(Math.random() * fwCanvas.width, Math.random() * (fwCanvas.height * 0.6));
-            }, 800);
+            
+            fireworksInterval = setInterval(() => {
+                createFirework(Math.random() * fwCanvas.width, Math.random() * (fwCanvas.height * 0.5) + 100);
+            }, 600);
         }
 
-        function resizeFwCanvas() { fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight; }
+        function resizeFwCanvas() { if(fwCanvas) { fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight; } }
 
         function createFirework(x, y) {
             const colors = ['#ffd700', '#00adb5', '#ff2e63', '#25d366', '#f59e0b', '#a855f7', '#ffffff'];
             const color = colors[Math.floor(Math.random() * colors.length)];
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < 50; i++) {
                 particles.push({
                     x: x, y: y,
                     angle: Math.random() * Math.PI * 2,
-                    speed: Math.random() * 5 + 2,
-                    friction: 0.95, gravity: 0.12,
+                    speed: Math.random() * 4 + 2,
+                    friction: 0.96, gravity: 0.1,
                     alpha: 1, decay: Math.random() * 0.015 + 0.01,
                     color: color
                 });
@@ -324,8 +369,9 @@
         }
 
         function renderFireworks() {
+            if (document.getElementById('liveViewOverlay').style.display !== 'flex') return;
             requestAnimationFrame(renderFireworks);
-            fwCtx.fillStyle = 'rgba(2, 6, 23, 0.2)'; // تأثير مسح يعطي ذيلاً مضيئاً خلف الانفجار
+            fwCtx.fillStyle = 'rgba(2, 6, 23, 0.15)';
             fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
 
             for (let i = particles.length - 1; i >= 0; i--) {
@@ -341,13 +387,13 @@
                 fwCtx.globalAlpha = p.alpha;
                 fwCtx.fillStyle = p.color;
                 fwCtx.beginPath();
-                fwCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                fwCtx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
                 fwCtx.fill();
                 fwCtx.restore();
             }
         }
 
-        // فحص معاملات الرابط عند فتح الصفحة لرؤية هل هي فتح عادي أم مستخدم استلم كرت حي
+        // فحص حالة الرابط عند التصفح لأول مرة
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('view') === 'live') {
@@ -356,13 +402,12 @@
                 const msg = urlParams.get('msg') || 'كل عام وأنتم بخير!';
                 setupLiveOverlay(name, style, msg);
             } else {
-                // توليد زينات متساقطة في حال التصفح العادي للإنشاء
                 const decorIcons = ['🐑', '🌙', '⭐', '✨'];
                 const container = document.getElementById('eid-decor-container');
                 for (let i = 0; i < 15; i++) {
                     const el = document.createElement('div'); el.className = 'eid-decor';
                     el.innerText = decorIcons[Math.floor(Math.random() * decorIcons.length)];
-                    el.style.left = Math.random() * 100 + 'vw'; el.style.animationDuration = (Math.random() * 5 + 6) + 's';
+                    el.style.left = Math.random() * 100 + 'vw'; el.style.animationDuration = (Math.random() * 4 + 6) + 's';
                     container.appendChild(el);
                 }
             }
