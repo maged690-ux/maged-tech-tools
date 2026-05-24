@@ -110,12 +110,12 @@
         <div id="eid-decor-container"></div>
         <header>
             <h1>مخبر ماجد تك <span style="color: var(--eid-gold);">|</span> Lab</h1>
-            <p>بيئة اختبار وتطوير أدوات العيد التفاعلية الحية بالألعاب النارية والمؤثرات الصوتية 🎆</p>
+            <p>بيئة اختبار وتطوير أدوات العيد التفاعلية الحية بالتكبيرات والألعاب النارية 🕋</p>
         </header>
 
         <div class="workspace-section">
-            <h3>🎆 مـصـنـع الـبـطـاقـات الـحـيَّـة</h3>
-            <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">املأ بياناتك، وسيتكفل المخبر بتوليد رابط سحري متحرك ومزود بالصوت لترسل به بهجة العيد!</p>
+            <h3>🕋 مـصـنـع الـبـطـاقـات الـروحـانـيَّـة</h3>
+            <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">املأ بياناتك، وسيتكفل المخبر بتوليد رابط سحري متحرك مصحوب بتكبيرات العيد لتهديه لمن تحب!</p>
 
             <div class="input-group">
                 <label><i class="fa-solid fa-signature"></i> اسمك الشخصي لتوقيع البطاقة:</label>
@@ -165,7 +165,7 @@
     <div id="liveViewOverlay">
         <canvas id="fireworksCanvas"></canvas>
         
-        <audio id="fireworksAudio" src="https://assets.mixkit.co/active_storage/sfx/1657/1657-84.wav" preload="auto" loop></audio>
+        <audio id="eidTakbeeratAudio" src="takbeerat.mp3" preload="auto" loop></audio>
         
         <div class="envelope" id="clickableEnvelope" onclick="openLiveEnvelope()">
             <div style="font-size: 3.5rem;">✉️</div>
@@ -220,7 +220,7 @@
             const currentUrl = window.location.href.split('?')[0]; 
             const liveLink = `${currentUrl}?view=live&name=${encodeURIComponent(name)}&style=${encodeURIComponent(style)}&msg=${encodeURIComponent(msg)}`;
 
-            const waMsg = encodeURIComponent(`اضغط على الرابط بالأسفل لرؤية بطاقة المعايدة التفاعلية والألعاب النارية المجهزة خصيصاً لك من محبكم [${name}] بمناسبة عيد الأضحى المبارك 🎈 🎆:\n\n👉 ${liveLink}`);
+            const waMsg = encodeURIComponent(`اضغط على الرابط بالأسفل لرؤية بطاقة المعايدة التفاعلية وسماع تكبيرات العيد والألعاب النارية المجهزة خصيصاً لك من محبكم [${name}] بمناسبة عيد الأضحى المبارك 🕋 🎆:\n\n👉 ${liveLink}`);
             document.getElementById('whatsappLink').href = `https://api.whatsapp.com/send?text=${waMsg}`;
             document.getElementById('previewBox').style.display = 'block';
             document.getElementById('previewBox').scrollIntoView({ behavior: 'smooth' });
@@ -292,17 +292,26 @@
             if (!window.location.search.includes('view=live')) {
                 history.pushState({ page: 'liveView' }, '', '');
             }
+
+            // 🔥 السحر هنا: تشغيل التكبيرات فوراً مع دخول شاشة العرض الحي 
+            // إذا منع المتصفح الصوت التلقائي، سيعمل فوراً عند أول نقرة للزائر على الشاشة
+            playTakbeerat();
+            document.body.addEventListener('click', playTakbeerat, { once: true });
+            document.body.addEventListener('touchstart', playTakbeerat, { once: true });
+        }
+
+        function playTakbeerat() {
+            const audio = document.getElementById('eidTakbeeratAudio');
+            if (audio && audio.paused) {
+                audio.play().catch(err => console.log("المتصفح ينتظر نقرة أخرى لتفعيل الصوت."));
+            }
         }
 
         function openLiveEnvelope() {
             document.getElementById('clickableEnvelope').style.transform = 'scale(0) rotate(180deg)';
             
-            // 🔥 تشغيل صوت الألعاب النارية فوراً عند فتح المغلّف
-            const audio = document.getElementById('fireworksAudio');
-            if (audio) {
-                audio.currentTime = 0;
-                audio.play().catch(err => console.log("تحذير المتصفح: يجب تفاعل المستخدم أولاً لتشغيل الصوت."));
-            }
+            // نضمن تشغيل الصوت هنا كإجراء تأكيدي عند نقر الظرف
+            playTakbeerat();
 
             setTimeout(() => {
                 document.getElementById('clickableEnvelope').style.display = 'none';
@@ -316,8 +325,8 @@
             document.getElementById('liveViewOverlay').style.display = 'none';
             document.getElementById('normalPage').style.display = 'block';
             
-            // 🔥 إيقاف وتصفير صوت الألعاب النارية عند الخروج والعودة
-            const audio = document.getElementById('fireworksAudio');
+            // إيجاد وإيقاف صوت التكبيرات تماماً عند العودة للتعديل لراحة المستخدم
+            const audio = document.getElementById('eidTakbeeratAudio');
             if (audio) {
                 audio.pause();
                 audio.currentTime = 0;
