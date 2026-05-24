@@ -43,163 +43,56 @@
             scroll-behavior: smooth;
         }
 
-        /* توهج ضوئي ناعم ومتحرك في الخلفية يعطي طابع تقني فخم */
         body::before {
-            content: '';
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
-            top: 10%;
-            left: 10%;
-            z-index: 0;
-            pointer-events: none;
+            content: ''; position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); top: 10%; left: 10%; z-index: 0; pointer-events: none;
         }
 
         .header { margin-bottom: 35px; text-align: center; position: relative; z-index: 10; }
-        .header h1 { font-family: 'Segoe UI', sans-serif; font-size: 42px; font-weight: 800; color: #ffffff; letter-spacing: 3px; text-shadow: 0 0 30px var(--primary-glow); margin: 0; }
+        .header h1 { font-size: 42px; font-weight: 800; color: #ffffff; letter-spacing: 3px; text-shadow: 0 0 30px var(--primary-glow); margin: 0; }
         .header h1 span { color: var(--primary); }
-        .header p { color: var(--text-muted); margin-top: 12px; font-size: 16px; font-weight: 600; letter-spacing: 1px; }
+        .header p { color: var(--text-muted); margin-top: 12px; font-size: 16px; font-weight: 600; }
         
-        /* أكورديون زجاجي أنيق */
-        .accordion { 
-            background: var(--card-glass); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            color: var(--primary); 
-            cursor: pointer; 
-            padding: 18px; 
-            width: 100%; 
-            max-width: 550px; 
-            border: 1px solid var(--card-border); 
-            text-align: center; 
-            font-size: 17px; 
-            border-radius: 16px; 
-            margin-bottom: 20px; 
-            font-weight: 700; 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            box-sizing: border-box;
-            z-index: 10;
-        }
-        .accordion:hover { 
-            background: rgba(30, 41, 59, 0.6); 
-            border-color: var(--primary); 
-            box-shadow: 0 0 20px var(--primary-glow);
-            transform: translateY(-2px);
-        }
-        
-        .panel { 
-            padding: 0 20px; 
-            display: none; 
-            background: rgba(10, 15, 30, 0.85); 
-            backdrop-filter: blur(15px); 
-            border-radius: 16px; 
-            color: #cbd5e1; 
-            line-height: 1.8; 
-            margin-bottom: 20px; 
-            width: 100%; 
-            max-width: 550px; 
-            text-align: right; 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            box-sizing: border-box;
-            z-index: 10;
-        }
+        .accordion { background: var(--card-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: var(--primary); cursor: pointer; padding: 18px; width: 100%; max-width: 550px; border: 1px solid var(--card-border); text-align: center; font-size: 17px; border-radius: 16px; margin-bottom: 20px; font-weight: 700; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; z-index: 10; }
+        .accordion:hover { background: rgba(30, 41, 59, 0.6); border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-2px); }
+        .panel { padding: 0 20px; display: none; background: rgba(10, 15, 30, 0.85); backdrop-filter: blur(15px); border-radius: 16px; color: #cbd5e1; line-height: 1.8; margin-bottom: 20px; width: 100%; max-width: 550px; text-align: right; border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box; z-index: 10; }
         
         .grid-container { display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 550px; box-sizing: border-box; z-index: 10; }
         .row-links { display: flex; gap: 15px; width: 100%; }
         
-        /* أزرار تفاعلية فخمة مع تأثير التوهج عند التمرير */
-        .btn { 
-            flex: 1; 
-            padding: 22px 10px; 
-            background: var(--card-glass); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border); 
-            border-radius: 18px; 
-            color: var(--text-main); 
-            text-decoration: none; 
-            font-weight: 700; 
-            font-size: 16px; 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            text-align: center; 
-        }
-        .btn:hover { 
-            border-color: var(--primary); 
-            background: rgba(30, 41, 59, 0.5); 
-            transform: translateY(-4px); 
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 15px var(--primary-glow); 
-        }
+        .btn { flex: 1; padding: 22px 10px; background: var(--card-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: 18px; color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 16px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .btn:hover { border-color: var(--primary); background: rgba(30, 41, 59, 0.5); transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 15px var(--primary-glow); }
+        .btn-active { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; box-shadow: 0 4px 20px rgba(3, 105, 161, 0.4); }
+        .btn-active:hover { background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5); }
         
-        /* زر نشط وبارز برونق مذهل */
-        .btn-active { 
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); 
-            border: none; 
-            box-shadow: 0 4px 20px rgba(3, 105, 161, 0.4); 
-        }
-        .btn-active:hover { 
-            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); 
-            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5); 
-        }
+        .eid-gate-card { background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(3, 7, 18, 0.9) 100%); border: 1px solid rgba(255, 215, 0, 0.25); padding: 24px 15px; border-radius: 20px; }
+        .eid-gate-card:hover { border-color: var(--eid-gold); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--eid-gold-glow); background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(3, 7, 18, 0.9) 100%); }
         
-        /* كرت بوابة العيد التفاعلي الليلي الفخم */
-        .eid-gate-card { 
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(3, 7, 18, 0.9) 100%); 
-            border: 1px solid rgba(255, 215, 0, 0.25); 
-            padding: 24px 15px; 
-            border-radius: 20px; 
-        }
-        .eid-gate-card:hover {
-            border-color: var(--eid-gold);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--eid-gold-glow);
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(3, 7, 18, 0.9) 100%);
-        }
-        
-        /* زر قريباً المتقطع الإبداعي */
-        .btn-teaser {
-            border: 1px dashed rgba(56, 189, 248, 0.4);
-            color: var(--text-muted);
-            background: transparent;
-            border-radius: 18px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .btn-teaser:hover {
-            border-color: var(--primary);
-            color: var(--text-main);
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
+        .btn-teaser { border: 1px dashed rgba(56, 189, 248, 0.4); color: var(--text-muted); background: transparent; border-radius: 18px; width: 100%; box-sizing: border-box; }
+        .btn-teaser:hover { border-color: var(--primary); color: var(--text-main); box-shadow: 0 0 15px var(--primary-glow); }
 
-        .social { margin-top: 45px; font-size: 14px; color: #4b5563; z-index: 10; letter-spacing: 0.5px; }
+        .social { margin-top: 45px; font-size: 14px; color: #4b5563; z-index: 10; }
         .social a { color: var(--primary); text-decoration: none; margin: 0 12px; font-weight: 700; transition: 0.3s; }
         .social a:hover { color: #ffffff; text-shadow: 0 0 10px var(--primary); }
 
-        /* زينة متساقطة بالخلفية ناعمة جداً وغير مزعجة */
         .eid-decor { position: fixed; top: -50px; font-size: 1.6rem; z-index: 1; animation: fall linear infinite; opacity: 0.08; pointer-events: none; user-select: none; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        /* ستايل لوحة العداد الذكي للتحويل البصري */
+        #redirectContainer {
+            display: none; max-width: 500px; width: 90%; padding: 35px; background: var(--card-glass); backdrop-filter: blur(25px); border: 1px solid var(--card-border); border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.6); z-index: 2000; box-sizing: border-box;
+        }
+        #countdownCircle {
+            font-size: 4rem; font-weight: 800; color: var(--primary); margin: 20px 0; text-shadow: 0 0 25px var(--primary-glow); animation: pulseCount 1s infinite alternate;
+        }
+        @keyframes pulseCount { from { transform: scale(0.95); opacity: 0.8; } to { transform: scale(1.05); opacity: 1; } }
 
         /* ----------------------------------------------- */
         /* ستايل شاشة العرض الحي التفاعلي بالألعاب النارية */
         /* ----------------------------------------------- */
-        #liveViewOverlay {
-            display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: #020617; z-index: 1000; justify-content: center; align-items: center; overflow: hidden;
-        }
+        #liveViewOverlay { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: #020617; z-index: 1000; justify-content: center; align-items: center; overflow: hidden; }
         #fireworksCanvas { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none; z-index: 1001; }
-        
-        .envelope {
-            width: 320px; height: 220px; background: #b91c1c; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; box-shadow: 0 15px 35px rgba(0,0,0,0.6); border: 3px solid var(--eid-gold); position: relative; z-index: 1002; transition: 0.5s; animation: pulse 2s infinite; text-align: center; padding: 10px; box-sizing: border-box;
-        }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
-        
-        #actualLiveCard {
-            display: none; max-width: 90%; width: 450px; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); position: relative; z-index: 1003; animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-sizing: border-box;
-        }
-        @keyframes slideUp { from { transform: translateY(100vh) scale(0.6); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-        
+        .envelope { width: 320px; height: 220px; background: #b91c1c; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; box-shadow: 0 15px 35px rgba(0,0,0,0.6); border: 3px solid var(--eid-gold); position: relative; z-index: 1002; transition: 0.5s; animation: pulse 2s infinite; text-align: center; padding: 10px; box-sizing: border-box; }
+        #actualLiveCard { display: none; max-width: 90%; width: 450px; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.8); position: relative; z-index: 1003; animation: slideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; box-sizing: border-box; }
         .btn-live-action { padding: 11px 22px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s; color: white; cursor: pointer; border: none; font-family: 'Cairo'; font-size: 0.95rem; width: 100%; justify-content: center; }
     </style>
 </head>
@@ -249,33 +142,35 @@
         </div>
     </div>
 
+    <div id="redirectContainer">
+        <i class="fa-brands fa-youtube" style="font-size: 3.5rem; color: #ef4444; text-shadow: 0 0 20px rgba(239,68,68,0.4);"></i>
+        <h2 style="margin: 15px 0 5px 0; font-size: 1.5rem; color: #fff;">جاري تحويلك إلى فيديو المقطع الشورتس...</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">أنت الآن تغادر منصة ماجد تك الذكية، انتظر لثوانٍ معدودة</p>
+        
+        <div id="countdownCircle">5</div>
+        
+        <button id="directGoBtn" class="btn btn-active" style="padding: 12px; font-size: 1rem; width: 100%; border-radius: 12px; font-weight: bold;">
+            اضغط هنا للانتقال الفوري المباشر <i class="fa-solid fa-angles-left" style="margin-right: 5px;"></i>
+        </button>
+    </div>
+
     <div id="liveViewOverlay">
         <canvas id="fireworksCanvas"></canvas>
-        
         <audio id="eidTakbeeratAudio" src="eid_song.mpeg" preload="auto" loop></audio>
-        
         <div class="envelope" id="clickableEnvelope" onclick="openLiveEnvelope()">
             <div style="font-size: 3.5rem;">✉️</div>
             <h2 style="margin: 10px 0 5px 0; font-family: 'Reem Kufi'; color: var(--eid-gold); font-size: 1.4rem;">لديك بطاقة تهنئة خاصة</h2>
             <p style="margin: 0; font-size: 0.85rem; opacity: 0.8;">اضغط هنا لفتح المفاجأة 🎆</p>
         </div>
-
         <div id="actualLiveCard">
             <h2 id="liveCardTitle" style="font-family: 'Reem Kufi'; font-size: 2rem; margin-top: 0;"></h2>
             <p id="liveCardMsg" style="font-size: 1.1rem; line-height: 1.7; font-family: 'Tajawal'; color: #e2e8f0; white-space: pre-line;"></p>
-            
             <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px;">
                 <p style="margin: 0; font-size: 0.85rem; color: var(--eid-gold);">✍️ من ومحبكم وعايدكم:</p>
                 <h3 id="liveCardSender" style="margin: 5px 0 0 0; font-size: 1.4rem; color: #fff;"></h3>
             </div>
-            
-            <button class="btn-live-action" style="margin-top:20px; background: #3b82f6;" onclick="goToCreationPage()">
-                🎨 اصنع بطاقة متحركة باسمك أنت مجاناً
-            </button>
-            
-            <button class="btn-live-action" style="margin-top: 10px; background: #475569;" onclick="closeLiveView()">
-                <i class="fa-solid fa-pen-to-square" style="margin-left: 5px;"></i> تعديل البيانات أو العودة للرئيسية
-            </button>
+            <button class="btn-live-action" style="margin-top:20px; background: #3b82f6;" onclick="goToCreationPage()">🎨 اصنع بطاقة متحركة باسمك أنت مجاناً</button>
+            <button class="btn-live-action" style="margin-top: 10px; background: #475569;" onclick="closeLiveView()"><i class="fa-solid fa-pen-to-square"></i> تعديل البيانات أو العودة للرئيسية</button>
         </div>
     </div>
 
@@ -288,13 +183,45 @@
             panel.style.display = (panel.style.display === "block") ? "none" : "block";
         });
 
-        // كود التنبيه التفاعلي لزر خدمات قريباً
         function showTeaser() {
             alert("ترقبوا قريباً: قسم الخدمات المطور والأدوات البرمجية الحصرية.. نحن بـ إنـتـظـار آرائـكـم وتـقـيـيـمـكـم! ✨");
         }
 
         // -----------------------------------------------------------
-        // محرك تشغيل وقراءة العرض الحي للألعاب النارية والأصوات التلقائية
+        // 🛠️ محرك تحويل الروابط وجسر الشورتس بـ عداد 5 ثواني
+        // -----------------------------------------------------------
+        function checkAndHandleRedirect(urlParams) {
+            // نقرأ المعامل "to" من الرابط (مثال: index.html?to=رابط_اليوتيوب)
+            const targetUrl = urlParams.get('to');
+            if (!targetUrl) return false; // إذا ما في رابط تحويل، نكمل طبيعي
+
+            // إخفاء الواجهة الرئيسية كلياً وإظهار بوكس العداد الفخم بالمنتصف
+            document.getElementById('normalPage').style.display = 'none';
+            const redirectBox = document.getElementById('redirectContainer');
+            redirectBox.style.display = 'block';
+
+            let count = 5;
+            const counterElement = document.getElementById('countdownCircle');
+            const goBtn = document.getElementById('directGoBtn');
+
+            // تفعيل وظيفة الزر للانتقال الفوري دون انتظار
+            goBtn.onclick = function() { window.location.href = targetUrl; };
+
+            // بدء العداد التنازلي التلقائي
+            const interval = setInterval(() => {
+                count--;
+                counterElement.innerText = count;
+                if (count <= 0) {
+                    clearInterval(interval);
+                    window.location.href = targetUrl; // التحويل التلقائي بعد الـ 5 ثواني
+                }
+            }, 1000);
+
+            return true;
+        }
+
+        // -----------------------------------------------------------
+        // إدارة وتجهيز شاشة العرض الحي الذكي
         // -----------------------------------------------------------
         let fireworksInterval;
 
@@ -333,14 +260,13 @@
         function playTakbeerat() {
             const audio = document.getElementById('eidTakbeeratAudio');
             if (audio && audio.paused) {
-                audio.play().catch(err => console.log("المتصفح ينتظر نقرة لتفعيل الصوت التلقائي."));
+                audio.play().catch(err => console.log("المتصفح ينتظر تفاعلاً."));
             }
         }
 
         function openLiveEnvelope() {
             document.getElementById('clickableEnvelope').style.transform = 'scale(0) rotate(180deg)';
             playTakbeerat();
-
             setTimeout(() => {
                 document.getElementById('clickableEnvelope').style.display = 'none';
                 document.getElementById('actualLiveCard').style.display = 'block';
@@ -351,62 +277,37 @@
         function closeLiveView() {
             document.getElementById('liveViewOverlay').style.display = 'none';
             document.getElementById('normalPage').style.display = 'flex';
-            
             const audio = document.getElementById('eidTakbeeratAudio');
             if (audio) { audio.pause(); audio.currentTime = 0; }
             if(fireworksInterval) clearInterval(fireworksInterval);
-            
             document.getElementById('clickableEnvelope').style.display = 'flex';
             document.getElementById('clickableEnvelope').style.transform = 'scale(1) rotate(0deg)';
             document.getElementById('actualLiveCard').style.display = 'none';
-            
-            if (window.location.search.includes('view=live')) {
-                window.location.href = window.location.pathname;
-            }
+            if (window.location.search.includes('view=live')) { window.location.href = window.location.pathname; }
         }
 
-        function goToCreationPage() {
-            window.location.href = "lab.html";
-        }
+        function goToCreationPage() { window.location.href = "lab.html"; }
 
         window.onpopstate = function(event) {
-            if (document.getElementById('liveViewOverlay').style.display === 'flex') {
-                closeLiveView();
-            }
+            if (document.getElementById('liveViewOverlay').style.display === 'flex') closeLiveView();
         };
 
-        // محرك جزيئات الألعاب النارية
+        // محرك الألعاب النارية
         let fwCanvas, fwCtx, particles = [];
         function startFireworksLoop() {
-            fwCanvas = document.getElementById('fireworksCanvas');
-            fwCtx = fwCanvas.getContext('2d');
-            resizeFwCanvas();
-            window.addEventListener('resize', resizeFwCanvas);
-            renderFireworks();
-            
-            fireworksInterval = setInterval(() => {
-                createFirework(Math.random() * fwCanvas.width, Math.random() * (fwCanvas.height * 0.5) + 100);
-            }, 600);
+            fwCanvas = document.getElementById('fireworksCanvas'); fwCtx = fwCanvas.getContext('2d');
+            resizeFwCanvas(); window.addEventListener('resize', resizeFwCanvas); renderFireworks();
+            fireworksInterval = setInterval(() => { createFirework(Math.random() * fwCanvas.width, Math.random() * (fwCanvas.height * 0.5) + 100); }, 600);
         }
-
         function resizeFwCanvas() { if(fwCanvas) { fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight; } }
-
         function createFirework(x, y) {
             const colors = ['#ffd700', '#00adb5', '#ff2e63', '#25d366', '#f59e0b', '#a855f7', '#ffffff'];
             const color = colors[Math.floor(Math.random() * colors.length)];
-            for (let i = 0; i < 50; i++) {
-                particles.push({
-                    x: x, y: y, angle: Math.random() * Math.PI * 2, speed: Math.random() * 4 + 2, friction: 0.96, gravity: 0.1, alpha: 1, decay: Math.random() * 0.015 + 0.01, color: color
-                });
-            }
+            for (let i = 0; i < 50; i++) { particles.push({ x: x, y: y, angle: Math.random() * Math.PI * 2, speed: Math.random() * 4 + 2, friction: 0.96, gravity: 0.1, alpha: 1, decay: Math.random() * 0.015 + 0.01, color: color }); }
         }
-
         function renderFireworks() {
             if (document.getElementById('liveViewOverlay').style.display !== 'flex') return;
-            requestAnimationFrame(renderFireworks);
-            fwCtx.fillStyle = 'rgba(2, 6, 23, 0.15)';
-            fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
-
+            requestAnimationFrame(renderFireworks); fwCtx.fillStyle = 'rgba(2, 6, 23, 0.15)'; fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
             for (let i = particles.length - 1; i >= 0; i--) {
                 let p = particles[i]; p.speed *= p.friction; p.x += Math.cos(p.angle) * p.speed; p.y += Math.sin(p.angle) * p.speed + p.gravity; p.alpha -= p.decay;
                 if (p.alpha <= 0) { particles.splice(i, 1); continue; }
@@ -414,16 +315,22 @@
             }
         }
 
-        // فحص معاملات الرابط عند تحميل الصفحة الرئيسية
+        // فحص معاملات الرابط عند تحميل الصفحة الذكي
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
+            
+            // 1. فحص أولوي: هل الرابط يحتوي على معامل تحويل للشورتس؟
+            const isRedirecting = checkAndHandleRedirect(urlParams);
+            if (isRedirecting) return; // إذا كان تحويل، نوقف أي شيء آخر
+
+            // 2. فحص هل الرابط يحتوي على معايدة حية؟
             if (urlParams.get('view') === 'live') {
                 const name = urlParams.get('name') || 'محبكم';
                 const style = urlParams.get('style') || 'royal-dark';
                 const msg = urlParams.get('msg') || 'كل عام وأنتم بخير!';
                 setupLiveOverlay(name, style, msg);
             } else {
-                // توليد زينة العيد المتساقطة بالخلفية للواجهة الرئيسية فقط
+                // توليد زينة متساقطة في حال التصفح العادي للرئيسية
                 const decorIcons = ['🐑', '🌙', '⭐', '✨'];
                 const container = document.getElementById('eid-decor-container');
                 for (let i = 0; i < 12; i++) {
