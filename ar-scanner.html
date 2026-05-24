@@ -1,28 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 </head>
 <body>
     <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.0/examples/image-tracking/assets/card-example/card.mind;" embedded vr-mode-ui="enabled: false">
-        
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
         
         <a-entity mindar-image-target="targetIndex: 0">
-            <a-plane position="0 0 0" scale="1.5 0.7 1" color="#000000" opacity="0.9"></a-plane>
-            
-            <a-text value="SAMSUNG M32\nMAJED TECH\nSTATUS: OK" 
-                    position="0 0 0.05" 
-                    align="center" 
-                    scale="0.6 0.6 0.6" 
-                    color="#FFFFFF"
-                    font="https://cdn.aframe.io/fonts/Roboto-msdf.json"
-                    negate="false">
-            </a-text>
+            <a-box color="red" scale="0.5 0.5 0.5"></a-box>
         </a-entity>
-        
     </a-scene>
 </body>
 </html>
