@@ -2,35 +2,44 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مخبر ماجد تك | Maged Tech Lab</title>
     <style>
-        body { background-color: #121212; color: white; font-family: sans-serif; text-align: center; padding-top: 50px; }
-        .lab-container { max-width: 600px; margin: auto; }
+        body { background-color: #0f0f0f; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 20px; }
+        .header { margin-bottom: 40px; border-bottom: 2px solid #00e676; padding-bottom: 10px; }
         h1 { color: #00e676; }
-        .experiment-card { 
-            background: #1e1e1e; padding: 20px; margin: 15px; border-radius: 15px; 
-            border: 1px solid #333; transition: 0.3s; cursor: pointer; 
+        
+        /* تصميم كروت التجارب */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 900px; margin: auto; }
+        .card { 
+            background: #1a1a1a; padding: 25px; border-radius: 20px; border: 1px solid #333; 
+            transition: 0.4s; cursor: pointer; text-decoration: none; color: white; display: block;
         }
-        .experiment-card:hover { border-color: #00e676; transform: scale(1.02); }
-        .status { font-size: 12px; color: #888; }
+        .card:hover { border-color: #00e676; transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,230,118,0.2); }
+        .card h3 { color: #00e676; margin-top: 0; }
+        .status { font-size: 0.8em; color: #ff9100; margin-top: 10px; display: block; }
     </style>
 </head>
 <body>
-    <div class="lab-container">
+
+    <div class="header">
         <h1>مخبر ماجد تك 🧪</h1>
-        <p>هنا نبتكر المستقبل.. تجارب قيد التطوير</p>
+        <p>مركز الأبحاث والتطوير الخاص بمشاريع ماجد التقنية</p>
+    </div>
 
-        <div class="experiment-card" onclick="window.location.href='ar-scanner.html'">
-            <h3>المجهر الرقمي (AR Scanner)</h3>
-            <p>اكتشف مكونات جهازك بالواقع المعزز</p>
-            <span class="status">الحالة: قيد الاختبار</span>
-        </div>
+    <div class="grid">
+        <a href="ar-scanner.html" class="card">
+            <h3>المجهر الرقمي (AR)</h3>
+            <p>كشف مكونات الجوال عبر الكاميرا</p>
+            <span class="status">🟢 جاهز للاختبار</span>
+        </a>
 
-        <div class="experiment-card">
+        <div class="card" style="opacity: 0.6;">
             <h3>لعبة فك وتركيب</h3>
-            <p>تحدي السرعة والدقة في الصيانة</p>
-            <span class="status">الحالة: قريباً</span>
+            <p>تحدي السرعة في صيانة البوردة</p>
+            <span class="status">🟠 قريباً...</span>
         </div>
     </div>
+
 </body>
 </html>
