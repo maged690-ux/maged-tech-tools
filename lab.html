@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مخبر ماجد تك | نسخة العيد 🐑</title>
+    <title>مخبر ماجد تك | بطاقات العيد 🐑</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Reem+Kufi:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -13,12 +13,11 @@
             --eid-gold: #ffd700;
             --bg-dark: #0f172a;
             --card-bg: #1e293b;
-            --text-main: #f8fafc;
         }
 
         body {
             background-color: var(--bg-dark);
-            color: var(--text-main);
+            color: #f8fafc;
             font-family: 'Cairo', sans-serif;
             margin: 0;
             padding: 0;
@@ -34,7 +33,7 @@
             font-size: 1.8rem;
             z-index: 1;
             animation: fall linear infinite;
-            opacity: 0.15;
+            opacity: 0.12;
             user-select: none;
             pointer-events: none;
         }
@@ -43,143 +42,39 @@
             to { transform: translateY(110vh) rotate(360deg); }
         }
 
-        /* الهيدر والعنوان الرئيسي */
         header {
             text-align: center;
-            padding: 60px 20px 30px 20px;
+            padding: 50px 20px 20px 20px;
             position: relative;
             z-index: 10;
         }
 
         header h1 {
-            font-size: 2.8rem;
+            font-size: 2.6rem;
             margin: 0;
             color: var(--primary-color);
             text-shadow: 0 0 25px rgba(0, 173, 181, 0.4);
         }
 
-        header p {
-            color: #94a3b8;
-            font-size: 1.1rem;
-            margin-top: 10px;
-        }
-
-        /* الحاوية الرئيسية للأزرار والبطاقات */
-        .main-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 20px;
-            flex-wrap: wrap;
-            max-width: 1100px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        /* ستايل بطاقات التحكم */
-        .lab-card {
-            background: var(--card-bg);
-            border: 2px solid #334155;
-            border-radius: 20px;
-            width: 450px;
-            padding: 30px;
-            text-align: center;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .lab-card:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 173, 181, 0.15);
-        }
-
-        .lab-card.coming-soon {
-            opacity: 0.75;
-            border-style: dashed;
-        }
-
-        .icon-box {
-            font-size: 3.2rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-
-        .lab-card h2 {
-            margin: 10px 0;
-            font-size: 1.6rem;
-            color: #fff;
-        }
-
-        .lab-card p {
-            color: #94a3b8;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .status-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-
-        .status-active { background: #059669; color: #fff; }
-        .status-soon { background: #475569; color: #cbd5e1; }
-
-        .eid-action-btn {
-            background: linear-gradient(45deg, var(--primary-color), #00cbd5);
-            color: white;
-            border: none;
-            padding: 10px 22px;
-            border-radius: 8px;
-            font-weight: bold;
-            margin-top: 15px;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            transition: 0.3s;
-        }
-
-        .sheep-bg-icon {
-            position: absolute;
-            bottom: -15px;
-            right: -15px;
-            font-size: 4.5rem;
-            opacity: 0.08;
-            transform: rotate(-15deg);
-        }
-
-        /* ----------------------------------------------- */
-        /* قسم أداة توليد التهاني الشاملة لكل العالم */
-        /* ----------------------------------------------- */
+        /* حاوية الأداة */
         .workspace-section {
-            max-width: 700px;
-            margin: 50px auto;
+            max-width: 650px;
+            margin: 30px auto;
             padding: 30px;
-            background: #1e293b;
+            background: var(--card-bg);
             border: 1px solid #334155;
             border-radius: 20px;
             position: relative;
             z-index: 10;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .workspace-section h3 {
             color: var(--eid-gold);
             text-align: center;
             margin-top: 0;
-            font-size: 1.6rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            font-family: 'Reem Kufi', sans-serif;
+            font-size: 1.8rem;
         }
 
         .input-group {
@@ -191,7 +86,6 @@
             margin-bottom: 8px;
             color: var(--primary-color);
             font-weight: bold;
-            font-size: 0.95rem;
         }
 
         .input-group input, .input-group select {
@@ -204,13 +98,6 @@
             font-family: 'Cairo', sans-serif;
             box-sizing: border-box;
             font-size: 1rem;
-            transition: 0.3s;
-        }
-
-        .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(0, 173, 181, 0.2);
         }
 
         .generate-btn {
@@ -223,78 +110,72 @@
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            font-family: 'Cairo', sans-serif;
             transition: 0.3s;
             box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
         }
 
         .generate-btn:hover {
-            opacity: 0.95;
             transform: translateY(-2px);
+            opacity: 0.95;
         }
 
-        /* نتائج النصوص */
-        .results-box {
+        /* صندوق استعراض البطاقة الناتجة */
+        .preview-box {
             display: none;
             margin-top: 30px;
+            text-align: center;
             border-top: 2px dashed #334155;
-            padding-top: 20px;
+            padding-top: 25px;
         }
 
-        .result-card {
-            background: #0f172a;
-            padding: 20px;
+        /* كافافس مخفي نستخدمه للرسم برمجياً وبجودة عالية */
+        canvas {
+            display: none;
+        }
+
+        /* الصورة المعروضة للمستخدم */
+        .card-result-image {
+            max-width: 100%;
             border-radius: 12px;
-            margin-top: 15px;
-            border: 1px solid #334155;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            border: 2px solid var(--eid-gold);
         }
 
-        .result-card strong {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 1rem;
-        }
-
-        .result-text {
-            font-size: 1rem;
-            line-height: 1.7;
-            color: #cbd5e1;
-            white-space: pre-line;
-            margin-bottom: 15px;
-        }
-
-        .card-actions {
+        .action-btns {
             display: flex;
-            gap: 10px;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
         }
 
-        .action-btn {
-            background: #334155;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            font-size: 0.85rem;
-            display: flex;
+        .btn-download {
+            background: #059669;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             transition: 0.2s;
         }
 
-        .action-btn:hover {
-            background: var(--primary-color);
-        }
+        .btn-download:hover { background: #10b981; }
 
-        .whatsapp-btn {
+        .btn-share-wa {
             background: #25d366;
-            color: #fff;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
         }
-
-        .whatsapp-btn:hover {
-            background: #1ebd59;
-        }
+        .btn-share-wa:hover { background: #1ebd59; }
     </style>
 </head>
 <body>
@@ -302,161 +183,165 @@
     <div id="eid-decor-container"></div>
 
     <header>
-        <div style="font-size: 3.5rem; margin-bottom: 5px;">🌙</div>
         <h1>مخبر ماجد تك <span style="color: var(--eid-gold);">|</span> Lab</h1>
-        <p>بيئة اختبار وتطوير الأدوات الرقمية قبل اعتمادها بالصفحة الرئيسية</p>
+        <p>مُولّد بطاقات التهنئة البصرية الرقمية المبتكرة حصرياً لمتابعينا ✨</p>
     </header>
 
-    <div class="main-container">
-        
-        <div class="lab-card" onclick="scrollToTool()">
-            <div class="status-badge status-active">✅ متاح للجميع</div>
-            <div class="icon-box">
-                <i class="fa-solid fa-kaaba"></i>
-            </div>
-            <h2>مُولّد تهاني العيد الشامل</h2>
-            <p>أداة ذكية ومجانية لكل العالم، لتوليد نصوص ومعايدات عيد الأضحى المبارك للأهل، الأصدقاء، أو العمل بضغطة زر واحدة.</p>
-            <button class="eid-action-btn">اصنع معايدتك الآن</button>
-            <div class="sheep-bg-icon">🐑</div>
-        </div>
-
-        <div class="lab-card coming-soon">
-            <div class="status-badge status-soon">🛠️ قيد التطوير</div>
-            <div class="icon-box" style="color: #64748b;">
-                <i class="fa-solid fa-microchip"></i>
-            </div>
-            <h2>خدمات المطور (قريباً)</h2>
-            <p>نعمل هنا على طبخ أدوات برمجية وميزات جديدة كلياً لتسهيل إدارة وتطوير المحتوى الرقمي. سيتم نقلها قريباً للرئيسية.</p>
-            <div style="margin-top: 15px; color: var(--eid-gold); font-weight: bold; font-size: 0.9rem;">
-                ✨ نجهّز لمفاجأة جديدة...
-            </div>
-        </div>
-
-    </div>
-
-    <div class="workspace-section" id="eid-tool">
-        <h3><span>🐑</span> مُولّد تهاني عيد الأضحى المبارك</h3>
-        <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 25px;">املاً البيانات البسيطة لتجهيز أرقى كلمات المعايدة لـمن تحب</p>
+    <div class="workspace-section">
+        <h3>🎉 صمّم بطاقة معايدة فخمة باسمك</h3>
+        <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 25px;">ابتعد عن النصوص التقليدية، واصنع كرت معايدة ملون ومزخرف بلمحة عين!</p>
 
         <div class="input-group">
-            <label><i class="fa-solid fa-user" style="margin-left: 5px;"></i> اسمك الشخصي (أو اسم عملك):</label>
-            <input type="text" id="senderName" placeholder="مثال: ماجد / أبو أحمد / ماجد تك">
+            <label><i class="fa-solid fa-signature"></i> اكتب الاسم المراد طباعته على البطاقة:</label>
+            <input type="text" id="cardName" placeholder="مثال: ماجد العلي / عائلة أبو محمد / ماجد تك">
         </div>
 
         <div class="input-group">
-            <label><i class="fa-solid fa-users" style="margin-left: 5px;"></i> لمن تريد إرسال التهنئة؟</label>
-            <select id="textType">
-                <option value="general">الأهل والأقارب والأصدقاء (عامة وقريبة للقلب) ❤️</option>
-                <option value="friends">الأصدقاء المقربين والشباب (ودية وخفيفة) 🎉</option>
-                <option value="business">العملاء والزبائن وأصحاب العمل (رسمية واحترافية) 👔</option>
+            <label><i class="fa-solid fa-palette"></i> اختر نمط ولون التصميم الزخرفي:</label>
+            <select id="cardStyle">
+                <option value="royal-dark">فخامة ملكية (ليلي مع زخارف ذهبية خرافية) 🌙</option>
+                <option value="modern-tech">تيل تقني معتق (طابع Maged Tech مع ألوان زاهية) ⚡</option>
             </select>
         </div>
 
-        <button class="generate-btn" onclick="generateEidText()"><i class="fa-solid fa-wand-magic-sparkles" style="margin-left: 5px;"></i> توليد نصوص المعايدة</button>
+        <button class="generate-btn" onclick="drawEidCard()"><i class="fa-solid fa-wand-magic-sparkles"></i> ابتكار وتوليد البطاقة المرئية</button>
 
-        <div class="results-box" id="eidResults">
-            <h4 style="color: var(--primary-color); margin: 0 0 10px 0;"><i class="fa-solid fa-clipboard-list" style="margin-left: 5px;"></i> اختر الصيغة المفضلة لديك:</h4>
+        <div class="preview-box" id="previewBox">
+            <h4 style="color: var(--primary-color); margin-bottom: 15px;"><i class="fa-solid fa-image"></i> بطاقتك جاهزة ومزخرفة بنجاح:</h4>
             
-            <div class="result-card">
-                <strong id="titleOption1" style="color: var(--eid-gold);">✨ الصيغة الأولى:</strong>
-                <div class="result-text" id="textOption1"></div>
-                <div class="card-actions">
-                    <button class="action-btn" onclick="copyText('textOption1')"><i class="fa-solid fa-copy"></i> نسخ النص</button>
-                    <button class="action-btn whatsapp-btn" onclick="sendWhatsApp('textOption1')"><i class="fa-brands fa-whatsapp"></i> إرسال عبر واتساب</button>
-                </div>
+            <img id="finalCardImg" class="card-result-image" alt="بطاقة عايدة ماجد تك">
+            
+            <div class="action-btns">
+                <a id="downloadLink" class="btn-download" download="Eid_Mubarak_MagedTech.png"><i class="fa-solid fa-download"></i> حفظ الصورة بجهازك</a>
+                <a id="whatsappLink" class="btn-share-wa" target="_blank"><i class="fa-brands fa-whatsapp"></i> إرسال واتساب</a>
             </div>
-
-            <div class="result-card">
-                <strong id="titleOption2" style="color: #ff2e63;">✨ الصيغة الثانية:</strong>
-                <div class="result-text" id="textOption2"></div>
-                <div class="card-actions">
-                    <button class="action-btn" onclick="copyText('textOption2')"><i class="fa-solid fa-copy"></i> نسخ النص</button>
-                    <button class="action-btn whatsapp-btn" onclick="sendWhatsApp('textOption2')"><i class="fa-brands fa-whatsapp"></i> إرسال عبر واتساب</button>
-                </div>
-            </div>
-
         </div>
     </div>
 
-    <script>
-        // 1. توليد زينة العيد العشوائية والمتحركة في الخلفية
-        const icons = ['🐑', '🌙', '⭐', '✨', '🎈'];
-        const decorContainer = document.getElementById('eid-decor-container');
+    <canvas id="cardCanvas" width="800" height="800"></canvas>
 
-        for (let i = 0; i < 20; i++) {
+    <script>
+        // 1. حركة زينة العيد بالخلفية
+        const icons = ['🐑', '🌙', '⭐', '✨'];
+        const decorContainer = document.getElementById('eid-decor-container');
+        for (let i = 0; i < 15; i++) {
             const element = document.createElement('div');
             element.className = 'eid-decor';
             element.innerText = icons[Math.floor(Math.random() * icons.length)];
             element.style.left = Math.random() * 100 + 'vw';
             element.style.animationDuration = (Math.random() * 5 + 6) + 's';
             element.style.animationDelay = (Math.random() * 5) + 's';
-            element.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
             decorContainer.appendChild(element);
         }
 
-        // 2. الانتقال السلس للأداة عند الضغط على الكرت
-        function scrollToTool() {
-            document.getElementById('eid-tool').scrollIntoView({ behavior: 'smooth' });
-        }
+        // 2. محرك رسم البطاقة المزخرفة ديناميكياً
+        function drawEidCard() {
+            const name = document.getElementById('cardName').value.trim() || 'محبكم';
+            const style = document.getElementById('cardStyle').value;
+            
+            const canvas = document.getElementById('cardCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // تنظيف الكانفاس قبل كل رسم جديد
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // 3. محرك توليد نصوص المعايدة الشامل
-        function generateEidText() {
-            const name = document.getElementById('senderName').value.trim() || 'محبكم';
-            const type = document.getElementById('textType').value;
-            
-            let opt1 = "";
-            let opt2 = "";
-            let title1 = "";
-            let title2 = "";
-            
-            if (type === 'general') {
-                title1 = "❤️ تهنئة دافئة للعائلة والأقارب:";
-                opt1 = `الأهل والأقارب الغاليين على القلب،\nبأجمل عبارات المحبة وأصدق الدعوات، أهنئكم بحلول عيد الأضحى المبارك. أدام الله عليكم البهجة، وتقبل منكم الطاعات، وجعل أيامكم كلها مسرات وصحة وعافية. كل عام وأنتم بألف خير وبركة! ✨🌙\n- محبكم: ${name}`;
+            // تحديد نظام الألوان والستايلات بناء على اختيار المستخدم
+            if (style === 'royal-dark') {
+                // خلفية ليلية فخمة جداً متدرجة
+                let grad = ctx.createRadialGradient(400, 400, 100, 400, 400, 600);
+                grad.addColorStop(0, '#111827');
+                grad.addColorStop(1, '#030712');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // إطار زخرفي ذهبي داخلي مزدوج
+                ctx.strokeStyle = '#ffd700';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(40, 40, 720, 720);
+                ctx.strokeStyle = '#b59410';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(50, 50, 700, 700);
+
+                // رسم رموز إسلامية وزخارف زوايا
+                ctx.fillStyle = 'rgba(255, 215, 0, 0.15)';
+                ctx.font = '70px Cairo';
+                ctx.fillText('🕌', 70, 130);
+                ctx.fillText('🌙', 660, 130);
                 
-                title2 = "⭐ تهنئة عامة لكل الأحبة:";
-                opt2 = `إلى كل من يعزّهم قلبي،\nكل عام وأنتم إلى الله أقرب، وعلى طاعته أدوم. أتمنى لكم عيد أضحى مبارك يملأ بيوتكم بالفرح والرضا والسرور، ويحفظ لكم من تحبون. عساكم من عواده دائماً سالمين غانمين! 🐑🎉\n- من: ${name}`;
-            } 
-            else if (type === 'friends') {
-                title1 = "🎉 صيغة شبابية حماسية ومرحة:";
-                opt1 = ` لـ أغلى وأحلى أصدقاء بالدنيا!\nعيد أضحى مبارك وفرحة وسعادة تملأ قلوبكم البيضاء. بتمنالكم عيد فخم متلكم، تقضوه مع أحبابكم بكل رواق وانبساط، وما تنسونا من حصتنا من اللحمة والحلويات! 😂 كل عام وأنتو بألف خير يا غوالي! 🐑🔥\n- أخوكم: ${name}`;
-                
-                title2 = "😎 صيغة قريبة وسريعة للجروبات:";
-                opt2 = `يا مية أهلاً بالشباب الطيبة الغوالي ✌️\nكل عام وأنتو بألف خير بمناسبة عيد الأضحى. إن شاء الله هالعيد بكون وش خير ورزق وفرحة وفك كرب للجميع، ونشوفكم دايماً بأعلى المراتب وراحة البال والضحكة ما تفارقكم! 🌙🎈\n- من: ${name}`;
-            } 
-            else if (type === 'business') {
-                title1 = "👔 صيغة احترافية للعملاء والزبائن:";
-                opt1 = `عميلنا العزيز،\nبمناسبة حلول عيد الأضحى المبارك، يتقدم لكم (${name}) بأسمى آيات التهاني وأطيب التبريكات. نسأل الله أن يعيده علينا وعليكم بالخير واليمن والبركات، شاكرين لكم ثقتكم الغالية والمستمرة بنا وبخدماتنا. كل عام وأنتم بخير. ✨`;
-                
-                title2 = "🤝 صيغة مهنية راقية لشركاء العمل:";
-                opt2 = `حضرة الزملاء والشركاء الأفاضل،\nيسعدني أن أبعث إليكم بخالص التهاني بمناسبة عيد الأضحى السعيد، متمنياً لكم ولعائلاتكم الكريمة دوام الصحة والنجاح والازدهار والتوفيق في كافة خططكم وأعمالكم. عيدكم مبارك وسعيد! 🌙\n- تحياتي: ${name}`;
+                // النصوص الفخمة والخطوط اليدوية الكوفية
+                ctx.fillStyle = '#ffd700';
+                ctx.font = 'bold 52px "Reem Kufi", "Cairo", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('عِيد أضْحَى مُبَارَك', 400, 260);
+
+                ctx.fillStyle = '#f3f4f6';
+                ctx.font = '28px "Cairo", sans-serif';
+                ctx.fillText('تقبل الله منا ومنكم صالح الأعمال، وأعاده الله', 400, 360);
+                ctx.fillText('عليكم وعلينا بالخير والبركات والمسرات.', 400, 410);
+
+            } else {
+                // ستايل مودرن وتك ملون وجريء
+                let grad = ctx.createLinearGradient(0, 0, 800, 800);
+                grad.addColorStop(0, '#0f172a');
+                grad.addColorStop(0.5, '#1e1b4b');
+                grad.addColorStop(1, '#0f172a');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.strokeStyle = '#00adb5';
+                ctx.lineWidth = 5;
+                ctx.strokeRect(40, 40, 720, 720);
+
+                ctx.fillStyle = 'rgba(0, 173, 181, 0.1)';
+                ctx.font = '120px Cairo';
+                ctx.fillText('🐑', 400, 200);
+
+                ctx.fillStyle = '#00adb5';
+                ctx.font = 'bold 55px "Cairo", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('أضحى مبارك سعيد', 400, 320);
+
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = '30px "Cairo", sans-serif';
+                ctx.fillText('بكل الحب والتهاني نبارك لكم قدوم العيد', 400, 420);
             }
-            
-            // حقن العناوين والنصوص داخل العناصر
-            document.getElementById('titleOption1').innerHTML = title1;
-            document.getElementById('titleOption2').innerHTML = title2;
-            document.getElementById('textOption1').innerText = opt1;
-            document.getElementById('textOption2').innerText = opt2;
-            
-            // إظهار صندوق النتائج
-            document.getElementById('eidResults').style.display = 'block';
-        }
 
-        // 4. ميزة نسخ النص
-        function copyText(elementId) {
-            const text = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert('🚀 تم نسخ نص التهنئة بنجاح! جاهز للصق والإرسال.');
-            }).catch(err => {
-                alert('عذراً، حدث خطأ أثناء النسخ تلقائياً.');
-            });
-        }
+            // --- قسم طباعة اسم المرسل الثابت والمزخرف بالأسفل ---
+            ctx.fillStyle = style === 'royal-dark' ? '#ffd700' : '#00adb5';
+            ctx.font = 'bold 22px "Cairo", sans-serif';
+            ctx.fillText('✍️ منبـع الـمـعـايـدة ومـحـبـكـم:', 400, 560);
 
-        // 5. ميزة الإرسال المباشر للواتساب
-        function sendWhatsApp(elementId) {
-            const text = document.getElementById(elementId).innerText;
-            const encodedText = encodeURIComponent(text);
-            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
-            window.open(whatsappUrl, '_blank');
+            // طباعة اسم الشخص داخل لوحة بيضاء أنيقة متوهجة بالمنتصف
+            ctx.fillStyle = style === 'royal-dark' ? '#b59410' : '#1e293b';
+            ctx.fillRect(150, 590, 500, 70);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(150, 590, 500, 70);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 34px "Cairo", sans-serif';
+            ctx.fillText(name, 400, 638);
+
+            // إضافة توقيع وهوية صفحة ماجد كـ العلامة المائية غير المزعجة للحفظ
+            ctx.fillStyle = 'rgba(255,255,255,0.2)';
+            ctx.font = '16px "Cairo"';
+            ctx.fillText('تم التوليد عبر منصة Maged Tech Tools', 400, 720);
+
+            // تحويل الكانفاس المشغول إلى رابط صورة حقيقية (DataURL)
+            const dataURL = canvas.toDataURL('image/png');
+            
+            // حقن الصورة في الواجهة وعرضها للمستخدم
+            const finalImg = document.getElementById('finalCardImg');
+            finalImg.src = dataURL;
+            
+            // تجهيز روابط التنزيل والمشاركة
+            document.getElementById('downloadLink').href = dataURL;
+            
+            const waText = encodeURIComponent(`مرحباً! أرسل لك بطاقة معايدة خاصة بمناسبة عيد الأضحى المبارك 🎉 تصميماً مميزاً باسمي. يمكنك رؤية بطاقتك أو صنع بطاقة مخصصة لك مجاناً عبر مخبر ماجد تك: ${window.location.href}`);
+            document.getElementById('whatsappLink').href = `https://api.whatsapp.com/send?text=${waText}`;
+
+            // إظهار صندوق المعاينة بسلاسة
+            document.getElementById('previewBox').style.display = 'block';
         }
     </script>
 </body>
