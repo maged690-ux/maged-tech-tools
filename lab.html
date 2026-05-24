@@ -77,7 +77,7 @@
             z-index: 10;
         }
 
-        /* ستايل بطاقات التحكم (الأزرار الرئيسية) */
+        /* ستايل بطاقات التحكم */
         .lab-card {
             background: var(--card-bg);
             border: 2px solid #334155;
@@ -147,11 +147,6 @@
             transition: 0.3s;
         }
 
-        .eid-action-btn:hover {
-            opacity: 0.9;
-            transform: scale(1.03);
-        }
-
         .sheep-bg-icon {
             position: absolute;
             bottom: -15px;
@@ -162,7 +157,7 @@
         }
 
         /* ----------------------------------------------- */
-        /* قسم أداة توليد التهاني (يظهر بالأسفل عند الضغط) */
+        /* قسم أداة توليد التهاني الشاملة لكل العالم */
         /* ----------------------------------------------- */
         .workspace-section {
             max-width: 700px;
@@ -199,7 +194,7 @@
             font-size: 0.95rem;
         }
 
-        .input-group input {
+        .input-group input, .input-group select {
             width: 100%;
             padding: 12px;
             border-radius: 8px;
@@ -212,7 +207,7 @@
             transition: 0.3s;
         }
 
-        .input-group input:focus {
+        .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 10px rgba(0, 173, 181, 0.2);
@@ -315,13 +310,13 @@
     <div class="main-container">
         
         <div class="lab-card" onclick="scrollToTool()">
-            <div class="status-badge status-active">✅ متاح للتجربة</div>
+            <div class="status-badge status-active">✅ متاح للجميع</div>
             <div class="icon-box">
                 <i class="fa-solid fa-kaaba"></i>
             </div>
-            <h2>مُولّد تهاني العيد</h2>
-            <p>أداة ذكية لمساعدة أصحاب الأعمال الحرة والحرفيين في إنشاء بطاقات ومعايدات احترافية لزبائنهم وإرسالها بلمحة عين.</p>
-            <button class="eid-action-btn">توليد معايدة الآن</button>
+            <h2>مُولّد تهاني العيد الشامل</h2>
+            <p>أداة ذكية ومجانية لكل العالم، لتوليد نصوص ومعايدات عيد الأضحى المبارك للأهل، الأصدقاء، أو العمل بضغطة زر واحدة.</p>
+            <button class="eid-action-btn">اصنع معايدتك الآن</button>
             <div class="sheep-bg-icon">🐑</div>
         </div>
 
@@ -341,38 +336,42 @@
 
     <div class="workspace-section" id="eid-tool">
         <h3><span>🐑</span> مُولّد تهاني عيد الأضحى المبارك</h3>
-        <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 25px;">املاً البيانات بالأسفل لتجهيز أسلوب المعايدة الخاص بك</p>
+        <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 25px;">املاً البيانات البسيطة لتجهيز أرقى كلمات المعايدة لـمن تحب</p>
 
         <div class="input-group">
-            <label><i class="fa-solid fa-user-tie" style="margin-left: 5px;"></i> اسمك أو اسم عملك:</label>
-            <input type="text" id="craftsmanName" placeholder="مثال: ماجد تك / أبو أحمد للديكور">
+            <label><i class="fa-solid fa-user" style="margin-left: 5px;"></i> اسمك الشخصي (أو اسم عملك):</label>
+            <input type="text" id="senderName" placeholder="مثال: ماجد / أبو أحمد / ماجد تك">
         </div>
 
         <div class="input-group">
-            <label><i class="fa-solid fa-briefcase" style="margin-left: 5px;"></i> مجال عملك أو حرفتك (اختياري):</label>
-            <input type="text" id="craftsmanJob" placeholder="مثال: الصيانة التقنية / الخياطة / الخدمات">
+            <label><i class="fa-solid fa-users" style="margin-left: 5px;"></i> لمن تريد إرسال التهنئة؟</label>
+            <select id="textType">
+                <option value="general">الأهل والأقارب والأصدقاء (عامة وقريبة للقلب) ❤️</option>
+                <option value="friends">الأصدقاء المقربين والشباب (ودية وخفيفة) 🎉</option>
+                <option value="business">العملاء والزبائن وأصحاب العمل (رسمية واحترافية) 👔</option>
+            </select>
         </div>
 
         <button class="generate-btn" onclick="generateEidText()"><i class="fa-solid fa-wand-magic-sparkles" style="margin-left: 5px;"></i> توليد نصوص المعايدة</button>
 
         <div class="results-box" id="eidResults">
-            <h4 style="color: var(--primary-color); margin: 0 0 10px 0;"><i class="fa-solid fa-clipboard-list" style="margin-left: 5px;"></i> اختر الصيغة المناسبة لزبائنك:</h4>
+            <h4 style="color: var(--primary-color); margin: 0 0 10px 0;"><i class="fa-solid fa-clipboard-list" style="margin-left: 5px;"></i> اختر الصيغة المفضلة لديك:</h4>
             
             <div class="result-card">
-                <strong style="color: var(--eid-gold);"><i class="fa-solid fa-briefcase"></i> الصيغة الرسمية والمهنية:</strong>
-                <div class="result-text" id="textOfficial"></div>
+                <strong id="titleOption1" style="color: var(--eid-gold);">✨ الصيغة الأولى:</strong>
+                <div class="result-text" id="textOption1"></div>
                 <div class="card-actions">
-                    <button class="action-btn" onclick="copyText('textOfficial')"><i class="fa-solid fa-copy"></i> نسخ</button>
-                    <button class="action-btn whatsapp-btn" onclick="sendWhatsApp('textOfficial')"><i class="fa-brands fa-whatsapp"></i> إرسال واتساب</button>
+                    <button class="action-btn" onclick="copyText('textOption1')"><i class="fa-solid fa-copy"></i> نسخ النص</button>
+                    <button class="action-btn whatsapp-btn" onclick="sendWhatsApp('textOption1')"><i class="fa-brands fa-whatsapp"></i> إرسال عبر واتساب</button>
                 </div>
             </div>
 
             <div class="result-card">
-                <strong style="color: #ff2e63;"><i class="fa-solid fa-heart"></i> الصيغة الودية والقريبة للزبائن:</strong>
-                <div class="result-text" id="textFriendly"></div>
+                <strong id="titleOption2" style="color: #ff2e63;">✨ الصيغة الثانية:</strong>
+                <div class="result-text" id="textOption2"></div>
                 <div class="card-actions">
-                    <button class="action-btn" onclick="copyText('textFriendly')"><i class="fa-solid fa-copy"></i> نسخ</button>
-                    <button class="action-btn whatsapp-btn" onclick="sendWhatsApp('textFriendly')"><i class="fa-brands fa-whatsapp"></i> إرسال واتساب</button>
+                    <button class="action-btn" onclick="copyText('textOption2')"><i class="fa-solid fa-copy"></i> نسخ النص</button>
+                    <button class="action-btn whatsapp-btn" onclick="sendWhatsApp('textOption2')"><i class="fa-brands fa-whatsapp"></i> إرسال عبر واتساب</button>
                 </div>
             </div>
 
@@ -389,7 +388,7 @@
             element.className = 'eid-decor';
             element.innerText = icons[Math.floor(Math.random() * icons.length)];
             element.style.left = Math.random() * 100 + 'vw';
-            element.style.animationDuration = (Math.random() * 5 + 6) + 's'; // سرعة السقوط
+            element.style.animationDuration = (Math.random() * 5 + 6) + 's';
             element.style.animationDelay = (Math.random() * 5) + 's';
             element.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
             decorContainer.appendChild(element);
@@ -400,25 +399,46 @@
             document.getElementById('eid-tool').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // 3. محرك توليد نصوص المعايدة
+        // 3. محرك توليد نصوص المعايدة الشامل
         function generateEidText() {
-            const name = document.getElementById('craftsmanName').value.trim() || 'أخوكم';
-            const job = document.getElementById('craftsmanJob').value.trim();
+            const name = document.getElementById('senderName').value.trim() || 'محبكم';
+            const type = document.getElementById('textType').value;
             
-            const jobPhrase = job ? ` في مجال ${job}` : '';
+            let opt1 = "";
+            let opt2 = "";
+            let title1 = "";
+            let title2 = "";
             
-            // صياغة الرسائل
-            const official = `عميلنا العزيز،\nبمناسبة حلول عيد الأضحى المبارك، يتقدم لكم (${name})${jobPhrase} بأصدق التهاني وأطيب التبريكات. سائلين المولى عز وجل أن يعيده علينا وعليكم بالخير واليمن والبركات، وأن يوفقنا دائماً لتقديم أفضل الخدمات لكم وثقتكم هي رأس مالنا. كل عام وأنتم بخير! ✨🌙`;
+            if (type === 'general') {
+                title1 = "❤️ تهنئة دافئة للعائلة والأقارب:";
+                opt1 = `الأهل والأقارب الغاليين على القلب،\nبأجمل عبارات المحبة وأصدق الدعوات، أهنئكم بحلول عيد الأضحى المبارك. أدام الله عليكم البهجة، وتقبل منكم الطاعات، وجعل أيامكم كلها مسرات وصحة وعافية. كل عام وأنتم بألف خير وبركة! ✨🌙\n- محبكم: ${name}`;
+                
+                title2 = "⭐ تهنئة عامة لكل الأحبة:";
+                opt2 = `إلى كل من يعزّهم قلبي،\nكل عام وأنتم إلى الله أقرب، وعلى طاعته أدوم. أتمنى لكم عيد أضحى مبارك يملأ بيوتكم بالفرح والرضا والسرور، ويحفظ لكم من تحبون. عساكم من عواده دائماً سالمين غانمين! 🐑🎉\n- من: ${name}`;
+            } 
+            else if (type === 'friends') {
+                title1 = "🎉 صيغة شبابية حماسية ومرحة:";
+                opt1 = ` لـ أغلى وأحلى أصدقاء بالدنيا!\nعيد أضحى مبارك وفرحة وسعادة تملأ قلوبكم البيضاء. بتمنالكم عيد فخم متلكم، تقضوه مع أحبابكم بكل رواق وانبساط، وما تنسونا من حصتنا من اللحمة والحلويات! 😂 كل عام وأنتو بألف خير يا غوالي! 🐑🔥\n- أخوكم: ${name}`;
+                
+                title2 = "😎 صيغة قريبة وسريعة للجروبات:";
+                opt2 = `يا مية أهلاً بالشباب الطيبة الغوالي ✌️\nكل عام وأنتو بألف خير بمناسبة عيد الأضحى. إن شاء الله هالعيد بكون وش خير ورزق وفرحة وفك كرب للجميع، ونشوفكم دايماً بأعلى المراتب وراحة البال والضحكة ما تفارقكم! 🌙🎈\n- من: ${name}`;
+            } 
+            else if (type === 'business') {
+                title1 = "👔 صيغة احترافية للعملاء والزبائن:";
+                opt1 = `عميلنا العزيز،\nبمناسبة حلول عيد الأضحى المبارك، يتقدم لكم (${name}) بأسمى آيات التهاني وأطيب التبريكات. نسأل الله أن يعيده علينا وعليكم بالخير واليمن والبركات، شاكرين لكم ثقتكم الغالية والمستمرة بنا وبخدماتنا. كل عام وأنتم بخير. ✨`;
+                
+                title2 = "🤝 صيغة مهنية راقية لشركاء العمل:";
+                opt2 = `حضرة الزملاء والشركاء الأفاضل،\nيسعدني أن أبعث إليكم بخالص التهاني بمناسبة عيد الأضحى السعيد، متمنياً لكم ولعائلاتكم الكريمة دوام الصحة والنجاح والازدهار والتوفيق في كافة خططكم وأعمالكم. عيدكم مبارك وسعيد! 🌙\n- تحياتي: ${name}`;
+            }
             
-            const friendly = `أهلاً وسهلاً بغوالي ومحبين (${name}) ❤️\nالعيد ما بيكمل إلا بوجودكم وثقتكم الغالية فينا وبشغلنا${jobPhrase}. من كل قلبي بتمنالكم عيد أضحى مبارك مليان فرحة وراحة بال وصحة وخير إنتو وكل عائلاتكم. عساكم من عواده وناطرينكم دايماً بكل حب! 🐑🎉`;
+            // حقن العناوين والنصوص داخل العناصر
+            document.getElementById('titleOption1').innerHTML = title1;
+            document.getElementById('titleOption2').innerHTML = title2;
+            document.getElementById('textOption1').innerText = opt1;
+            document.getElementById('textOption2').innerText = opt2;
             
-            // حقن النصوص داخل العناصر
-            document.getElementById('textOfficial').innerText = official;
-            document.getElementById('textFriendly').innerText = friendly;
-            
-            // إظهار صندوق النتائج مع تأثير انسيابي بسيط
-            const resultsBox = document.getElementById('eidResults');
-            resultsBox.style.display = 'block';
+            // إظهار صندوق النتائج
+            document.getElementById('eidResults').style.display = 'block';
         }
 
         // 4. ميزة نسخ النص
@@ -431,7 +451,7 @@
             });
         }
 
-        // 5. ميزة الإرسال المباشر للواتساب بفتح نافذة جديدة
+        // 5. ميزة الإرسال المباشر للواتساب
         function sendWhatsApp(elementId) {
             const text = document.getElementById(elementId).innerText;
             const encodedText = encodeURIComponent(text);
