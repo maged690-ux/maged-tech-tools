@@ -3,43 +3,441 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مخبر ماجد تك | Maged Tech Lab</title>
+    <title>مخبر ماجد تك | نسخة العيد 🐑</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { background-color: #0f0f0f; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; padding: 20px; }
-        .header { margin-bottom: 40px; border-bottom: 2px solid #00e676; padding-bottom: 10px; }
-        h1 { color: #00e676; }
-        
-        /* تصميم كروت التجارب */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 900px; margin: auto; }
-        .card { 
-            background: #1a1a1a; padding: 25px; border-radius: 20px; border: 1px solid #333; 
-            transition: 0.4s; cursor: pointer; text-decoration: none; color: white; display: block;
+        :root {
+            --primary-color: #00adb5;
+            --eid-gold: #ffd700;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
         }
-        .card:hover { border-color: #00e676; transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,230,118,0.2); }
-        .card h3 { color: #00e676; margin-top: 0; }
-        .status { font-size: 0.8em; color: #ff9100; margin-top: 10px; display: block; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            scroll-behavior: smooth;
+        }
+
+        /* زينة العيد المتحركة في الخلفية */
+        .eid-decor {
+            position: fixed;
+            top: -50px;
+            font-size: 1.8rem;
+            z-index: 1;
+            animation: fall linear infinite;
+            opacity: 0.15;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* الهيدر والعنوان الرئيسي */
+        header {
+            text-align: center;
+            padding: 60px 20px 30px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin: 0;
+            color: var(--primary-color);
+            text-shadow: 0 0 25px rgba(0, 173, 181, 0.4);
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        /* الحاوية الرئيسية للأزرار والبطاقات */
+        .main-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 20px;
+            flex-wrap: wrap;
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* ستايل بطاقات التحكم (الأزرار الرئيسية) */
+        .lab-card {
+            background: var(--card-bg);
+            border: 2px solid #334155;
+            border-radius: 20px;
+            width: 450px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .lab-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 173, 181, 0.15);
+        }
+
+        .lab-card.coming-soon {
+            opacity: 0.75;
+            border-style: dashed;
+        }
+
+        .icon-box {
+            font-size: 3.2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .lab-card h2 {
+            margin: 10px 0;
+            font-size: 1.6rem;
+            color: #fff;
+        }
+
+        .lab-card p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .status-active { background: #059669; color: #fff; }
+        .status-soon { background: #475569; color: #cbd5e1; }
+
+        .eid-action-btn {
+            background: linear-gradient(45deg, var(--primary-color), #00cbd5);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 15px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            transition: 0.3s;
+        }
+
+        .eid-action-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.03);
+        }
+
+        .sheep-bg-icon {
+            position: absolute;
+            bottom: -15px;
+            right: -15px;
+            font-size: 4.5rem;
+            opacity: 0.08;
+            transform: rotate(-15deg);
+        }
+
+        /* ----------------------------------------------- */
+        /* قسم أداة توليد التهاني (يظهر بالأسفل عند الضغط) */
+        /* ----------------------------------------------- */
+        .workspace-section {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 30px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 20px;
+            position: relative;
+            z-index: 10;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .workspace-section h3 {
+            color: var(--eid-gold);
+            text-align: center;
+            margin-top: 0;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #475569;
+            background: #0f172a;
+            color: #fff;
+            font-family: 'Cairo', sans-serif;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(0, 173, 181, 0.2);
+        }
+
+        .generate-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #f59e0b, #d97706);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+        }
+
+        .generate-btn:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+        }
+
+        /* نتائج النصوص */
+        .results-box {
+            display: none;
+            margin-top: 30px;
+            border-top: 2px dashed #334155;
+            padding-top: 20px;
+        }
+
+        .result-card {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 1px solid #334155;
+        }
+
+        .result-card strong {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .result-text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #cbd5e1;
+            white-space: pre-line;
+            margin-bottom: 15px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: #334155;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-color);
+        }
+
+        .whatsapp-btn {
+            background: #25d366;
+            color: #fff;
+        }
+
+        .whatsapp-btn:hover {
+            background: #1ebd59;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>مخبر ماجد تك 🧪</h1>
-        <p>مركز الأبحاث والتطوير الخاص بمشاريع ماجد التقنية</p>
+    <div id="eid-decor-container"></div>
+
+    <header>
+        <div style="font-size: 3.5rem; margin-bottom: 5px;">🌙</div>
+        <h1>مخبر ماجد تك <span style="color: var(--eid-gold);">|</span> Lab</h1>
+        <p>بيئة اختبار وتطوير الأدوات الرقمية قبل اعتمادها بالصفحة الرئيسية</p>
+    </header>
+
+    <div class="main-container">
+        
+        <div class="lab-card" onclick="scrollToTool()">
+            <div class="status-badge status-active">✅ متاح للتجربة</div>
+            <div class="icon-box">
+                <i class="fa-solid fa-kaaba"></i>
+            </div>
+            <h2>مُولّد تهاني العيد</h2>
+            <p>أداة ذكية لمساعدة أصحاب الأعمال الحرة والحرفيين في إنشاء بطاقات ومعايدات احترافية لزبائنهم وإرسالها بلمحة عين.</p>
+            <button class="eid-action-btn">توليد معايدة الآن</button>
+            <div class="sheep-bg-icon">🐑</div>
+        </div>
+
+        <div class="lab-card coming-soon">
+            <div class="status-badge status-soon">🛠️ قيد التطوير</div>
+            <div class="icon-box" style="color: #64748b;">
+                <i class="fa-solid fa-microchip"></i>
+            </div>
+            <h2>خدمات المطور (قريباً)</h2>
+            <p>نعمل هنا على طبخ أدوات برمجية وميزات جديدة كلياً لتسهيل إدارة وتطوير المحتوى الرقمي. سيتم نقلها قريباً للرئيسية.</p>
+            <div style="margin-top: 15px; color: var(--eid-gold); font-weight: bold; font-size: 0.9rem;">
+                ✨ نجهّز لمفاجأة جديدة...
+            </div>
+        </div>
+
     </div>
 
-    <div class="grid">
-        <a href="ar-scanner.html" class="card">
-            <h3>المجهر الرقمي (AR)</h3>
-            <p>كشف مكونات الجوال عبر الكاميرا</p>
-            <span class="status">🟢 جاهز للاختبار</span>
-        </a>
+    <div class="workspace-section" id="eid-tool">
+        <h3><span>🐑</span> مُولّد تهاني عيد الأضحى المبارك</h3>
+        <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 25px;">املاً البيانات بالأسفل لتجهيز أسلوب المعايدة الخاص بك</p>
 
-        <div class="card" style="opacity: 0.6;">
-            <h3>لعبة فك وتركيب</h3>
-            <p>تحدي السرعة في صيانة البوردة</p>
-            <span class="status">🟠 قريباً...</span>
+        <div class="input-group">
+            <label><i class="fa-solid fa-user-tie" style="margin-left: 5px;"></i> اسمك أو اسم عملك:</label>
+            <input type="text" id="craftsmanName" placeholder="مثال: ماجد تك / أبو أحمد للديكور">
+        </div>
+
+        <div class="input-group">
+            <label><i class="fa-solid fa-briefcase" style="margin-left: 5px;"></i> مجال عملك أو حرفتك (اختياري):</label>
+            <input type="text" id="craftsmanJob" placeholder="مثال: الصيانة التقنية / الخياطة / الخدمات">
+        </div>
+
+        <button class="generate-btn" onclick="generateEidText()"><i class="fa-solid fa-wand-magic-sparkles" style="margin-left: 5px;"></i> توليد نصوص المعايدة</button>
+
+        <div class="results-box" id="eidResults">
+            <h4 style="color: var(--primary-color); margin: 0 0 10px 0;"><i class="fa-solid fa-clipboard-list" style="margin-left: 5px;"></i> اختر الصيغة المناسبة لزبائنك:</h4>
+            
+            <div class="result-card">
+                <strong style="color: var(--eid-gold);"><i class="fa-solid fa-briefcase"></i> الصيغة الرسمية والمهنية:</strong>
+                <div class="result-text" id="textOfficial"></div>
+                <div class="card-actions">
+                    <button class="action-btn" onclick="copyText('textOfficial')"><i class="fa-solid fa-copy"></i> نسخ</button>
+                    <button class="action-btn whatsapp-btn" onclick="sendWhatsApp('textOfficial')"><i class="fa-brands fa-whatsapp"></i> إرسال واتساب</button>
+                </div>
+            </div>
+
+            <div class="result-card">
+                <strong style="color: #ff2e63;"><i class="fa-solid fa-heart"></i> الصيغة الودية والقريبة للزبائن:</strong>
+                <div class="result-text" id="textFriendly"></div>
+                <div class="card-actions">
+                    <button class="action-btn" onclick="copyText('textFriendly')"><i class="fa-solid fa-copy"></i> نسخ</button>
+                    <button class="action-btn whatsapp-btn" onclick="sendWhatsApp('textFriendly')"><i class="fa-brands fa-whatsapp"></i> إرسال واتساب</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
+    <script>
+        // 1. توليد زينة العيد العشوائية والمتحركة في الخلفية
+        const icons = ['🐑', '🌙', '⭐', '✨', '🎈'];
+        const decorContainer = document.getElementById('eid-decor-container');
+
+        for (let i = 0; i < 20; i++) {
+            const element = document.createElement('div');
+            element.className = 'eid-decor';
+            element.innerText = icons[Math.floor(Math.random() * icons.length)];
+            element.style.left = Math.random() * 100 + 'vw';
+            element.style.animationDuration = (Math.random() * 5 + 6) + 's'; // سرعة السقوط
+            element.style.animationDelay = (Math.random() * 5) + 's';
+            element.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+            decorContainer.appendChild(element);
+        }
+
+        // 2. الانتقال السلس للأداة عند الضغط على الكرت
+        function scrollToTool() {
+            document.getElementById('eid-tool').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 3. محرك توليد نصوص المعايدة
+        function generateEidText() {
+            const name = document.getElementById('craftsmanName').value.trim() || 'أخوكم';
+            const job = document.getElementById('craftsmanJob').value.trim();
+            
+            const jobPhrase = job ? ` في مجال ${job}` : '';
+            
+            // صياغة الرسائل
+            const official = `عميلنا العزيز،\nبمناسبة حلول عيد الأضحى المبارك، يتقدم لكم (${name})${jobPhrase} بأصدق التهاني وأطيب التبريكات. سائلين المولى عز وجل أن يعيده علينا وعليكم بالخير واليمن والبركات، وأن يوفقنا دائماً لتقديم أفضل الخدمات لكم وثقتكم هي رأس مالنا. كل عام وأنتم بخير! ✨🌙`;
+            
+            const friendly = `أهلاً وسهلاً بغوالي ومحبين (${name}) ❤️\nالعيد ما بيكمل إلا بوجودكم وثقتكم الغالية فينا وبشغلنا${jobPhrase}. من كل قلبي بتمنالكم عيد أضحى مبارك مليان فرحة وراحة بال وصحة وخير إنتو وكل عائلاتكم. عساكم من عواده وناطرينكم دايماً بكل حب! 🐑🎉`;
+            
+            // حقن النصوص داخل العناصر
+            document.getElementById('textOfficial').innerText = official;
+            document.getElementById('textFriendly').innerText = friendly;
+            
+            // إظهار صندوق النتائج مع تأثير انسيابي بسيط
+            const resultsBox = document.getElementById('eidResults');
+            resultsBox.style.display = 'block';
+        }
+
+        // 4. ميزة نسخ النص
+        function copyText(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('🚀 تم نسخ نص التهنئة بنجاح! جاهز للصق والإرسال.');
+            }).catch(err => {
+                alert('عذراً، حدث خطأ أثناء النسخ تلقائياً.');
+            });
+        }
+
+        // 5. ميزة الإرسال المباشر للواتساب بفتح نافذة جديدة
+        function sendWhatsApp(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            const encodedText = encodeURIComponent(text);
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
 </body>
 </html>
