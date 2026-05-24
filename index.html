@@ -13,23 +13,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة ماجد تك - Maged Tech</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Reem+Kufi:wght@500;700&family=Tajawal:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Reem+Kufi:wght@500;700&family=Tajawal:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* ستايل الصفحة الرئيسية الأصلي الخاص بك لـ Maged Tech */
         :root { 
             --primary: #38bdf8; 
-            --bg: #0b0f19; 
-            --card: rgba(30, 41, 59, 0.7); 
-            --text: #f8fafc; 
+            --primary-glow: rgba(56, 189, 248, 0.3);
+            --bg-dark: #030712; 
+            --card-glass: rgba(15, 23, 42, 0.55); 
+            --card-border: rgba(56, 189, 248, 0.15);
+            --text-main: #f8fafc; 
+            --text-muted: #94a3b8;
             --eid-gold: #ffd700;
-            --primary-color: #00adb5;
+            --eid-gold-glow: rgba(255, 215, 0, 0.3);
         }
         
         body { 
-            font-family: 'Segoe UI', 'Cairo', sans-serif; 
-            background: radial-gradient(circle at center, #1e293b 0%, #0b0f19 100%); 
-            color: var(--text); 
+            font-family: 'Cairo', 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at 50% 50%, #0f172a 0%, var(--bg-dark) 100%); 
+            color: var(--text-main); 
             padding: 20px; 
             margin: 0; 
             min-height: 100vh; 
@@ -37,34 +39,147 @@
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
+            overflow-x: hidden;
             scroll-behavior: smooth;
         }
+
+        /* توهج ضوئي ناعم ومتحرك في الخلفية يعطي طابع تقني فخم */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            top: 10%;
+            left: 10%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .header { margin-bottom: 35px; text-align: center; position: relative; z-index: 10; }
+        .header h1 { font-family: 'Segoe UI', sans-serif; font-size: 42px; font-weight: 800; color: #ffffff; letter-spacing: 3px; text-shadow: 0 0 30px var(--primary-glow); margin: 0; }
+        .header h1 span { color: var(--primary); }
+        .header p { color: var(--text-muted); margin-top: 12px; font-size: 16px; font-weight: 600; letter-spacing: 1px; }
         
-        .header { margin-bottom: 30px; text-align: center; position: relative; z-index: 10; }
-        .header h1 { font-size: 38px; color: var(--primary); letter-spacing: 2px; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4); margin: 0; }
-        .header p { color: #94a3b8; margin-top: 10px; font-size: 16px; }
+        /* أكورديون زجاجي أنيق */
+        .accordion { 
+            background: var(--card-glass); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--primary); 
+            cursor: pointer; 
+            padding: 18px; 
+            width: 100%; 
+            max-width: 550px; 
+            border: 1px solid var(--card-border); 
+            text-align: center; 
+            font-size: 17px; 
+            border-radius: 16px; 
+            margin-bottom: 20px; 
+            font-weight: 700; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            box-sizing: border-box;
+            z-index: 10;
+        }
+        .accordion:hover { 
+            background: rgba(30, 41, 59, 0.6); 
+            border-color: var(--primary); 
+            box-shadow: 0 0 20px var(--primary-glow);
+            transform: translateY(-2px);
+        }
         
-        .accordion { background: var(--card); backdrop-filter: blur(15px); color: var(--primary); cursor: pointer; padding: 20px; width: 100%; max-width: 600px; border: 1px solid rgba(56, 189, 248, 0.3); text-align: center; font-size: 18px; border-radius: 20px; margin-bottom: 20px; font-weight: bold; transition: 0.4s; font-family: 'Cairo'; }
-        .accordion:hover { background: #2d3748; }
-        .panel { padding: 0 20px; display: none; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-radius: 15px; color: #cbd5e1; line-height: 1.8; margin-bottom: 20px; width: 100%; max-width: 560px; text-align: right; border: 1px solid rgba(255,255,255,0.05); }
+        .panel { 
+            padding: 0 20px; 
+            display: none; 
+            background: rgba(10, 15, 30, 0.85); 
+            backdrop-filter: blur(15px); 
+            border-radius: 16px; 
+            color: #cbd5e1; 
+            line-height: 1.8; 
+            margin-bottom: 20px; 
+            width: 100%; 
+            max-width: 550px; 
+            text-align: right; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            box-sizing: border-box;
+            z-index: 10;
+        }
         
-        .grid-container { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 600px; }
+        .grid-container { display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 550px; box-sizing: border-box; z-index: 10; }
         .row-links { display: flex; gap: 15px; width: 100%; }
         
-        .btn { flex: 1; padding: 25px 10px; background: var(--card); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; color: var(--text); text-decoration: none; font-weight: bold; font-size: 16px; transition: 0.4s; cursor: pointer; display: flex; align-items: center; justify-content: center; text-align: center; font-family: 'Cairo'; }
-        .btn:hover { border-color: var(--primary); background: #1e293b; transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-        .btn-active { background: var(--primary); color: #0b0f19; border: none; box-shadow: 0 0 20px rgba(56, 189, 248, 0.4); }
-        .btn-active:hover { background: #7dd3fc; }
+        /* أزرار تفاعلية فخمة مع تأثير التوهج عند التمرير */
+        .btn { 
+            flex: 1; 
+            padding: 22px 10px; 
+            background: var(--card-glass); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border); 
+            border-radius: 18px; 
+            color: var(--text-main); 
+            text-decoration: none; 
+            font-weight: 700; 
+            font-size: 16px; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+        }
+        .btn:hover { 
+            border-color: var(--primary); 
+            background: rgba(30, 41, 59, 0.5); 
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 15px var(--primary-glow); 
+        }
         
-        /* كرت العيد التفاعلي المدمج في الرئيسية بدلاً من خدمات قريباً */
-        .eid-gate-card { background: linear-gradient(135deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.8) 100%); border: 2px dashed rgba(255, 215, 0, 0.4); animation: glowGold 3s infinite alternate; }
-        @keyframes glowGold { from { border-color: rgba(255, 215, 0, 0.3); } to { border-color: rgba(255, 215, 0, 0.8); box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); } }
+        /* زر نشط وبارز برونق مذهل */
+        .btn-active { 
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); 
+            border: none; 
+            box-shadow: 0 4px 20px rgba(3, 105, 161, 0.4); 
+        }
+        .btn-active:hover { 
+            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); 
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5); 
+        }
         
-        .social { margin-top: 40px; font-size: 14px; color: #64748b; z-index: 10; }
-        .social a { color: var(--primary); text-decoration: none; margin: 0 10px; font-weight: bold; }
+        /* كرت بوابة العيد التفاعلي الليلي الفخم */
+        .eid-gate-card { 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(3, 7, 18, 0.9) 100%); 
+            border: 1px solid rgba(255, 215, 0, 0.25); 
+            padding: 24px 15px; 
+            border-radius: 20px; 
+        }
+        .eid-gate-card:hover {
+            border-color: var(--eid-gold);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--eid-gold-glow);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(3, 7, 18, 0.9) 100%);
+        }
+        
+        /* زر قريباً المتقطع الإبداعي */
+        .btn-teaser {
+            border: 1px dashed rgba(56, 189, 248, 0.4);
+            color: var(--text-muted);
+            background: transparent;
+            border-radius: 18px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .btn-teaser:hover {
+            border-color: var(--primary);
+            color: var(--text-main);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
 
-        /* زينة متساقطة بالخلفية للواجهة الرئيسية فقط */
-        .eid-decor { position: fixed; top: -50px; font-size: 1.8rem; z-index: 1; animation: fall linear infinite; opacity: 0.12; pointer-events: none; user-select: none; }
+        .social { margin-top: 45px; font-size: 14px; color: #4b5563; z-index: 10; letter-spacing: 0.5px; }
+        .social a { color: var(--primary); text-decoration: none; margin: 0 12px; font-weight: 700; transition: 0.3s; }
+        .social a:hover { color: #ffffff; text-shadow: 0 0 10px var(--primary); }
+
+        /* زينة متساقطة بالخلفية ناعمة جداً وغير مزعجة */
+        .eid-decor { position: fixed; top: -50px; font-size: 1.6rem; z-index: 1; animation: fall linear infinite; opacity: 0.08; pointer-events: none; user-select: none; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
         /* ----------------------------------------------- */
@@ -94,13 +209,13 @@
         <div id="eid-decor-container"></div>
 
         <div class="header">
-            <h1>Maged Tech</h1>
+            <h1>Maged <span>Tech</span></h1>
             <p>المنصة الذكية للخدمات والصيانة</p>
         </div>
 
         <button class="accordion">عن المنصة الذكية 💡</button>
         <div class="panel">
-            <p style="padding: 15px 0; margin: 0;">
+            <p style="padding: 15px 0; margin: 0; font-size: 15px;">
                 نظام "ماجد تك" هو منصة رقمية متكاملة لإدارة أعمالك. سواء كنت فنياً أو صاحب متجر، يوفر لك النظام:<br>
                 • <b>إنشاء فواتير احترافية:</b> بضغطة زر وبدون أوراق.<br>
                 • <b>إدارة الطلبات:</b> تتبع طلبات زبائنك من البداية للنهاية.<br>
@@ -118,17 +233,19 @@
             
             <a href="lab.html" class="btn eid-gate-card" style="color: var(--eid-gold);">
                 <div>
-                    <i class="fa-solid fa-kaaba" style="font-size: 1.5rem; margin-bottom: 5px; display: block; color: var(--primary);"></i>
-                    <b>مُولّد تهاني عيد الأضحى المبارك 🎆</b>
-                    <span style="display: block; font-size: 12px; color: #94a3b8; font-weight: normal; margin-top: 4px;">اصنع بطاقة تفاعلية حية بالألعاب النارية والموسيقا باسمك الآن!</span>
+                    <i class="fa-solid fa-kaaba" style="font-size: 1.6rem; margin-bottom: 6px; display: block; color: var(--primary); text-shadow: 0 0 10px var(--primary-glow);"></i>
+                    <b style="font-size: 17px;">مُولّد تهاني عيد الأضحى المبارك 🎆</b>
+                    <span style="display: block; font-size: 13px; color: var(--text-muted); font-weight: normal; margin-top: 5px;">اصنع بطاقة تفاعلية حية بالألعاب النارية والموسيقا باسمك الآن!</span>
                 </div>
             </a>
+
+            <div class="btn btn-teaser" onclick="showTeaser()">خدمات (قريباً)</div>
         </div>
 
         <div class="social">
-            <a href="https://www.youtube.com/@maged115599" target="_blank">يوتيوب</a> | 
-            <a href="https://t.me/Maged_Tech" target="_blank">تيليجرام</a> | 
-            <a href="https://www.snapchat.com/add/maged-say" target="_blank">سناب شات</a>
+            <a href="https://www.youtube.com/@maged115599" target="_blank"><i class="fa-brands fa-youtube"></i> يوتيوب</a> | 
+            <a href="https://t.me/Maged_Tech" target="_blank"><i class="fa-solid fa-paper-plane"></i> تيليجرام</a> | 
+            <a href="https://www.snapchat.com/add/maged-say" target="_blank"><i class="fa-brands fa-snapchat"></i> سناب شات</a>
         </div>
     </div>
 
@@ -163,13 +280,18 @@
     </div>
 
     <script>
-        // كود التحكم بالأكورديون الأصلي الخاص بك
+        // كود التحكم بالأكورديون
         var acc = document.getElementsByClassName("accordion");
         acc[0].addEventListener("click", function() {
             this.classList.toggle("active");
             var panel = this.nextElementSibling;
             panel.style.display = (panel.style.display === "block") ? "none" : "block";
         });
+
+        // كود التنبيه التفاعلي لزر خدمات قريباً
+        function showTeaser() {
+            alert("ترقبوا قريباً: قسم الخدمات المطور والأدوات البرمجية الحصرية.. نحن بـ إنـتـظـار آرائـكـم وتـقـيـيـمـكـم! ✨");
+        }
 
         // -----------------------------------------------------------
         // محرك تشغيل وقراءة العرض الحي للألعاب النارية والأصوات التلقائية
@@ -203,7 +325,6 @@
                 history.pushState({ page: 'liveView' }, '', '');
             }
 
-            // تشغيل التكبيرات/الموسيقى فور الدخول بمجرد أي نقرة من الزائر
             playTakbeerat();
             document.body.addEventListener('click', playTakbeerat, { once: true });
             document.body.addEventListener('touchstart', playTakbeerat, { once: true });
@@ -245,10 +366,9 @@
         }
 
         function goToCreationPage() {
-            window.location.href = "lab.html"; // يوجه لصفحة الإنشاء بالمخبر
+            window.location.href = "lab.html";
         }
 
-        // حل مشكلة الخروج وضغط زر الرجوع بالنظام
         window.onpopstate = function(event) {
             if (document.getElementById('liveViewOverlay').style.display === 'flex') {
                 closeLiveView();
@@ -303,10 +423,10 @@
                 const msg = urlParams.get('msg') || 'كل عام وأنتم بخير!';
                 setupLiveOverlay(name, style, msg);
             } else {
-                // توليد زينة العيد المتساقطة بالخلفية للواجهة الرئيسية فقط لجمالية المظهر
+                // توليد زينة العيد المتساقطة بالخلفية للواجهة الرئيسية فقط
                 const decorIcons = ['🐑', '🌙', '⭐', '✨'];
                 const container = document.getElementById('eid-decor-container');
-                for (let i = 0; i < 15; i++) {
+                for (let i = 0; i < 12; i++) {
                     const el = document.createElement('div'); el.className = 'eid-decor';
                     el.innerText = decorIcons[Math.floor(Math.random() * decorIcons.length)];
                     el.style.left = Math.random() * 100 + 'vw'; el.style.animationDuration = (Math.random() * 4 + 6) + 's';
