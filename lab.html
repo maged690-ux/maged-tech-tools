@@ -13,13 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Reem+Kufi:wght@500;700&family=Tajawal:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --primary-color: #00adb5;
-            --eid-gold: #ffd700;
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
-        }
-
+        :root { --primary-color: #00adb5; --eid-gold: #ffd700; --bg-dark: #0f172a; --card-bg: #1e293b; }
         body { background-color: var(--bg-dark); color: #f8fafc; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; overflow-x: hidden; min-height: 100vh; }
         .eid-decor { position: fixed; top: -50px; font-size: 1.8rem; z-index: 1; animation: fall linear infinite; opacity: 0.12; pointer-events: none; user-select: none; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
@@ -40,7 +34,6 @@
         .generate-btn { width: 100%; background: linear-gradient(45deg, #f59e0b, #d97706); color: #fff; border: none; padding: 14px; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3); font-family: 'Cairo'; }
         .generate-btn:hover { transform: translateY(-2px); opacity: 0.95; }
 
-        /* الأجزاء التي كانت مفقودة (المعاينة والصورة) */
         .preview-box { display: none; margin-top: 25px; text-align: center; border-top: 2px dashed #334155; padding-top: 20px; }
         .card-result-image { max-width: 100%; border-radius: 12px; border: 2px solid var(--eid-gold); box-shadow: 0 8px 25px rgba(0,0,0,0.5); margin-bottom: 15px; }
         .action-btns { display: flex; justify-content: center; gap: 12px; margin-top: 15px; flex-wrap: wrap; }
@@ -53,7 +46,6 @@
         .btn-share-wa { background: #25d366; }
         .btn-share-wa:hover { background: #1ebd59; }
 
-        /* العرض الحي */
         #liveViewOverlay { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: #020617; z-index: 1000; justify-content: center; align-items: center; overflow: hidden; }
         #fireworksCanvas { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none; z-index: 1001; }
         .envelope { width: 320px; height: 220px; background: #b91c1c; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; box-shadow: 0 15px 35px rgba(0,0,0,0.6); border: 3px solid var(--eid-gold); position: relative; z-index: 1002; transition: 0.5s; animation: pulse 2s infinite; text-align: center; padding: 10px; box-sizing: border-box; }
@@ -69,16 +61,15 @@
         <div id="eid-decor-container"></div>
         <header>
             <h1>مخبر ماجد تك <span style="color: var(--eid-gold);">|</span> Lab</h1>
-            <p>بيئة اختبار وتطوير أدوات العيد التفاعلية الحية بالتكبيرات والألعاب النارية 🕋</p>
+            <p>بيئة اختبار وتطوير أدوات العيد التفاعلية الحية 🕋</p>
         </header>
 
         <div class="workspace-section">
             <h3>🕋 مـصـنـع الـبـطـاقـات الـروحـانـيَّـة</h3>
-            <p style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px;">املأ بياناتك، وسيتكفل المخبر بتوليد رابط سحري متحرك مصحوب بتكبيرات العيد لتهديه لمن تحب!</p>
 
             <div class="input-group">
                 <label><i class="fa-solid fa-signature"></i> اسمك الشخصي لتوقيع البطاقة:</label>
-                <input type="text" id="cardName" placeholder="مثال: ماجد صايمه / ماجد تك">
+                <input type="text" id="cardName" placeholder="مثال: ماجد العلي / ماجد تك">
             </div>
 
             <div class="input-group">
@@ -100,7 +91,7 @@
                 <label><i class="fa-solid fa-palette"></i> اختر مظهر وخلفية العيد:</label>
                 <select id="cardStyle">
                     <option value="royal-dark">👑 فخامة ملكية (ليلي أسود ملكي مع زخارف ذهبية)</option>
-                    <option value="emerald-gold">🟢 الزمرد الأخضر (أجواء عريقة تقليدية بالخط المذهب)</option>
+                    <option value="emerald-gold">🟢 الزمرد الأخضر (أجواء عريقة تقليدية)</option>
                     <option value="modern-tech">⚡ تيل تقني معتق (ألوان رقمية تتماشى مع طابع ماجد تك)</option>
                 </select>
             </div>
@@ -108,7 +99,7 @@
             <button class="generate-btn" onclick="buildAndGenerate()"><i class="fa-solid fa-wand-magic-sparkles"></i> توليد المعايدة الفاخرة</button>
 
             <div class="preview-box" id="previewBox">
-                <h4 style="color: var(--primary-color); margin-bottom: 15px;"><i class="fa-solid fa-square-poll-horizontal"></i> تمت المعالجة! خيارات المشاركة المتاحة لك:</h4>
+                <h4 style="color: var(--primary-color); margin-bottom: 15px;"><i class="fa-solid fa-square-poll-horizontal"></i> تمت المعالجة! خيارات المشاركة:</h4>
                 <img id="finalCardImg" class="card-result-image" alt="معاينة بطاقة الصورة">
                 
                 <div class="action-btns">
@@ -154,7 +145,7 @@
             if (type === 'warm') return "الأهل والأقارب الغاليين على القلب،\nبأجمل عبارات المحبة وأصدق الدعوات، أهنئكم بحلول عيد الأضحى المبارك. أدام الله عليكم البهجة، وتقبل منكم الطاعات، وجعل أيامكم مسرات وصحة.";
             if (type === 'friendly') return "لـ أحلى وأغلى أصدقاء بالدنيا!\nعيد أضحى مبارك وفرحة تملأ قلوبكم البيضاء. بتمنالكم عيد فخم متلكم، تقضوه مع أحبابكم بكل رواق وانبساط، وما تنسونا من حصتنا من اللحمة! 😂";
             if (type === 'business') return "عميلنا العزيز،\nبمناسبة حلول عيد الأضحى المبارك، نتقدم لكم بأسمى آيات التهاني وأطيب التبريكات. نسأل الله أن يعيده علينا وعليكم بالخير واليمن والبركات، شاكرين لكم ثقتكم الغالية بنا دائماً.";
-            if (type === 'custom') return document.getElementById('customText').value.trim() || "عيدكم مبارك وسعيد، وكل عام وأنتم بألف خير!";
+            return document.getElementById('customText').value.trim() || "عيدكم مبارك وسعيد، وكل عام وأنتم بألف خير!";
         }
 
         function buildAndGenerate() {
@@ -163,13 +154,21 @@
             const style = document.getElementById('cardStyle').value;
             const msg = getMessageText(textType);
 
-            // استرجاع دالة رسم الصورة اللي حذفتها أنا بالخطأ
             drawStaticCanvasCard(name, msg, style);
 
             const currentUrl = window.location.href.split('?')[0]; 
-            const liveLink = `${currentUrl}?view=live&name=${encodeURIComponent(name)}&style=${encodeURIComponent(style)}&msg=${encodeURIComponent(msg)}`;
+            let msgParam = '';
+            
+            // السحر هنا: تقصير الرابط
+            if (textType === 'custom') {
+                const customText = document.getElementById('customText').value.trim() || 'كل عام وأنتم بخير';
+                msgParam = `&msg=${encodeURIComponent(customText)}`;
+            } else {
+                msgParam = `&msgType=${textType}`;
+            }
 
-            // الرابط النظيف تبع الواتساب
+            const liveLink = `${currentUrl}?view=live&name=${encodeURIComponent(name)}&style=${encodeURIComponent(style)}${msgParam}`;
+
             const waMsg = encodeURIComponent(`✨ بطاقة تهنئة خاصة لك من ماجد تك! افتح الرابط لرؤية المفاجأة: \n\n👉 ${liveLink}`);
             document.getElementById('whatsappLink').href = `https://api.whatsapp.com/send?text=${waMsg}`;
             
@@ -185,7 +184,6 @@
             setupLiveOverlay(name, style, msg);
         }
 
-        // دالة رسم البطاقة (هذه اللي كانت تعطي المعاينة المكتوبة كصورة)
         function drawStaticCanvasCard(name, message, style) {
             const canvas = document.getElementById('cardCanvas'); const ctx = canvas.getContext('2d');
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -213,7 +211,6 @@
             document.getElementById('downloadLink').href = canvas.toDataURL('image/png');
         }
 
-        // إعداد العرض الحي
         function setupLiveOverlay(name, style, msg) {
             document.getElementById('normalPage').style.display = 'none';
             const overlay = document.getElementById('liveViewOverlay');
@@ -325,7 +322,15 @@
             if (urlParams.get('view') === 'live') {
                 const name = urlParams.get('name') || 'محبكم';
                 const style = urlParams.get('style') || 'royal-dark';
-                const msg = urlParams.get('msg') || 'كل عام وأنتم بخير!';
+                
+                // قراءة الرمز القصير لتحويله لنص طويل
+                let msg = '';
+                if (urlParams.get('msgType')) {
+                    msg = getMessageText(urlParams.get('msgType'));
+                } else {
+                    msg = urlParams.get('msg') || 'كل عام وأنتم بخير!';
+                }
+                
                 setupLiveOverlay(name, style, msg);
             } else {
                 const decorIcons = ['🐑', '🌙', '⭐', '✨'];
