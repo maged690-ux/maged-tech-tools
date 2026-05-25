@@ -2,12 +2,10 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="✨ بطاقة تهنئة مخصوصة لعيونكم من ماجد تك! 🚀" />
-    <meta property="og:description" content="بمناسبة عيد الأضحى المبارك، كبسة زر واحدة بتفصلكم عن المعايدة الحية والتفاعلية بالألعاب النارية داخل المنصة.. كل عام وأنتم بخير 🕋❤️" />
+    <meta property="og:title" content="✨ منصة ماجد تك - Maged Tech" />
+    <meta property="og:description" content="المنصة الذكية للخدمات، الصيانة، ونظام الفواتير الرقمي. كل عام وأنتم بخير." />
     <meta property="og:url" content="https://maged115599.github.io/" />
     <meta property="og:image" content="https://maged115599.github.io/eid_preview.jpg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-MYQRN25PTT"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -24,74 +22,38 @@
     
     <style>
         :root { 
-            --primary: #38bdf8; 
-            --primary-glow: rgba(56, 189, 248, 0.3);
-            --bg-dark: #030712; 
-            --card-glass: rgba(15, 23, 42, 0.55); 
-            --card-border: rgba(56, 189, 248, 0.15);
-            --text-main: #f8fafc; 
-            --text-muted: #94a3b8;
-            --eid-gold: #ffd700;
-            --eid-gold-glow: rgba(255, 215, 0, 0.3);
+            --primary: #38bdf8; --primary-glow: rgba(56, 189, 248, 0.3);
+            --bg-dark: #030712; --card-glass: rgba(15, 23, 42, 0.55); 
+            --card-border: rgba(56, 189, 248, 0.15); --text-main: #f8fafc; 
+            --text-muted: #94a3b8; --eid-gold: #ffd700; --eid-gold-glow: rgba(255, 215, 0, 0.3);
         }
-        
-        body { 
-            font-family: 'Cairo', 'Segoe UI', sans-serif; 
-            background: radial-gradient(circle at 50% 50%, #0f172a 0%, var(--bg-dark) 100%); 
-            color: var(--text-main); 
-            padding: 20px; 
-            margin: 0; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        body::before {
-            content: ''; position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); top: 10%; left: 10%; z-index: 0; pointer-events: none;
-        }
-
+        body { font-family: 'Cairo', 'Segoe UI', sans-serif; background: radial-gradient(circle at 50% 50%, #0f172a 0%, var(--bg-dark) 100%); color: var(--text-main); padding: 20px; margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow-x: hidden; scroll-behavior: smooth; }
+        body::before { content: ''; position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); top: 10%; left: 10%; z-index: 0; pointer-events: none; }
         .header { margin-bottom: 35px; text-align: center; position: relative; z-index: 10; }
         .header h1 { font-size: 42px; font-weight: 800; color: #ffffff; letter-spacing: 3px; text-shadow: 0 0 30px var(--primary-glow); margin: 0; }
         .header h1 span { color: var(--primary); }
         .header p { color: var(--text-muted); margin-top: 12px; font-size: 16px; font-weight: 600; }
-        
         .accordion { background: var(--card-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: var(--primary); cursor: pointer; padding: 18px; width: 100%; max-width: 550px; border: 1px solid var(--card-border); text-align: center; font-size: 17px; border-radius: 16px; margin-bottom: 20px; font-weight: 700; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; z-index: 10; }
         .accordion:hover { background: rgba(30, 41, 59, 0.6); border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-2px); }
         .panel { padding: 0 20px; display: none; background: rgba(10, 15, 30, 0.85); backdrop-filter: blur(15px); border-radius: 16px; color: #cbd5e1; line-height: 1.8; margin-bottom: 20px; width: 100%; max-width: 550px; text-align: right; border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box; z-index: 10; }
-        
         .grid-container { display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 550px; box-sizing: border-box; z-index: 10; }
         .row-links { display: flex; gap: 15px; width: 100%; }
-        
         .btn { flex: 1; padding: 22px 10px; background: var(--card-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: 18px; color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 16px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: flex; align-items: center; justify-content: center; text-align: center; }
         .btn:hover { border-color: var(--primary); background: rgba(30, 41, 59, 0.5); transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 15px var(--primary-glow); }
         .btn-active { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; box-shadow: 0 4px 20px rgba(3, 105, 161, 0.4); }
         .btn-active:hover { background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5); }
-        
         .eid-gate-card { background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(3, 7, 18, 0.9) 100%); border: 1px solid rgba(255, 215, 0, 0.25); padding: 24px 15px; border-radius: 20px; }
         .eid-gate-card:hover { border-color: var(--eid-gold); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--eid-gold-glow); background: linear-gradient(135deg, rgba(30, 41, 59, 0.5) 0%, rgba(3, 7, 18, 0.9) 100%); }
-        
         .btn-teaser { border: 1px dashed rgba(56, 189, 248, 0.4); color: var(--text-muted); background: transparent; border-radius: 18px; width: 100%; box-sizing: border-box; }
         .btn-teaser:hover { border-color: var(--primary); color: var(--text-main); box-shadow: 0 0 15px var(--primary-glow); }
-
         .social { margin-top: 45px; font-size: 14px; color: #4b5563; z-index: 10; }
         .social a { color: var(--primary); text-decoration: none; margin: 0 12px; font-weight: 700; transition: 0.3s; }
         .social a:hover { color: #ffffff; text-shadow: 0 0 10px var(--primary); }
-
         .eid-decor { position: fixed; top: -50px; font-size: 1.6rem; z-index: 1; animation: fall linear infinite; opacity: 0.08; pointer-events: none; user-select: none; }
         @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
-
-        #redirectContainer {
-            display: none; max-width: 500px; width: 90%; padding: 35px; background: var(--card-glass); backdrop-filter: blur(25px); border: 1px solid var(--card-border); border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.6); z-index: 2000; box-sizing: border-box;
-        }
-        #countdownCircle {
-            font-size: 4rem; font-weight: 800; color: var(--primary); margin: 20px 0; text-shadow: 0 0 25px var(--primary-glow); animation: pulseCount 1s infinite alternate;
-        }
+        #redirectContainer { display: none; max-width: 500px; width: 90%; padding: 35px; background: var(--card-glass); backdrop-filter: blur(25px); border: 1px solid var(--card-border); border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.6); z-index: 2000; box-sizing: border-box; }
+        #countdownCircle { font-size: 4rem; font-weight: 800; color: var(--primary); margin: 20px 0; text-shadow: 0 0 25px var(--primary-glow); animation: pulseCount 1s infinite alternate; }
         @keyframes pulseCount { from { transform: scale(0.95); opacity: 0.8; } to { transform: scale(1.05); opacity: 1; } }
-
         #liveViewOverlay { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: #020617; z-index: 1000; justify-content: center; align-items: center; overflow: hidden; }
         #fireworksCanvas { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none; z-index: 1001; }
         .envelope { width: 320px; height: 220px; background: #b91c1c; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-direction: column; cursor: pointer; box-shadow: 0 15px 35px rgba(0,0,0,0.6); border: 3px solid var(--eid-gold); position: relative; z-index: 1002; transition: 0.5s; animation: pulse 2s infinite; text-align: center; padding: 10px; box-sizing: border-box; }
@@ -100,55 +62,54 @@
     </style>
 </head>
 <body>
-
     <div id="normalPage" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div id="eid-decor-container"></div>
-
-        <div class="header">
-            <h1>Maged <span>Tech</span></h1>
-            <p>المنصة الذكية للخدمات والصيانة</p>
-        </div>
-
+        <div class="header"><h1>Maged <span>Tech</span></h1><p>المنصة الذكية للخدمات والصيانة</p></div>
         <button class="accordion">عن المنصة الذكية 💡</button>
-        <div class="panel">
-            <p style="padding: 15px 0; margin: 0; font-size: 15px;">
-                نظام "ماجد تك" هو منصة رقمية متكاملة لإدارة أعمالك. سواء كنت فنياً أو صاحب متجر، يوفر لك النظام:<br>
-                • <b>إنشاء فواتير احترافية:</b> بضغطة زر وبدون أوراق.<br>
-                • <b>إدارة الطلبات:</b> تتبع طلبات زبائنك من البداية للنهاية.<br>
-                • <b>خصوصية كاملة:</b> بياناتك محفوظة محلياً على جهازك فقط.<br>
-                <br>
-                <i>"حول عملك من الدفاتر الورقية إلى النظام الرقمي بكل سهولة."</i>
-            </p>
-        </div>
-        
+        <div class="panel"><p>نظام "ماجد تك" هو منصة رقمية متكاملة لإدارة أعمالك.</p></div>
         <div class="grid-container">
             <div class="row-links">
                 <a href="apps/fatora/index.html" class="btn btn-active">نظام الفاتورة</a>
                 <a href="codes.html" class="btn">أكواد الفحص</a>
             </div>
-            
-            <a href="?view=lab" class="btn eid-gate-card" style="color: var(--eid-gold);">
-                <div>
-                    <i class="fa-solid fa-kaaba" style="font-size: 1.6rem; margin-bottom: 6px; display: block; color: var(--primary); text-shadow: 0 0 10px var(--primary-glow);"></i>
-                    <b style="font-size: 17px;">مُولّد تهاني عيد الأضحى المبارك 🎆</b>
-                </div>
-            </a>
-
+            <a href="lab.html" class="btn eid-gate-card">مُولّد تهاني عيد الأضحى المبارك 🎆</a>
             <div class="btn btn-teaser" onclick="showTeaser()">خدمات (قريباً)</div>
         </div>
-
         <div class="social">
-            <a href="https://www.youtube.com/@maged115599" target="_blank"><i class="fa-brands fa-youtube"></i> يوتيوب</a> | 
-            <a href="https://t.me/Maged_Tech" target="_blank"><i class="fa-solid fa-paper-plane"></i> تيليجرام</a>
+            <a href="https://www.youtube.com/@maged115599">يوتيوب</a> | <a href="https://t.me/Maged_Tech">تيليجرام</a>
         </div>
     </div>
-
+    <div id="redirectContainer">
+        <h2 style="color: #fff;">جاري التحويل...</h2>
+        <div id="countdownCircle">5</div>
+    </div>
+    <div id="liveViewOverlay">
+        <canvas id="fireworksCanvas"></canvas>
+        <audio id="eidTakbeeratAudio" src="eid_song.mpeg" preload="auto" loop></audio>
+        <div class="envelope" id="clickableEnvelope" onclick="openLiveEnvelope()">
+            <div style="font-size: 3.5rem;">✉️</div>
+            <h2>لديك بطاقة تهنئة خاصة</h2>
+        </div>
+        <div id="actualLiveCard">
+            <h2 id="liveCardTitle"></h2><p id="liveCardMsg"></p>
+            <h3 id="liveCardSender"></h3>
+            <button class="btn-live-action" onclick="closeLiveView()">عودة</button>
+        </div>
+    </div>
     <script>
-        // ... (تم الحفاظ على الوظائف السابقة مع تنظيفها)
+        // الأكواد الأصلية كما هي
+        var acc = document.getElementsByClassName("accordion");
+        acc[0].addEventListener("click", function() { this.classList.toggle("active"); var panel = this.nextElementSibling; panel.style.display = (panel.style.display === "block") ? "none" : "block"; });
+        function showTeaser() { alert("ترقبوا قريباً!"); }
         window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            // إظهار واجهة المختبر إذا تم استدعاؤها
-            if (urlParams.get('view') === 'lab') { /* كود المختبر المدمج هنا */ }
+            const decorIcons = ['🐑', '🌙', '⭐', '✨'];
+            const container = document.getElementById('eid-decor-container');
+            for (let i = 0; i < 12; i++) {
+                const el = document.createElement('div'); el.className = 'eid-decor';
+                el.innerText = decorIcons[Math.floor(Math.random() * decorIcons.length)];
+                el.style.left = Math.random() * 100 + 'vw'; el.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                container.appendChild(el);
+            }
         }
     </script>
 </body>
