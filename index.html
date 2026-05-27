@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-MYQRN25PTT"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -125,14 +126,17 @@
             </p>
         </div>
         
+        <!-- قسم الروزنامة الذكية ومواقيت الصلاة -->
         <div class="calendar-widget">
             <h3><i class="fa-solid fa-mosque"></i> مواقيت الصلاة</h3>
             <div class="dates" id="dates-display">جاري جلب الأوقات...</div>
             <div class="clock" id="live-clock">00:00:00</div>
             <ul class="prayer-list" id="prayers-container">
-                </ul>
+                <!-- سيتم إدراج الأوقات هنا عبر جافاسكريبت -->
+            </ul>
         </div>
 
+        <!-- الأزرار والقوائم -->
         <div class="grid-container">
             <div class="row-links">
                 <a href="apps/fatora/index.html" class="btn btn-active">نظام الفاتورة</a>
@@ -147,6 +151,7 @@
                 </div>
             </a>
 
+            <!-- زر خدمات قريباً الثابت -->
             <div class="btn btn-teaser" onclick="showTeaser()">خدمات (قريباً)</div>
         </div>
 
@@ -157,9 +162,11 @@
         </div>
     </div>
 
+    <!-- مشغلات الصوت المخفية (الأذان والتكبيرات) -->
     <audio id="adhanAudio" src="adhan-short.mp3" preload="auto"></audio>
     <audio id="eidTakbeeratAudio" src="eid_song.mpeg" preload="auto" loop></audio>
 
+    <!-- شاشة التحويل الإجباري 5 ثواني -->
     <div id="redirectContainer">
         <i class="fa-brands fa-youtube" style="font-size: 3.5rem; color: #ef4444; text-shadow: 0 0 20px rgba(239,68,68,0.4);"></i>
         <h2 style="margin: 15px 0 5px 0; font-size: 1.5rem; color: #fff;">جاري تحويلك إلى المقطع...</h2>
@@ -170,6 +177,7 @@
         </button>
     </div>
 
+    <!-- شاشة عرض العيد الحي -->
     <div id="liveViewOverlay">
         <canvas id="fireworksCanvas"></canvas>
         <div class="envelope" id="clickableEnvelope" onclick="openLiveEnvelope()">
@@ -203,6 +211,16 @@
             alert("ترقبوا قريباً: قسم الخدمات المطور والأدوات البرمجية الحصرية! 🚀\n\nانضموا لقناتنا على التلغرام لاقتراح الأدوات التي تحتاجونها في الورشة، وسنقوم ببرمجتها وإضافتها هنا. ✨"); 
         }
 
+        // دالة مساعدة لتحويل الوقت من 24 إلى 12 ساعة (ص / م)
+        function formatTime12(time24) {
+            let [hours, minutes] = time24.split(':');
+            hours = parseInt(hours, 10);
+            let suffix = hours >= 12 ? 'م' : 'ص';
+            let hours12 = hours % 12;
+            hours12 = hours12 ? hours12 : 12;
+            return `${hours12}:${minutes} ${suffix}`;
+        }
+
         // --- محرك الروزنامة والأذان ---
         let todayPrayers = {};
         function initCalendar() {
@@ -221,24 +239,32 @@
                     const arabicNames = {'Fajr': 'الفجر', 'Dhuhr': 'الظهر', 'Asr': 'العصر', 'Maghrib': 'المغرب', 'Isha': 'العشاء'};
                     
                     prayersToDisplay.forEach(prayer => {
-                        container.innerHTML += `<li><span>${arabicNames[prayer]}</span> <span>${timings[prayer]}</span></li>`;
+                        let formattedTime = formatTime12(timings[prayer]);
+                        container.innerHTML += `<li><span>${arabicNames[prayer]}</span> <span dir="ltr">${formattedTime}</span></li>`;
                     });
                 })
                 .catch(err => console.log('خطأ في جلب الأوقات:', err));
 
             setInterval(() => {
                 const now = new Date();
-                const hours = String(now.getHours()).padStart(2, '0');
+                
+                // متغيرات للمقارنة 24 ساعة (للمحرك)
+                const hours24 = String(now.getHours()).padStart(2, '0');
                 const minutes = String(now.getMinutes()).padStart(2, '0');
                 const seconds = String(now.getSeconds()).padStart(2, '0');
-                const timeNow = `${hours}:${minutes}`;
+                const timeNow24 = `${hours24}:${minutes}`;
                 
-                document.getElementById('live-clock').innerText = `${timeNow}:${seconds}`;
+                // متغيرات لعرض 12 ساعة
+                let suffix = now.getHours() >= 12 ? 'م' : 'ص';
+                let hours12 = now.getHours() % 12;
+                hours12 = hours12 ? hours12 : 12;
+                const displayHours = String(hours12).padStart(2, '0');
+                
+                document.getElementById('live-clock').innerText = `${displayHours}:${minutes}:${seconds} ${suffix}`;
 
-                // تشغيل الأذان القصير عند تطابق الوقت تماماً مع الثانية 00
                 if (seconds === '00') {
                     Object.values(todayPrayers).forEach(prayerTime => {
-                        if (prayerTime === timeNow) {
+                        if (prayerTime === timeNow24) {
                             const audio = document.getElementById('adhanAudio');
                             if(audio) audio.play().catch(e => console.log("تحتاج المتصفحات لنقرة أولى للسماح بالصوت."));
                         }
@@ -360,23 +386,19 @@
 
         // --- دالة التهيئة عند تحميل الصفحة ---
         window.onload = function() {
-            // تشغيل الروزنامة
             initCalendar();
 
             const urlParams = new URLSearchParams(window.location.search);
             
-            // فحص التحويل الإجباري
             const isRedirecting = checkAndHandleRedirect(urlParams);
             if (isRedirecting) return; 
 
-            // فحص العرض الحي
             if (urlParams.get('view') === 'live') {
                 const name = urlParams.get('name') || 'محبكم';
                 const style = urlParams.get('style') || 'royal-dark';
                 const msg = urlParams.get('msg') || 'كل عام وأنتم بخير!';
                 setupLiveOverlay(name, style, msg);
             } else {
-                // مؤثرات زينة العيد
                 const decorIcons = ['🐑', '🌙', '⭐', '✨'];
                 const container = document.getElementById('eid-decor-container');
                 for (let i = 0; i < 12; i++) {
