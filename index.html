@@ -27,6 +27,8 @@
             --text-muted: #94a3b8;
             --eid-gold: #ffd700;
             --eid-gold-glow: rgba(255, 215, 0, 0.3);
+            --fb-blue: #1877F2;
+            --ig-pink: #E1306C;
         }
         
         body { 
@@ -84,7 +86,37 @@
         .btn-teaser { border: 1px dashed rgba(56, 189, 248, 0.4); color: var(--text-muted); background: transparent; border-radius: 18px; width: 100%; box-sizing: border-box; }
         .btn-teaser:hover { border-color: var(--primary); color: var(--text-main); box-shadow: 0 0 15px var(--primary-glow); }
 
-        .social { margin-top: 45px; font-size: 14px; color: #4b5563; z-index: 10; }
+        /* قسم أزرار السوشيال ميديا الجديد المطور */
+        .meta-links-section {
+            width: 100%;
+            max-width: 550px;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+        .btn-meta {
+            padding: 16px 15px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .btn-facebook { background: var(--fb-blue); }
+        .btn-facebook:hover { background: #145dbf; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(24, 119, 242, 0.4); }
+        .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .btn-instagram:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(225, 48, 108, 0.4); }
+
+        .social { margin-top: 35px; font-size: 14px; color: #4b5563; z-index: 10; text-align: center; }
         .social a { color: var(--primary); text-decoration: none; margin: 0 12px; font-weight: 700; transition: 0.3s; }
         .social a:hover { color: #ffffff; text-shadow: 0 0 10px var(--primary); }
 
@@ -153,6 +185,16 @@
 
             <!-- زر خدمات قريباً الثابت -->
             <div class="btn btn-teaser" onclick="showTeaser()">خدمات (قريباً)</div>
+        </div>
+
+        <!-- قسم روابط السوشيال ميديا المطور الجديد -->
+        <div class="meta-links-section">
+            <a href="https://www.facebook.com/share/1J8HF8p72E/" target="_blank" class="btn-meta btn-facebook">
+                <i class="fa-brands fa-facebook-f"></i> تابعنا على صفحة الفيسبوك الرسمية
+            </a>
+            <a href="رابط_حسابك_هنا" target="_blank" class="btn-meta btn-instagram">
+                <i class="fa-brands fa-instagram"></i> تابعنا على إنستغرام Maged Tech
+            </a>
         </div>
 
         <div class="social">
