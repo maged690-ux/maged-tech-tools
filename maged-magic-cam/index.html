@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maged Travel Cam</title>
+    <title>Maged Universe Cam</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
@@ -14,7 +14,7 @@
         body, html { width: 100%; height: 100%; background-color: #000; overflow: hidden; }
         .app-container { width: 100vw; height: 100dvh; position: relative; }
         .camera-stage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        #output_canvas { width: 100%; height: 100%; object-fit: cover; }
+        #output_canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); } /* قلب الكاميرا لتبدو كمرآة طبيعية */
         header { position: absolute; top: 0; left: 0; width: 100%; padding: 25px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: transparent; }
         .icon-btn { color: #fff; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); background: none; border: none; cursor: pointer; }
         header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,200,100,0.8); }
@@ -27,9 +27,10 @@
         .tab.active-tab { color: #fff; border-bottom: 2px solid #fff; }
         .char-section, .bg-section { width: 100%; }
         .char-section { display: none; }
-        .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0; width: 100%; justify-content: center; scroll-snap-type: x mandatory; margin-bottom: 20px; }
+        /* تحسين شريط التمرير ليصبح سلس ويستوعب خلفيات كثيرة */
+        .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 15px; width: 100%; scroll-snap-type: x mandatory; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
         .filter-carousel::-webkit-scrollbar { display: none; }
-        .filter-btn { width: 60px; height: 60px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; line-height: 1; }
+        .filter-btn { flex: 0 0 auto; width: 65px; height: 65px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; line-height: 1; scroll-snap-align: center; }
         .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(255,255,255,0.6); }
         .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s; margin-top: 5px; }
         .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.1s; }
@@ -41,12 +42,12 @@
     <div class="app-container">
         <header>
             <a href="../index.html" class="icon-btn"><i class="fa-solid fa-xmark"></i></a>
-            <h1>Maged Travel 🌍</h1>
+            <h1>Maged Universe 🌌</h1>
             <button id="flip-cam-btn" class="icon-btn"><i class="fa-solid fa-camera-rotate"></i></button>
         </header>
 
         <div class="camera-stage">
-            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> إعداد الرحلة...</div>
+            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تجهيز العوالم...</div>
             <video id="input_video" autoplay playsinline style="display: none;"></video>
             <canvas id="output_canvas"></canvas>
             <div id="flash-effect"></div>
@@ -54,7 +55,7 @@
 
         <div class="controls">
             <div class="tabs">
-                <div class="tab active-tab" id="tab-bg" onclick="switchTab('bg')">المعالم</div>
+                <div class="tab active-tab" id="tab-bg" onclick="switchTab('bg')">الخلفيات</div>
                 <div class="tab" id="tab-char" onclick="switchTab('char')">الرفيق</div>
             </div>
 
@@ -69,7 +70,10 @@
 
             <div class="bg-section" id="sec-bg" style="display: block;">
                 <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="paris" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn active-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="moon" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="paris" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                     <div class="filter-btn bg-btn" data-bg="egypt" style="background-image: url('https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                     <div class="filter-btn bg-btn" data-bg="ny" style="background-image: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                 </div>
@@ -88,23 +92,26 @@
         const loadingMsg = document.getElementById('loading-msg');
         
         let currentChar = 'none'; 
-        let currentBg = 'paris';
-        let isFrontCam = true; // متغير لمعرفة حالة الكاميرا
-        let camera; // متغير لتخزين الكاميرا
+        let currentBg = 'galaxy';
+        let isFrontCam = true; 
+        let camera; 
 
         const charImages = { 'maged': new Image(), 'mooney': new Image(), 'abboud': new Image() };
         charImages['maged'].src = 'maged.png';
         charImages['mooney'].src = 'mooney.png';
         charImages['abboud'].src = 'abboud.png';
 
-        // صور معالم سياحية
-        const bgImages = { 'paris': new Image(), 'egypt': new Image(), 'ny': new Image() };
-        bgImages['paris'].crossOrigin = "anonymous";
-        bgImages['paris'].src = 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; // برج إيفل
-        bgImages['egypt'].crossOrigin = "anonymous";
-        bgImages['egypt'].src = 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; // الأهرامات
-        bgImages['ny'].crossOrigin = "anonymous";
-        bgImages['ny'].src = 'https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; // تايمز سكوير
+        // جميع الخلفيات بدقة عالية
+        const bgImages = { 
+            'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
+            'paris': new Image(), 'egypt': new Image(), 'ny': new Image() 
+        };
+        bgImages['galaxy'].crossOrigin = "anonymous"; bgImages['galaxy'].src = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
+        bgImages['moon'].crossOrigin = "anonymous"; bgImages['moon'].src = 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
+        bgImages['ship'].crossOrigin = "anonymous"; bgImages['ship'].src = 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
+        bgImages['paris'].crossOrigin = "anonymous"; bgImages['paris'].src = 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
+        bgImages['egypt'].crossOrigin = "anonymous"; bgImages['egypt'].src = 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
+        bgImages['ny'].crossOrigin = "anonymous"; bgImages['ny'].src = 'https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
 
         function switchTab(tabName) {
             document.getElementById('tab-char').classList.remove('active-tab');
@@ -141,24 +148,26 @@
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // === 1. رسم القناع بحدة تامة (بدون أي تغبيش لمنع الظلال) ===
+            // === 1. السر لقتل الهالة البيضاء (The Contrast Hack) ===
             canvasCtx.globalCompositeOperation = 'source-over';
+            canvasCtx.filter = 'contrast(300%) brightness(90%)'; // زيادة التباين لقص الحواف بقوة وتخفيف السطوع
             canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.filter = 'none';
 
-            // === 2. رسم الكاميرا داخل القناع فقط (قص كريستالي نظيف) ===
+            // === 2. رسم الكاميرا جوا القناع الحاد ===
             canvasCtx.globalCompositeOperation = 'source-in';
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-            // === 3. رسم الخلفية وراءك ===
+            // === 3. رسم الخلفية المختارة ===
             canvasCtx.globalCompositeOperation = 'destination-over';
             if (bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
                 canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
             } else {
-                canvasCtx.fillStyle = '#87CEEB'; // لون سماء أزرق احتياطي
+                canvasCtx.fillStyle = '#111'; 
                 canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             }
 
-            // === 4. رسم الرفيق (فقط إذا تم اختياره) ===
+            // === 4. رسم الرفيق ===
             canvasCtx.globalCompositeOperation = 'source-over';
             if (currentChar !== 'none' && charImages[currentChar].complete && charImages[currentChar].naturalWidth !== 0) {
                 
@@ -172,7 +181,8 @@
                 
                 let baseYPos = canvasElement.height - charHeight + 30; 
                 let animatedYPos = baseYPos + floatOffset;
-                let xPos = (currentChar === 'maged') ? 5 : canvasElement.width - charWidth - 5;
+                // تعديل الموقع ليتناسب مع قلب الكاميرا
+                let xPos = (currentChar === 'maged') ? canvasElement.width - charWidth - 5 : 5;
 
                 const tempCanvas = document.createElement('canvas');
                 tempCanvas.width = charWidth;
@@ -201,7 +211,9 @@
             canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
             canvasCtx.shadowColor = "rgba(0,0,0,0.9)";
             canvasCtx.shadowBlur = 8;
-            canvasCtx.fillText("Maged Travel 🌍", 20, canvasElement.height - 30);
+            // إرجاع اتجاه النص ليكون صحيحاً بعد قلب الكاميرا
+            canvasCtx.scale(-1, 1);
+            canvasCtx.fillText("Maged Universe 🌌", -canvasElement.width + 20, canvasElement.height - 30);
 
             canvasCtx.restore();
         }
@@ -210,38 +222,48 @@
             return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
         }});
         
-        selfieSegmentation.setOptions({ modelSelection: 0 }); // دقة قص عالية
+        selfieSegmentation.setOptions({ modelSelection: 0 }); // أدق موديل للقص
         selfieSegmentation.onResults(onResults);
 
-        // وظيفة لتشغيل الكاميرا بالاتجاه المطلوب
         function startCamera() {
             if(camera) { camera.stop(); }
             loadingMsg.style.display = 'block';
             camera = new Camera(videoElement, {
                 onFrame: async () => { await selfieSegmentation.send({image: videoElement}); },
-                facingMode: isFrontCam ? 'user' : 'environment' // تبديل بين الأمامية والخلفية
+                facingMode: isFrontCam ? 'user' : 'environment'
             });
             camera.start();
+            
+            // قلب الـ Canvas أفقياً إذا كانت سيلفي لتشبه المرآة
+            canvasElement.style.transform = isFrontCam ? 'scaleX(-1)' : 'scaleX(1)';
         }
 
-        // تشغيل الكاميرا لأول مرة
         startCamera();
 
-        // مستمع زر قلب الكاميرا
         document.getElementById('flip-cam-btn').addEventListener('click', () => {
             isFrontCam = !isFrontCam;
             startCamera();
         });
 
-        // التقاط الصورة
         document.getElementById('capture-btn').addEventListener('click', () => {
             const flash = document.getElementById('flash-effect');
             flash.style.opacity = '1';
             setTimeout(() => flash.style.opacity = '0', 150);
             
-            const dataURL = canvasElement.toDataURL('image/png');
+            // تصحيح اتجاه الصورة قبل الحفظ
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvasElement.width;
+            tempCanvas.height = canvasElement.height;
+            const tCtx = tempCanvas.getContext('2d');
+            if (isFrontCam) {
+                tCtx.translate(tempCanvas.width, 0);
+                tCtx.scale(-1, 1);
+            }
+            tCtx.drawImage(canvasElement, 0, 0);
+            
+            const dataURL = tempCanvas.toDataURL('image/png');
             const link = document.createElement('a');
-            link.download = 'Maged-Travel.png';
+            link.download = 'Maged-Universe.png';
             link.href = dataURL;
             link.click();
         });
