@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maged Studio Pro</title>
+    <title>Maged Sci-Fi Cam</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
@@ -17,7 +17,7 @@
         #output_canvas { width: 100%; height: 100%; object-fit: cover; }
         header { position: absolute; top: 0; left: 0; width: 100%; padding: 25px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: transparent; }
         .back-btn { color: #fff; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
-        header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(100,200,255,0.8); }
         #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.7); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
         #flash-effect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.15s ease-out; }
         .controls { position: absolute; bottom: 40px; left: 0; width: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; background: transparent; pointer-events: none; }
@@ -41,12 +41,12 @@
     <div class="app-container">
         <header>
             <a href="../index.html" class="back-btn"><i class="fa-solid fa-xmark"></i></a>
-            <h1>Maged Studio ✨</h1>
+            <h1>Maged Sci-Fi ✨</h1>
             <div style="width: 24px;"></div>
         </header>
 
         <div class="camera-stage">
-            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> إعداد الاستوديو...</div>
+            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تجهيز العوالم...</div>
             <video id="input_video" autoplay playsinline style="display: none;"></video>
             <canvas id="output_canvas"></canvas>
             <div id="flash-effect"></div>
@@ -55,7 +55,7 @@
         <div class="controls">
             <div class="tabs">
                 <div class="tab active-tab" id="tab-char" onclick="switchTab('char')">الرفيق</div>
-                <div class="tab" id="tab-bg" onclick="switchTab('bg')">الاستوديو</div>
+                <div class="tab" id="tab-bg" onclick="switchTab('bg')">العوالم</div>
             </div>
 
             <div class="char-section" id="sec-char">
@@ -68,9 +68,9 @@
 
             <div class="bg-section" id="sec-bg">
                 <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="neon" style="background-color: #833ab4;"></div>
-                    <div class="filter-btn bg-btn" data-bg="cyber" style="background-color: #0f3460;"></div>
-                    <div class="filter-btn bg-btn" data-bg="matrix" style="background-color: #025023;"></div>
+                    <div class="filter-btn bg-btn active-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?auto=format&fit=crop&w=150&q=70');"></div>
+                    <div class="filter-btn bg-btn" data-bg="race" style="background-image: url('https://images.unsplash.com/photo-1471440623690-240bf8527b0b?auto=format&fit=crop&w=150&q=70');"></div>
+                    <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=150&q=70');"></div>
                 </div>
             </div>
 
@@ -87,20 +87,20 @@
         const loadingMsg = document.getElementById('loading-msg');
         
         let currentChar = 'maged';
-        let currentBg = 'neon';
+        let currentBg = 'ship';
 
         const charImages = { 'maged': new Image(), 'mooney': new Image(), 'abboud': new Image() };
         charImages['maged'].src = 'maged.png';
         charImages['mooney'].src = 'mooney.png';
         charImages['abboud'].src = 'abboud.png';
 
-        const bgImages = { 'neon': new Image(), 'cyber': new Image(), 'matrix': new Image() };
-        bgImages['neon'].crossOrigin = "anonymous";
-        bgImages['neon'].src = 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800&q=70'; 
-        bgImages['cyber'].crossOrigin = "anonymous";
-        bgImages['cyber'].src = 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=70'; 
-        bgImages['matrix'].crossOrigin = "anonymous";
-        bgImages['matrix'].src = 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=70'; 
+        const bgImages = { 'ship': new Image(), 'race': new Image(), 'galaxy': new Image() };
+        bgImages['ship'].crossOrigin = "anonymous";
+        bgImages['ship'].src = 'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?auto=format&fit=crop&w=800&q=70'; 
+        bgImages['race'].crossOrigin = "anonymous";
+        bgImages['race'].src = 'https://images.unsplash.com/photo-1471440623690-240bf8527b0b?auto=format&fit=crop&w=800&q=70'; 
+        bgImages['galaxy'].crossOrigin = "anonymous";
+        bgImages['galaxy'].src = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=70'; 
 
         function switchTab(tabName) {
             document.getElementById('tab-char').classList.remove('active-tab');
@@ -137,25 +137,25 @@
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // 1. العزل السينمائي مع التنعيم
+            // 1. العزل السينمائي
             canvasCtx.filter = 'blur(3px)';
             canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
             canvasCtx.filter = 'none';
 
-            // 2. رسم الوجه بوضوح بدون فلاتر مزعجة
+            // 2. رسم الوجه
             canvasCtx.globalCompositeOperation = 'source-in';
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-            // 3. رسم الخلفية السينمائية
+            // 3. رسم الخلفية الخيالية
             canvasCtx.globalCompositeOperation = 'destination-over';
             if (bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
                 canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
             } else {
-                canvasCtx.fillStyle = '#222';
+                canvasCtx.fillStyle = '#112';
                 canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             }
 
-            // 4. رسم الرفيق التفاعلي
+            // 4. رسم الرفيق وتجهيز الخوذة
             canvasCtx.globalCompositeOperation = 'source-over';
             if (charImages[currentChar].complete && charImages[currentChar].naturalWidth !== 0) {
                 
@@ -163,7 +163,6 @@
                 let imageRatio = charImages[currentChar].naturalHeight / charImages[currentChar].naturalWidth;
                 let charHeight = Math.floor(charWidth * imageRatio);
                 
-                // الحركة الانسيابية
                 const time = Date.now() * 0.0015; 
                 const floatOffset = Math.sin(time) * 20; 
                 const swayAngle = Math.cos(time * 0.8) * 0.04; 
@@ -189,7 +188,33 @@
                 canvasCtx.save();
                 canvasCtx.translate(xPos + (charWidth / 2), animatedYPos + (charHeight / 2));
                 canvasCtx.rotate(swayAngle);
+                
+                // رسم الأفاتار
                 canvasCtx.drawImage(tempCanvas, -charWidth / 2, -charHeight / 2);
+
+                // === السحر: رسم خوذة فضاء زجاجية إذا كنا في الفضاء ===
+                if (currentBg === 'ship' || currentBg === 'galaxy') {
+                    let headY = -charHeight / 2 + (charHeight * 0.15); // تقدير موقع الرأس
+                    let helmetRadius = charWidth * 0.35; // عرض الخوذة
+
+                    // زجاج الخوذة الشفاف
+                    canvasCtx.beginPath();
+                    canvasCtx.arc(0, headY, helmetRadius, 0, Math.PI * 2);
+                    canvasCtx.fillStyle = 'rgba(200, 230, 255, 0.25)'; // لون أزرق زجاجي شفاف
+                    canvasCtx.fill();
+                    
+                    // إطار الخوذة (وهج خفيف)
+                    canvasCtx.lineWidth = 3;
+                    canvasCtx.strokeStyle = 'rgba(100, 200, 255, 0.6)';
+                    canvasCtx.stroke();
+
+                    // لمعة الزجاج (Reflection)
+                    canvasCtx.beginPath();
+                    canvasCtx.arc(-helmetRadius * 0.3, headY - helmetRadius * 0.3, helmetRadius * 0.2, 0, Math.PI * 2);
+                    canvasCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                    canvasCtx.fill();
+                }
+
                 canvasCtx.restore();
             }
             
@@ -199,7 +224,7 @@
             canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
             canvasCtx.shadowColor = "rgba(0,0,0,0.9)";
             canvasCtx.shadowBlur = 8;
-            canvasCtx.fillText("Maged Studio 🎬", 20, canvasElement.height - 30);
+            canvasCtx.fillText("Maged Sci-Fi 🚀", 20, canvasElement.height - 30);
 
             canvasCtx.restore();
         }
@@ -223,7 +248,7 @@
             
             const dataURL = canvasElement.toDataURL('image/png');
             const link = document.createElement('a');
-            link.download = 'Maged-Studio.png';
+            link.download = 'Maged-SciFi.png';
             link.href = dataURL;
             link.click();
         });
