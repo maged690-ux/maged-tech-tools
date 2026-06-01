@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maged Magic Cam</title>
+    <title>Maged Magic Cam Pro</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
@@ -21,9 +21,9 @@
         
         header { position: absolute; top: 0; left: 0; width: 100%; padding: 25px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: transparent; }
         .back-btn { color: #fff; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
-        header h1 { font-size: 1.2rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; }
+        header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
         
-        #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(5px); }
+        #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.7); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
         #flash-effect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.15s ease-out; }
         
         .controls { position: absolute; bottom: 40px; left: 0; width: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; background: transparent; pointer-events: none; }
@@ -39,10 +39,10 @@
         .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0; width: 100%; justify-content: center; scroll-snap-type: x mandatory; margin-bottom: 20px; }
         .filter-carousel::-webkit-scrollbar { display: none; }
         
-        .filter-btn { width: 60px; height: 60px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.2); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; background: rgba(255,255,255,0.2); }
+        .filter-btn { width: 60px; height: 60px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; }
+        .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
         
-        .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: transform 0.1s; margin-top: 5px; }
+        .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s; margin-top: 5px; }
         .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.1s; }
         .capture-ring:active .capture-inner { transform: scale(0.85); background: #e0e0e0; }
     </style>
@@ -52,22 +52,21 @@
     <div class="app-container">
         <header>
             <a href="../index.html" class="back-btn"><i class="fa-solid fa-xmark"></i></a>
-            <h1>Maged Cam ✨</h1>
+            <h1>Maged Studio ✨</h1>
             <div style="width: 24px;"></div>
         </header>
 
         <div class="camera-stage">
-            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> جاري التجهيز...</div>
+            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> إعداد الاستوديو...</div>
             <video id="input_video" autoplay playsinline style="display: none;"></video>
             <canvas id="output_canvas"></canvas>
             <div id="flash-effect"></div>
         </div>
 
         <div class="controls">
-            
             <div class="tabs">
                 <div class="tab active-tab" id="tab-char" onclick="switchTab('char')">الرفيق</div>
-                <div class="tab" id="tab-bg" onclick="switchTab('bg')">الخلفية</div>
+                <div class="tab" id="tab-bg" onclick="switchTab('bg')">الاستوديو</div>
             </div>
 
             <div class="char-section" id="sec-char">
@@ -80,9 +79,9 @@
 
             <div class="bg-section" id="sec-bg">
                 <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="neon" style="background: linear-gradient(45deg, #833ab4, #fd1d1d);"></div>
-                    <div class="filter-btn bg-btn" data-bg="cyber" style="background: #0f3460;"></div>
-                    <div class="filter-btn bg-btn" data-bg="matrix" style="background: #025023;"></div>
+                    <div class="filter-btn bg-btn active-btn" data-bg="neon" style="background-image: url('https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="cyber" style="background-image: url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="matrix" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=150&q=80');"></div>
                 </div>
             </div>
 
@@ -101,50 +100,49 @@
         let currentChar = 'maged';
         let currentBg = 'neon';
 
-        // 1. تحميل صور الشخصيات الشفافة
-        const charImages = {
-            'maged': new Image(),
-            'mooney': new Image(),
-            'abboud': new Image()
-        };
+        // 1. تحميل صور الشخصيات
+        const charImages = { 'maged': new Image(), 'mooney': new Image(), 'abboud': new Image() };
         charImages['maged'].src = 'maged.png';
         charImages['mooney'].src = 'mooney.png';
         charImages['abboud'].src = 'abboud.png';
 
-        // نظام التبويبات
+        // 2. تحميل الخلفيات السينمائية عالية الدقة
+        const bgImages = { 'neon': new Image(), 'cyber': new Image(), 'matrix': new Image() };
+        bgImages['neon'].crossOrigin = "anonymous";
+        bgImages['neon'].src = 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=1080&q=80'; 
+        bgImages['cyber'].crossOrigin = "anonymous";
+        bgImages['cyber'].src = 'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?auto=format&fit=crop&w=1080&q=80'; 
+        bgImages['matrix'].crossOrigin = "anonymous";
+        bgImages['matrix'].src = 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1080&q=80';
+
         function switchTab(tabName) {
             document.getElementById('tab-char').classList.remove('active-tab');
             document.getElementById('tab-bg').classList.remove('active-tab');
             document.getElementById('sec-char').style.display = 'none';
             document.getElementById('sec-bg').style.display = 'none';
-            
             document.getElementById('tab-' + tabName).classList.add('active-tab');
             document.getElementById('sec-' + tabName).style.display = 'block';
         }
 
-        // الأزرار
-        const charBtns = document.querySelectorAll('.char-btn');
-        charBtns.forEach(btn => {
+        document.querySelectorAll('.char-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                charBtns.forEach(b => b.classList.remove('active-btn'));
+                document.querySelectorAll('.char-btn').forEach(b => b.classList.remove('active-btn'));
                 e.currentTarget.classList.add('active-btn');
                 currentChar = e.currentTarget.dataset.char;
             });
         });
 
-        const bgBtns = document.querySelectorAll('.bg-btn');
-        bgBtns.forEach(btn => {
+        document.querySelectorAll('.bg-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                bgBtns.forEach(b => b.classList.remove('active-btn'));
+                document.querySelectorAll('.bg-btn').forEach(b => b.classList.remove('active-btn'));
                 e.currentTarget.classList.add('active-btn');
                 currentBg = e.currentTarget.dataset.bg;
             });
         });
 
-        // محرك الرسم الذكي
+        // محرك الرسم الاحترافي (Pro Rendering Engine)
         function onResults(results) {
             loadingMsg.style.display = 'none';
-            
             if (canvasElement.width !== results.image.width) {
                 canvasElement.width = results.image.width;
                 canvasElement.height = results.image.height;
@@ -153,108 +151,100 @@
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // القناع
+            // --- 1. العزل السينمائي بحواف ناعمة ---
+            canvasCtx.filter = 'blur(4px)'; // تنعيم الحواف لدمج واقعي
             canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.filter = 'none';
 
-            // الشخص
+            // --- 2. رسم الشخص ---
             canvasCtx.globalCompositeOperation = 'source-in';
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-            // الخلفية
-            canvasCtx.globalCompositeOperation = 'destination-over';
-            if(currentBg === 'neon') {
-                let grad = canvasCtx.createLinearGradient(0,0, 0, canvasElement.height);
-                grad.addColorStop(0, "#833ab4"); grad.addColorStop(0.5, "#fd1d1d"); grad.addColorStop(1, "#fcb045");
-                canvasCtx.fillStyle = grad;
-            } else if (currentBg === 'cyber') {
-                canvasCtx.fillStyle = '#0f3460';
-            } else {
-                canvasCtx.fillStyle = '#025023';
-            }
+            // --- 3. الإضاءة المحيطية (Color Grading) لدمج الوجه مع الخلفية ---
+            canvasCtx.globalCompositeOperation = 'soft-light';
+            if(currentBg === 'neon') canvasCtx.fillStyle = 'rgba(255, 50, 150, 0.4)'; // إضاءة زهرية/بنفسجية
+            else if (currentBg === 'cyber') canvasCtx.fillStyle = 'rgba(15, 100, 255, 0.4)'; // إضاءة زرقاء
+            else canvasCtx.fillStyle = 'rgba(50, 200, 50, 0.3)'; // إضاءة خضراء
             canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // 4. رسم الشخصيات الاحترافية وتفريغ الخلفيات الزائدة برمجياً
+            // --- 4. رسم الاستوديو (الخلفية السينمائية) ---
+            canvasCtx.globalCompositeOperation = 'destination-over';
+            if (bgImages[currentBg].complete) {
+                canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
+            } else {
+                canvasCtx.fillStyle = '#111';
+                canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+            }
+
+            // --- 5. رسم الرفيق التفاعلي مع حركة الحياة ---
             canvasCtx.globalCompositeOperation = 'source-over';
-            
             if (charImages[currentChar].complete && charImages[currentChar].naturalWidth !== 0) {
                 
-                // حساب العرض والطول مع الحفاظ على الأبعاد الأصلية للصورة لمنع التمدد
-                let charWidth = Math.floor(canvasElement.width * 0.45); 
+                // حجم أوضح للشخصية
+                let charWidth = Math.floor(canvasElement.width * 0.55); 
                 let imageRatio = charImages[currentChar].naturalHeight / charImages[currentChar].naturalWidth;
                 let charHeight = Math.floor(charWidth * imageRatio);
                 
-                // === إضافة الانسيابية وحركة التنفس/الطوفان التلقائية ===
-                const time = Date.now() * 0.0025; // سرعة الحركة والتأرجح
-                const floatOffset = Math.sin(time) * 12; // مقدار الصعود والنزول (12 بيكسل)
+                // معادلات الحياة (تنفس، طوفان، وتمايل)
+                const time = Date.now() * 0.002; 
+                const floatOffset = Math.sin(time) * 12; 
+                const breathScale = 1 + Math.sin(time * 1.5) * 0.015; 
+                const swayAngle = Math.cos(time * 1.2) * 0.02; 
                 
-                let baseYPos = canvasElement.height - charHeight - 20;
+                let baseYPos = canvasElement.height - charHeight - 15;
                 let animatedYPos = baseYPos + floatOffset;
-                
-                // تحديد التموضع الأفقي بناءً على الشخصية المختارة
-                let xPos = (currentChar === 'maged') ? 20 : canvasElement.width - charWidth - 20;
+                let xPos = (currentChar === 'maged') ? 15 : canvasElement.width - charWidth - 15;
 
-                // إنشاء Canvas مؤقت لمعالجة مصفوفة بكسلات الصورة وإزالة الخلفيات السادة
+                // تفريغ الخلفية الزائدة برمجياً
                 const tempCanvas = document.createElement('canvas');
                 tempCanvas.width = charWidth;
                 tempCanvas.height = charHeight;
                 const tempCtx = tempCanvas.getContext('2d');
                 
-                // رسم الصورة على الكانفاس المؤقت أولاً
                 tempCtx.drawImage(charImages[currentChar], 0, 0, charWidth, charHeight);
-                
-                // تعديل قيم مصفوفة الـ RGBA للبكسلات
                 const imgData = tempCtx.getImageData(0, 0, charWidth, charHeight);
                 const data = imgData.data;
                 
                 for (let i = 0; i < data.length; i += 4) {
-                    let r = data[i];     
-                    let g = data[i+1];   
-                    let b = data[i+2];   
-                    
-                    // الكشف عن بكسلات الخلفية البيضاء (المرتبطة بتطبيق القص الحالي) أو السوداء
+                    let r = data[i], g = data[i+1], b = data[i+2];   
                     const isWhite = (r > 235 && g > 235 && b > 235);
                     const isBlack = (r < 35 && g < 35 && b < 35);
-                    
-                    if (isWhite || isBlack) {
-                        data[i + 3] = 0; // تعديل قيمة الشفافية لتصبح مخفية تماماً
-                    }
+                    if (isWhite || isBlack) data[i + 3] = 0; 
                 }
-                
-                // حقن البيانات المنقاة مجدداً داخل الكانفاس المؤقت
                 tempCtx.putImageData(imgData, 0, 0);
 
-                // إخراج الصورة النهائية المفرغة مع تطبيق التأثير الانسيابي على الشاشة
-                canvasCtx.drawImage(tempCanvas, xPos, animatedYPos);
+                // تطبيق الحركات الحية والرسم
+                canvasCtx.save();
+                canvasCtx.translate(xPos + (charWidth / 2), animatedYPos + (charHeight / 2));
+                canvasCtx.rotate(swayAngle);
+                canvasCtx.scale(breathScale, breathScale);
+                canvasCtx.drawImage(tempCanvas, -charWidth / 2, -charHeight / 2);
+                canvasCtx.restore();
             }
             
-            // الختم
-            let watermarkSize = Math.floor(canvasElement.width * 0.05);
+            // الختم الاحترافي
+            let watermarkSize = Math.floor(canvasElement.width * 0.045);
             canvasCtx.font = "bold " + watermarkSize + "px Tahoma";
-            canvasCtx.fillStyle = "rgba(255,255,255,0.8)";
-            canvasCtx.shadowColor = "rgba(0,0,0,0.8)";
-            canvasCtx.shadowBlur = 5;
-            canvasCtx.fillText("Maged Tech 📸", 20, canvasElement.height - 40);
+            canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
+            canvasCtx.shadowColor = "rgba(0,0,0,0.9)";
+            canvasCtx.shadowBlur = 8;
+            canvasCtx.fillText("Maged Studio 🎬", 20, canvasElement.height - 30);
 
             canvasCtx.restore();
         }
 
-        // إعداد الذكاء الاصطناعي
         const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
         }});
         selfieSegmentation.setOptions({ modelSelection: 1 });
         selfieSegmentation.onResults(onResults);
 
-        // تشغيل الكاميرا
         const camera = new Camera(videoElement, {
-            onFrame: async () => {
-                await selfieSegmentation.send({image: videoElement});
-            },
+            onFrame: async () => { await selfieSegmentation.send({image: videoElement}); },
             facingMode: 'user'
         });
         camera.start();
 
-        // التقاط الصورة
         document.getElementById('capture-btn').addEventListener('click', () => {
             const flash = document.getElementById('flash-effect');
             flash.style.opacity = '1';
@@ -262,7 +252,7 @@
             
             const dataURL = canvasElement.toDataURL('image/png');
             const link = document.createElement('a');
-            link.download = 'Maged-Snap.png';
+            link.download = 'Maged-Studio-Pro.png';
             link.href = dataURL;
             link.click();
         });
