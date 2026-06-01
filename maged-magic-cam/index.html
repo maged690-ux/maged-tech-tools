@@ -47,7 +47,7 @@
         </header>
 
         <div class="camera-stage">
-            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تشغيل الفلاتر...</div>
+            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تشغيل الكاميرا...</div>
             <video id="input_video" autoplay playsinline style="display: none;"></video>
             <canvas id="output_canvas"></canvas>
             <div id="flash-effect"></div>
@@ -94,8 +94,8 @@
         let currentBg = 'galaxy';
         let isFrontCam = true; 
         let camera; 
+        let currentFaceLandmarks = null;
 
-        // إعداد الخلفيات
         const bgImages = { 
             'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
             'paris': new Image(), 'egypt': new Image()
@@ -106,7 +106,6 @@
         bgImages['paris'].crossOrigin = "anonymous"; bgImages['paris'].src = 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
         bgImages['egypt'].crossOrigin = "anonymous"; bgImages['egypt'].src = 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
 
-        // نظام التبويبات
         function switchTab(tabName) {
             document.getElementById('tab-filter').classList.remove('active-tab');
             document.getElementById('tab-bg').classList.remove('active-tab');
@@ -132,19 +131,11 @@
             });
         });
 
-        // متغير لتخزين نقاط الوجه (468 نقطة)
-        let currentFaceLandmarks = null;
-
-        // إعداد ذكاء اصطناعي 1: شبكة الوجه (Face Mesh) للفلاتر
+        // 1. إعداد متتبع الوجه
         const faceMesh = new FaceMesh({locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
         }});
-        faceMesh.setOptions({
-            maxNumFaces: 1,
-            refineLandmarks: true, // تفعيل تعقب قزحية العين
-            minDetectionConfidence: 0.5,
-            minTrackingConfidence: 0.5
-        });
+        faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
         faceMesh.onResults((results) => {
             if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
                 currentFaceLandmarks = results.multiFaceLandmarks[0];
@@ -153,13 +144,12 @@
             }
         });
 
-        // إعداد ذكاء اصطناعي 2: العزل السينمائي (Selfie Segmentation)
+        // 2. إعداد عازل الخلفية
         const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
         }});
-        selfieSegmentation.setOptions({ modelSelection: 0 }); // أدق موديل للقص
+        selfieSegmentation.setOptions({ modelSelection: 0 });
         
-        // محرك الرسم المدمج (يجمع العزل مع نقاط الوجه)
         selfieSegmentation.onResults((results) => {
             loadingMsg.style.display = 'none';
             if (canvasElement.width !== results.image.width) {
@@ -170,17 +160,15 @@
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // 1. القص الحاد لقتل الهالة البيضاء
+            // عزل الخلفية الحاد
             canvasCtx.globalCompositeOperation = 'source-over';
             canvasCtx.filter = 'contrast(300%) brightness(90%)';
             canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
             canvasCtx.filter = 'none';
 
-            // 2. دمج صورتك
             canvasCtx.globalCompositeOperation = 'source-in';
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-            // 3. دمج الخلفية
             canvasCtx.globalCompositeOperation = 'destination-over';
             if (bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
                 canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
@@ -189,50 +177,41 @@
                 canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             }
 
-            // === 4. رسم الفلتر (تتبع الوجه) ===
+            // رسم الفلتر (شبكة التعقب التجريبية)
             canvasCtx.globalCompositeOperation = 'source-over';
             if (currentFilter !== 'none' && currentFaceLandmarks) {
-                // رسم شبكة تتبع الوجه باللون النيون للتأكد من عمل الذكاء الاصطناعي (المرحلة 1)
                 canvasCtx.fillStyle = 'rgba(0, 255, 200, 0.8)';
                 canvasCtx.shadowColor = 'rgba(0, 255, 200, 1)';
                 canvasCtx.shadowBlur = 5;
 
                 for (let i = 0; i < currentFaceLandmarks.length; i++) {
-                    const pt = currentFaceLandmarks[i];
-                    // تحويل الإحداثيات النسبية إلى بكسلات حقيقية على الشاشة
-                    const x = pt.x * canvasElement.width;
-                    const y = pt.y * canvasElement.height;
-
+                    const x = currentFaceLandmarks[i].x * canvasElement.width;
+                    const y = currentFaceLandmarks[i].y * canvasElement.height;
                     canvasCtx.beginPath();
-                    // رسم نقاط صغيرة جداً
                     canvasCtx.arc(x, y, 1.2, 0, 2 * Math.PI);
                     canvasCtx.fill();
                 }
             }
             
-            // الختم
-            let watermarkSize = Math.floor(canvasElement.width * 0.045);
-            canvasCtx.font = "bold " + watermarkSize + "px Tahoma";
-            canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
-            canvasCtx.shadowColor = "rgba(0,0,0,0.9)";
-            canvasCtx.shadowBlur = 8;
-            canvasCtx.scale(-1, 1);
-            canvasCtx.fillText("Maged Filters ✨", -canvasElement.width + 20, canvasElement.height - 30);
-
             canvasCtx.restore();
         });
 
-        // تشغيل الكاميرا وإرسال البث للموديلين معاً (العزل وتتبع الوجه)
+        // 3. محرك الكاميرا الذكي والمخفف للضغط
         function startCamera() {
             if(camera) { camera.stop(); }
             loadingMsg.style.display = 'block';
             camera = new Camera(videoElement, {
                 onFrame: async () => { 
-                    // ننتظر الذكاء الاصطناعي ليحلل الصورة في كلا الموديلين
-                    await Promise.all([
-                        selfieSegmentation.send({image: videoElement}),
-                        faceMesh.send({image: videoElement})
-                    ]);
+                    try {
+                        // دائماً شغل العزل
+                        await selfieSegmentation.send({image: videoElement});
+                        // شغل الفلاتر فقط إذا ما كانت على "بدون" (بيخفف التعليق 100%)
+                        if (currentFilter !== 'none') {
+                            await faceMesh.send({image: videoElement});
+                        } else {
+                            currentFaceLandmarks = null;
+                        }
+                    } catch (e) { console.log(e); }
                 },
                 facingMode: isFrontCam ? 'user' : 'environment'
             });
