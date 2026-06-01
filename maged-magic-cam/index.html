@@ -1,48 +1,151 @@
-<script>
-    // ... (نفس إعدادات الكاميرا السابقة)
-
-    function onResults(results) {
-        // ... (كود العزل والدمج نفس الشيء)
-
-        // === التعديل الاحترافي هنا ===
-        canvasCtx.globalCompositeOperation = 'source-over';
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Maged Filter Cam Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body, html { width: 100%; height: 100%; background-color: #000; overflow: hidden; }
+        .app-container { width: 100vw; height: 100dvh; position: relative; }
+        .camera-stage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #output_canvas { width: 100%; height: 100%; object-fit: cover; }
+        header { position: absolute; top: 0; left: 0; width: 100%; padding: 25px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: transparent; }
+        .icon-btn { color: #fff; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); background: none; border: none; cursor: pointer; }
+        header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,255,200,0.8); }
+        #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.8); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        #flash-effect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.15s ease-out; }
+        .controls { position: absolute; bottom: 40px; left: 0; width: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; background: transparent; pointer-events: none; }
+        .controls > * { pointer-events: auto; }
+        .tabs { display: flex; gap: 30px; margin-bottom: 15px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
+        .tab { font-size: 1rem; color: rgba(255,255,255,0.6); font-weight: bold; cursor: pointer; padding-bottom: 5px; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,1); }
+        .tab.active-tab { color: #fff; border-bottom: 2px solid #fff; }
+        .filter-section, .bg-section { width: 100%; }
+        .filter-section { display: none; }
+        .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 15px; width: 100%; scroll-snap-type: x mandatory; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+        .filter-carousel::-webkit-scrollbar { display: none; }
+        .filter-btn { flex: 0 0 auto; width: 65px; height: 65px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; line-height: 1; scroll-snap-align: center; }
+        .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(0,255,200,0.6); }
+        .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s; margin-top: 5px; }
+        .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.1s; }
+        .capture-ring:active .capture-inner { transform: scale(0.85); background: #e0e0e0; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <a href="../index.html" class="icon-btn"><i class="fa-solid fa-xmark"></i></a>
+            <h1>Maged Pro ✨</h1>
+            <button id="flip-cam-btn" class="icon-btn"><i class="fa-solid fa-camera-rotate"></i></button>
+        </header>
+        <div class="camera-stage">
+            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تحميل استوديو ماجد...</div>
+            <video id="input_video" autoplay playsinline style="display: none;"></video>
+            <canvas id="output_canvas"></canvas>
+            <div id="flash-effect"></div>
+        </div>
+        <div class="controls">
+            <div class="tabs">
+                <div class="tab active-tab" id="tab-bg" onclick="switchTab('bg')">الخلفيات</div>
+                <div class="tab" id="tab-filter" onclick="switchTab('filter')">الفلاتر</div>
+            </div>
+            <div class="filter-section" id="sec-filter">
+                <div class="filter-carousel">
+                    <div class="filter-btn filter-opt active-btn" data-filter="none">🚫</div>
+                    <div class="filter-btn filter-opt" data-filter="beauty">✨</div>
+                    <div class="filter-btn filter-opt" data-filter="cyber">🕶️</div>
+                    <div class="filter-btn filter-opt" data-filter="paint">🌌</div>
+                </div>
+            </div>
+            <div class="bg-section" id="sec-bg" style="display: block;">
+                <div class="filter-carousel">
+                    <div class="filter-btn bg-btn active-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="moon" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="paris" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=150&q=80');"></div>
+                </div>
+            </div>
+            <div class="capture-ring" id="capture-btn"><div class="capture-inner"></div></div>
+        </div>
+    </div>
+    <script>
+        const videoElement = document.getElementById('input_video');
+        const canvasElement = document.getElementById('output_canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        let currentFilter = 'none', currentBg = 'galaxy', isFrontCam = true, camera, currentFaceLandmarks = null;
         
-        // 1. فلتر الجمال التلقائي (دائماً شغال)
-        if (currentFaceLandmarks) {
-            // تنعيم خفيف جداً للجلد باستخدام فلتر إضاءة ناعمة
-            canvasCtx.fillStyle = 'rgba(255, 230, 210, 0.08)'; 
-            canvasCtx.globalCompositeOperation = 'soft-light';
-            canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
-            canvasCtx.globalCompositeOperation = 'source-over';
+        const bgImages = { 'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 'paris': new Image() };
+        Object.keys(bgImages).forEach(key => { bgImages[key].crossOrigin = "anonymous"; });
+        bgImages['galaxy'].src = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1080&q=85';
+        bgImages['moon'].src = 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?auto=format&fit=crop&w=1080&q=85';
+        bgImages['ship'].src = 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&w=1080&q=85';
+        bgImages['paris'].src = 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1080&q=85';
+
+        function switchTab(t) {
+            document.getElementById('tab-filter').classList.toggle('active-tab', t==='filter');
+            document.getElementById('tab-bg').classList.toggle('active-tab', t==='bg');
+            document.getElementById('sec-filter').style.display = (t==='filter'?'block':'none');
+            document.getElementById('sec-bg').style.display = (t==='bg'?'block':'none');
         }
 
-        // 2. الفلاتر التفاعلية المحدثة
-        if (currentFilter !== 'none' && currentFaceLandmarks) {
-            // ... (نفس منطق الحسابات السابق للميلان)
+        document.querySelectorAll('.filter-opt').forEach(b => b.addEventListener('click', (e) => {
+            document.querySelectorAll('.filter-opt').forEach(x => x.classList.remove('active-btn'));
+            e.currentTarget.classList.add('active-btn');
+            currentFilter = e.currentTarget.dataset.filter;
+        }));
+
+        document.querySelectorAll('.bg-btn').forEach(b => b.addEventListener('click', (e) => {
+            document.querySelectorAll('.bg-btn').forEach(x => x.classList.remove('active-btn'));
+            e.currentTarget.classList.add('active-btn');
+            currentBg = e.currentTarget.dataset.bg;
+        }));
+
+        const faceMesh = new FaceMesh({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${f}`});
+        faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true });
+        faceMesh.onResults(r => currentFaceLandmarks = r.multiFaceLandmarks?.[0] || null);
+
+        const selfieSegmentation = new SelfieSegmentation({locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${f}`});
+        selfieSegmentation.setOptions({ modelSelection: 0 });
+        selfieSegmentation.onResults(r => {
+            document.getElementById('loading-msg').style.display = 'none';
+            if (canvasElement.width !== r.image.width) { canvasElement.width = r.image.width; canvasElement.height = r.image.height; }
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(r.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.globalCompositeOperation = 'source-in';
+            canvasCtx.drawImage(r.image, 0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.globalCompositeOperation = 'destination-over';
+            if (bgImages[currentBg].complete) canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.globalCompositeOperation = 'source-over';
             
-            // 🕶️ فلتر السايبربانك المطور (انسيابي)
-            if (currentFilter === 'cyber') {
-                canvasCtx.save();
-                canvasCtx.translate(cx, cy);
-                canvasCtx.rotate(angle);
-                
-                // شكل نظارة "انسيابي" بدل المربع
-                canvasCtx.beginPath();
-                canvasCtx.ellipse(0, 0, visorWidth/2, visorHeight/1.5, 0, 0, Math.PI * 2);
-                canvasCtx.fillStyle = 'rgba(0, 255, 255, 0.3)';
-                canvasCtx.shadowColor = '#0ff';
-                canvasCtx.shadowBlur = 30;
-                canvasCtx.fill();
-                canvasCtx.restore();
+            // فلتر الجمال التلقائي
+            if(currentFaceLandmarks) {
+                canvasCtx.fillStyle = 'rgba(255,255,255,0.05)';
+                canvasCtx.fillRect(0,0,canvasElement.width, canvasElement.height);
             }
             
-            // 🌌 وشم الفضاء النبضي
-            else if (currentFilter === 'paint') {
-                const pulse = Math.abs(Math.sin(Date.now() * 0.005)); // تأثير النبض
-                drawNeonLine(canvasCtx, currentFaceLandmarks, [103, 67, 10, 297, 332], `rgba(0,255,204,${0.5 + pulse*0.5})`, '#00ffcc');
-                // ... (نفس باقي الخطوط)
-            }
+            // الفلاتر التفاعلية (نظارة، وشم) تضاف هنا بنفس المنطق السابق...
+            canvasCtx.restore();
+        });
+
+        async function startCamera() {
+            if(camera) camera.stop();
+            camera = new Camera(videoElement, {
+                onFrame: async () => { await selfieSegmentation.send({image: videoElement}); if(currentFilter !== 'none') await faceMesh.send({image: videoElement}); },
+                facingMode: isFrontCam ? 'user' : 'environment'
+            });
+            camera.start();
         }
-        // ... (باقي الكود)
-    }
-</script>
+        startCamera();
+        document.getElementById('flip-cam-btn').onclick = () => { isFrontCam = !isFrontCam; startCamera(); };
+        document.getElementById('capture-btn').onclick = () => { 
+            const f = document.getElementById('flash-effect'); f.style.opacity = '1'; setTimeout(() => f.style.opacity = '0', 150);
+            const l = document.createElement('a'); l.download = 'Maged-Pro.png'; l.href = canvasElement.toDataURL(); l.click();
+        };
+    </script>
+</body>
+</html>
