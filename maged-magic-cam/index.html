@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maged Magic Cam Pro</title>
+    <title>Maged Studio Pro</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
@@ -13,33 +13,24 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
         body, html { width: 100%; height: 100%; background-color: #000; overflow: hidden; }
         .app-container { width: 100vw; height: 100dvh; position: relative; }
-        
         .camera-stage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
         #output_canvas { width: 100%; height: 100%; object-fit: cover; }
-        
         header { position: absolute; top: 0; left: 0; width: 100%; padding: 25px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: transparent; }
         .back-btn { color: #fff; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
         header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-        
         #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.7); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
         #flash-effect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.15s ease-out; }
-        
         .controls { position: absolute; bottom: 40px; left: 0; width: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; background: transparent; pointer-events: none; }
         .controls > * { pointer-events: auto; }
-        
         .tabs { display: flex; gap: 30px; margin-bottom: 15px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
         .tab { font-size: 1rem; color: rgba(255,255,255,0.6); font-weight: bold; cursor: pointer; padding-bottom: 5px; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,1); }
         .tab.active-tab { color: #fff; border-bottom: 2px solid #fff; }
-        
         .char-section, .bg-section { width: 100%; }
         .bg-section { display: none; }
-        
         .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0; width: 100%; justify-content: center; scroll-snap-type: x mandatory; margin-bottom: 20px; }
         .filter-carousel::-webkit-scrollbar { display: none; }
-        
         .filter-btn { width: 60px; height: 60px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; }
         .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
-        
         .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s; margin-top: 5px; }
         .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.1s; }
         .capture-ring:active .capture-inner { transform: scale(0.85); background: #e0e0e0; }
@@ -98,20 +89,18 @@
         let currentChar = 'maged';
         let currentBg = 'neon';
 
-        // 1. تحميل صور الشخصيات
         const charImages = { 'maged': new Image(), 'mooney': new Image(), 'abboud': new Image() };
         charImages['maged'].src = 'maged.png';
         charImages['mooney'].src = 'mooney.png';
         charImages['abboud'].src = 'abboud.png';
 
-        // 2. تحميل صور خلفيات أسرع وأوضح (بدون تعليق)
         const bgImages = { 'neon': new Image(), 'cyber': new Image(), 'matrix': new Image() };
         bgImages['neon'].crossOrigin = "anonymous";
-        bgImages['neon'].src = 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800&q=70'; // إضاءة نيون واضحة
+        bgImages['neon'].src = 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800&q=70'; 
         bgImages['cyber'].crossOrigin = "anonymous";
-        bgImages['cyber'].src = 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=70'; // مدينة سايبربانك
+        bgImages['cyber'].src = 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=70'; 
         bgImages['matrix'].crossOrigin = "anonymous";
-        bgImages['matrix'].src = 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=70'; // القلعة اللي عجبتك
+        bgImages['matrix'].src = 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=70'; 
 
         function switchTab(tabName) {
             document.getElementById('tab-char').classList.remove('active-tab');
@@ -138,7 +127,6 @@
             });
         });
 
-        // محرك الرسم الذكي
         function onResults(results) {
             loadingMsg.style.display = 'none';
             if (canvasElement.width !== results.image.width) {
@@ -149,12 +137,12 @@
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // 1. العزل السينمائي مع تنعيم حواف خفيف
+            // 1. العزل السينمائي مع التنعيم
             canvasCtx.filter = 'blur(3px)';
             canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
             canvasCtx.filter = 'none';
 
-            // 2. رسم وجهك بألوانه الطبيعية الواضحة (تم إلغاء الفلتر اللوني المزعج)
+            // 2. رسم الوجه بوضوح بدون فلاتر مزعجة
             canvasCtx.globalCompositeOperation = 'source-in';
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
@@ -163,31 +151,27 @@
             if (bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
                 canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
             } else {
-                // لون احتياطي في حال تأخرت الصورة بالتحميل
                 canvasCtx.fillStyle = '#222';
                 canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             }
 
-            // 4. رسم الرفيق: حجم أكبر، تموضع أفضل، وحركة انسيابية واضحة
+            // 4. رسم الرفيق التفاعلي
             canvasCtx.globalCompositeOperation = 'source-over';
             if (charImages[currentChar].complete && charImages[currentChar].naturalWidth !== 0) {
                 
-                // تكبير الحجم ليصبح مناسباً (65% من العرض بدلاً من 45%)
                 let charWidth = Math.floor(canvasElement.width * 0.65); 
                 let imageRatio = charImages[currentChar].naturalHeight / charImages[currentChar].naturalWidth;
                 let charHeight = Math.floor(charWidth * imageRatio);
                 
-                // === حركات انسيابية ناعمة وبطيئة ===
-                const time = Date.now() * 0.0015; // إبطاء سرعة الحركة لتصبح أروق
-                const floatOffset = Math.sin(time) * 20; // صعود ونزول ملحوظ (20 بيكسل)
-                const swayAngle = Math.cos(time * 0.8) * 0.04; // تمايل يمين ويسار بهدوء
+                // الحركة الانسيابية
+                const time = Date.now() * 0.0015; 
+                const floatOffset = Math.sin(time) * 20; 
+                const swayAngle = Math.cos(time * 0.8) * 0.04; 
                 
-                // تثبيت الشخصية في الأسفل بشكل صحيح
-                let baseYPos = canvasElement.height - charHeight + 30; // إزاحة للأسفل لتثبيت القدمين
+                let baseYPos = canvasElement.height - charHeight + 30; 
                 let animatedYPos = baseYPos + floatOffset;
                 let xPos = (currentChar === 'maged') ? 5 : canvasElement.width - charWidth - 5;
 
-                // إنشاء Canvas مؤقت لتفريغ اللون الأبيض/الأسود
                 const tempCanvas = document.createElement('canvas');
                 tempCanvas.width = charWidth;
                 tempCanvas.height = charHeight;
@@ -202,7 +186,6 @@
                 }
                 tempCtx.putImageData(imgData, 0, 0);
 
-                // تطبيق الحركات الانسيابية
                 canvasCtx.save();
                 canvasCtx.translate(xPos + (charWidth / 2), animatedYPos + (charHeight / 2));
                 canvasCtx.rotate(swayAngle);
