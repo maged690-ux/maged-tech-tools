@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maged Sci-Fi Cam</title>
+    <title>Maged Sci-Fi Cam Pro</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
@@ -29,8 +29,8 @@
         .bg-section { display: none; }
         .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 0; width: 100%; justify-content: center; scroll-snap-type: x mandatory; margin-bottom: 20px; }
         .filter-carousel::-webkit-scrollbar { display: none; }
-        .filter-btn { width: 60px; height: 60px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; }
-        .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(255,255,255,0.4); }
+        .filter-btn { width: 60px; height: 60px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; line-height: 1; }
+        .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(255,255,255,0.6); }
         .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s; margin-top: 5px; }
         .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.1s; }
         .capture-ring:active .capture-inner { transform: scale(0.85); background: #e0e0e0; }
@@ -60,6 +60,7 @@
 
             <div class="char-section" id="sec-char">
                 <div class="filter-carousel">
+                    <div class="filter-btn char-btn" data-char="none" style="font-size: 1.2rem;">🚫</div>
                     <div class="filter-btn char-btn active-btn" data-char="maged">👨‍🦲</div>
                     <div class="filter-btn char-btn" data-char="mooney">🐵</div>
                     <div class="filter-btn char-btn" data-char="abboud">🧑</div>
@@ -68,9 +69,9 @@
 
             <div class="bg-section" id="sec-bg">
                 <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?auto=format&fit=crop&w=150&q=70');"></div>
-                    <div class="filter-btn bg-btn" data-bg="race" style="background-image: url('https://images.unsplash.com/photo-1471440623690-240bf8527b0b?auto=format&fit=crop&w=150&q=70');"></div>
-                    <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=150&q=70');"></div>
+                    <div class="filter-btn bg-btn active-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="race" style="background-image: url('https://images.unsplash.com/photo-1517282009859-f000ec3b26af?auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=150&q=80');"></div>
                 </div>
             </div>
 
@@ -94,13 +95,14 @@
         charImages['mooney'].src = 'mooney.png';
         charImages['abboud'].src = 'abboud.png';
 
+        // تحميل خلفيات خيالية بدقة ممتازة (1080p) لتكون واضحة جداً خلفك
         const bgImages = { 'ship': new Image(), 'race': new Image(), 'galaxy': new Image() };
         bgImages['ship'].crossOrigin = "anonymous";
-        bgImages['ship'].src = 'https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?auto=format&fit=crop&w=800&q=70'; 
+        bgImages['ship'].src = 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&w=1080&q=85'; // قمرة قيادة سفينة فضائية
         bgImages['race'].crossOrigin = "anonymous";
-        bgImages['race'].src = 'https://images.unsplash.com/photo-1471440623690-240bf8527b0b?auto=format&fit=crop&w=800&q=70'; 
+        bgImages['race'].src = 'https://images.unsplash.com/photo-1517282009859-f000ec3b26af?auto=format&fit=crop&w=1080&q=85'; // مقود سيارة سباق ليلية
         bgImages['galaxy'].crossOrigin = "anonymous";
-        bgImages['galaxy'].src = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=70'; 
+        bgImages['galaxy'].src = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1080&q=85'; // مجرة الفضاء الساحرة
 
         function switchTab(tabName) {
             document.getElementById('tab-char').classList.remove('active-tab');
@@ -137,27 +139,30 @@
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // 1. العزل السينمائي
-            canvasCtx.filter = 'blur(3px)';
+            // 1. العزل الدقيق (تم تخفيف التغبيش لـ 1px فقط لتكون حوافك واضحة وألوانك نقية)
+            canvasCtx.filter = 'blur(1px)';
             canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
             canvasCtx.filter = 'none';
 
-            // 2. رسم الوجه
+            // 2. رسم صورتك الأصلية بوضوح
             canvasCtx.globalCompositeOperation = 'source-in';
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-            // 3. رسم الخلفية الخيالية
+            // 3. رسم الخلفية الخيالية بوضوح خلفك
             canvasCtx.globalCompositeOperation = 'destination-over';
             if (bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
                 canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
             } else {
-                canvasCtx.fillStyle = '#112';
+                // تدرج لوني سينمائي جميل في حال تأخر تحميل الصورة
+                let grad = canvasCtx.createLinearGradient(0,0, 0, canvasElement.height);
+                grad.addColorStop(0, "#0f172a"); grad.addColorStop(1, "#1e293b");
+                canvasCtx.fillStyle = grad;
                 canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             }
 
-            // 4. رسم الرفيق وتجهيز الخوذة
+            // 4. رسم الرفيق فقط إذا لم يتم اختيار "بدون رفيق"
             canvasCtx.globalCompositeOperation = 'source-over';
-            if (charImages[currentChar].complete && charImages[currentChar].naturalWidth !== 0) {
+            if (currentChar !== 'none' && charImages[currentChar].complete && charImages[currentChar].naturalWidth !== 0) {
                 
                 let charWidth = Math.floor(canvasElement.width * 0.65); 
                 let imageRatio = charImages[currentChar].naturalHeight / charImages[currentChar].naturalWidth;
@@ -189,26 +194,22 @@
                 canvasCtx.translate(xPos + (charWidth / 2), animatedYPos + (charHeight / 2));
                 canvasCtx.rotate(swayAngle);
                 
-                // رسم الأفاتار
                 canvasCtx.drawImage(tempCanvas, -charWidth / 2, -charHeight / 2);
 
-                // === السحر: رسم خوذة فضاء زجاجية إذا كنا في الفضاء ===
+                // رسم خوذة الفضاء الشفافة في عوالم الفضاء
                 if (currentBg === 'ship' || currentBg === 'galaxy') {
-                    let headY = -charHeight / 2 + (charHeight * 0.15); // تقدير موقع الرأس
-                    let helmetRadius = charWidth * 0.35; // عرض الخوذة
+                    let headY = -charHeight / 2 + (charHeight * 0.15); 
+                    let helmetRadius = charWidth * 0.35; 
 
-                    // زجاج الخوذة الشفاف
                     canvasCtx.beginPath();
                     canvasCtx.arc(0, headY, helmetRadius, 0, Math.PI * 2);
-                    canvasCtx.fillStyle = 'rgba(200, 230, 255, 0.25)'; // لون أزرق زجاجي شفاف
+                    canvasCtx.fillStyle = 'rgba(150, 210, 255, 0.2)'; 
                     canvasCtx.fill();
                     
-                    // إطار الخوذة (وهج خفيف)
                     canvasCtx.lineWidth = 3;
-                    canvasCtx.strokeStyle = 'rgba(100, 200, 255, 0.6)';
+                    canvasCtx.strokeStyle = 'rgba(100, 200, 255, 0.5)';
                     canvasCtx.stroke();
 
-                    // لمعة الزجاج (Reflection)
                     canvasCtx.beginPath();
                     canvasCtx.arc(-helmetRadius * 0.3, headY - helmetRadius * 0.3, helmetRadius * 0.2, 0, Math.PI * 2);
                     canvasCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
