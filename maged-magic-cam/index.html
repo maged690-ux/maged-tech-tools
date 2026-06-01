@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maged Sci-Fi Cam Pro</title>
+    <title>Maged Sci-Fi Cam Max</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
@@ -18,7 +18,7 @@
         header { position: absolute; top: 0; left: 0; width: 100%; padding: 25px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: transparent; }
         .back-btn { color: #fff; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
         header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(100,200,255,0.8); }
-        #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.7); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.8); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
         #flash-effect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.15s ease-out; }
         .controls { position: absolute; bottom: 40px; left: 0; width: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; background: transparent; pointer-events: none; }
         .controls > * { pointer-events: auto; }
@@ -46,7 +46,7 @@
         </header>
 
         <div class="camera-stage">
-            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تجهيز العوالم...</div>
+            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> إعداد الكاميرا الاحترافية...</div>
             <video id="input_video" autoplay playsinline style="display: none;"></video>
             <canvas id="output_canvas"></canvas>
             <div id="flash-effect"></div>
@@ -95,14 +95,13 @@
         charImages['mooney'].src = 'mooney.png';
         charImages['abboud'].src = 'abboud.png';
 
-        // تحميل خلفيات خيالية بدقة ممتازة (1080p) لتكون واضحة جداً خلفك
         const bgImages = { 'ship': new Image(), 'race': new Image(), 'galaxy': new Image() };
         bgImages['ship'].crossOrigin = "anonymous";
-        bgImages['ship'].src = 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&w=1080&q=85'; // قمرة قيادة سفينة فضائية
+        bgImages['ship'].src = 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&w=1080&q=85'; 
         bgImages['race'].crossOrigin = "anonymous";
-        bgImages['race'].src = 'https://images.unsplash.com/photo-1517282009859-f000ec3b26af?auto=format&fit=crop&w=1080&q=85'; // مقود سيارة سباق ليلية
+        bgImages['race'].src = 'https://images.unsplash.com/photo-1517282009859-f000ec3b26af?auto=format&fit=crop&w=1080&q=85'; 
         bgImages['galaxy'].crossOrigin = "anonymous";
-        bgImages['galaxy'].src = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1080&q=85'; // مجرة الفضاء الساحرة
+        bgImages['galaxy'].src = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1080&q=85'; 
 
         function switchTab(tabName) {
             document.getElementById('tab-char').classList.remove('active-tab');
@@ -139,28 +138,24 @@
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // 1. العزل الدقيق (تم تخفيف التغبيش لـ 1px فقط لتكون حوافك واضحة وألوانك نقية)
-            canvasCtx.filter = 'blur(1px)';
-            canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
-            canvasCtx.filter = 'none';
-
-            // 2. رسم صورتك الأصلية بوضوح
-            canvasCtx.globalCompositeOperation = 'source-in';
+            // === 1. رسم الكاميرا الأصلية بوضوح تام ===
+            canvasCtx.globalCompositeOperation = 'source-over';
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-            // 3. رسم الخلفية الخيالية بوضوح خلفك
+            // === 2. قص الخلفية باستخدام القناع (طريقة destination-in تعطي قص حاد ونظيف جداً) ===
+            canvasCtx.globalCompositeOperation = 'destination-in';
+            canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
+
+            // === 3. وضع الخلفية الخيالية وراءك ===
             canvasCtx.globalCompositeOperation = 'destination-over';
             if (bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
                 canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
             } else {
-                // تدرج لوني سينمائي جميل في حال تأخر تحميل الصورة
-                let grad = canvasCtx.createLinearGradient(0,0, 0, canvasElement.height);
-                grad.addColorStop(0, "#0f172a"); grad.addColorStop(1, "#1e293b");
-                canvasCtx.fillStyle = grad;
+                canvasCtx.fillStyle = '#0f172a';
                 canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             }
 
-            // 4. رسم الرفيق فقط إذا لم يتم اختيار "بدون رفيق"
+            // === 4. رسم الرفيق (إذا لم يكن "بدون رفيق") ===
             canvasCtx.globalCompositeOperation = 'source-over';
             if (currentChar !== 'none' && charImages[currentChar].complete && charImages[currentChar].naturalWidth !== 0) {
                 
@@ -196,7 +191,6 @@
                 
                 canvasCtx.drawImage(tempCanvas, -charWidth / 2, -charHeight / 2);
 
-                // رسم خوذة الفضاء الشفافة في عوالم الفضاء
                 if (currentBg === 'ship' || currentBg === 'galaxy') {
                     let headY = -charHeight / 2 + (charHeight * 0.15); 
                     let helmetRadius = charWidth * 0.35; 
@@ -219,7 +213,6 @@
                 canvasCtx.restore();
             }
             
-            // الختم
             let watermarkSize = Math.floor(canvasElement.width * 0.045);
             canvasCtx.font = "bold " + watermarkSize + "px Tahoma";
             canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
@@ -233,7 +226,9 @@
         const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
         }});
-        selfieSegmentation.setOptions({ modelSelection: 1 });
+        
+        // السر هنا: رفعنا دقة الموديل لأعلى مستوى (0 بدلاً من 1) ليمنع التقطيع والتشوهات
+        selfieSegmentation.setOptions({ modelSelection: 0 });
         selfieSegmentation.onResults(onResults);
 
         const camera = new Camera(videoElement, {
@@ -249,7 +244,7 @@
             
             const dataURL = canvasElement.toDataURL('image/png');
             const link = document.createElement('a');
-            link.download = 'Maged-SciFi.png';
+            link.download = 'Maged-SciFi-Max.png';
             link.href = dataURL;
             link.click();
         });
