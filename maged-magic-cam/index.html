@@ -131,7 +131,6 @@
             });
         });
 
-        // 1. إعداد متتبع الوجه
         const faceMesh = new FaceMesh({locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
         }});
@@ -144,12 +143,28 @@
             }
         });
 
-        // 2. إعداد عازل الخلفية
         const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
         }});
         selfieSegmentation.setOptions({ modelSelection: 0 });
         
+        // دالة مساعدة لرسم خطوط الوشم بدقة
+        function drawNeonLine(ctx, landmarks, indices, color, glow) {
+            ctx.beginPath();
+            indices.forEach((idx, i) => {
+                const pt = landmarks[idx];
+                const x = pt.x * canvasElement.width;
+                const y = pt.y * canvasElement.height;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.shadowColor = glow;
+            ctx.shadowBlur = 15;
+            ctx.stroke();
+        }
+
         selfieSegmentation.onResults((results) => {
             loadingMsg.style.display = 'none';
             if (canvasElement.width !== results.image.width) {
@@ -160,7 +175,7 @@
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // عزل الخلفية الحاد
+            // 1. العزل
             canvasCtx.globalCompositeOperation = 'source-over';
             canvasCtx.filter = 'contrast(300%) brightness(90%)';
             canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
@@ -177,35 +192,110 @@
                 canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             }
 
-            // رسم الفلتر (شبكة التعقب التجريبية)
+            // === 2. الفلاتر التفاعلية (Magic AR Masks) ===
             canvasCtx.globalCompositeOperation = 'source-over';
             if (currentFilter !== 'none' && currentFaceLandmarks) {
-                canvasCtx.fillStyle = 'rgba(0, 255, 200, 0.8)';
-                canvasCtx.shadowColor = 'rgba(0, 255, 200, 1)';
-                canvasCtx.shadowBlur = 5;
+                
+                // حساب النقاط الأساسية للوجه (أطراف العيون لحساب الدوران والحجم)
+                const leftEyeEdge = currentFaceLandmarks[234]; // الحافة اليسرى للوجه
+                const rightEyeEdge = currentFaceLandmarks[454]; // الحافة اليمنى للوجه
+                const x1 = leftEyeEdge.x * canvasElement.width;
+                const y1 = leftEyeEdge.y * canvasElement.height;
+                const x2 = rightEyeEdge.x * canvasElement.width;
+                const y2 = rightEyeEdge.y * canvasElement.height;
+                
+                // حساب مركز الوجه، زاوية الميلان، وعرض الوجه
+                const cx = (x1 + x2) / 2;
+                const cy = (y1 + y2) / 2;
+                const angle = Math.atan2(y2 - y1, x2 - x1);
+                const faceWidth = Math.hypot(x2 - x1, y2 - y1);
 
-                for (let i = 0; i < currentFaceLandmarks.length; i++) {
-                    const x = currentFaceLandmarks[i].x * canvasElement.width;
-                    const y = currentFaceLandmarks[i].y * canvasElement.height;
+                // ✨ فلتر الجمال (Beauty): إضاءة دافئة ناعمة على الوجه
+                if (currentFilter === 'beauty') {
+                    const faceOval = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 10];
                     canvasCtx.beginPath();
-                    canvasCtx.arc(x, y, 1.2, 0, 2 * Math.PI);
+                    faceOval.forEach((idx, i) => {
+                        const pt = currentFaceLandmarks[idx];
+                        const px = pt.x * canvasElement.width;
+                        const py = pt.y * canvasElement.height;
+                        if (i === 0) canvasCtx.moveTo(px, py);
+                        else canvasCtx.lineTo(px, py);
+                    });
+                    canvasCtx.closePath();
+                    canvasCtx.fillStyle = 'rgba(255, 220, 180, 0.15)'; // إضاءة دافئة
+                    canvasCtx.shadowColor = 'rgba(255, 220, 180, 0.5)';
+                    canvasCtx.shadowBlur = 20;
                     canvasCtx.fill();
+                }
+                
+                // 🕶️ فلتر السايبربانك (Cyber Visor): نظارة نيون ثلاثية الأبعاد
+                else if (currentFilter === 'cyber') {
+                    const visorWidth = faceWidth * 1.3;
+                    const visorHeight = visorWidth * 0.35;
+                    
+                    canvasCtx.save();
+                    canvasCtx.translate(cx, cy); // الذهاب لمركز العيون
+                    canvasCtx.rotate(angle);     // الدوران مع ميلان الرأس
+                    
+                    // رسم زجاج النظارة (تدرج لوني)
+                    let grad = canvasCtx.createLinearGradient(-visorWidth/2, 0, visorWidth/2, 0);
+                    grad.addColorStop(0, 'rgba(0, 255, 255, 0.7)'); // سيان
+                    grad.addColorStop(0.5, 'rgba(255, 0, 255, 0.5)'); // زهري
+                    grad.addColorStop(1, 'rgba(0, 255, 255, 0.7)');
+                    
+                    canvasCtx.fillStyle = grad;
+                    canvasCtx.shadowColor = '#0ff';
+                    canvasCtx.shadowBlur = 25;
+                    
+                    // رسم شكل النظارة المستقبلية
+                    canvasCtx.beginPath();
+                    canvasCtx.roundRect(-visorWidth/2, -visorHeight/2, visorWidth, visorHeight, [15, 15, 40, 40]);
+                    canvasCtx.fill();
+                    
+                    // إضافة إطار خارجي للنظارة
+                    canvasCtx.lineWidth = 2;
+                    canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                    canvasCtx.stroke();
+                    
+                    canvasCtx.restore();
+                }
+                
+                // 🌌 فلتر وشم الفضاء (Face Paint): خطوط متوهجة
+                else if (currentFilter === 'paint') {
+                    // وشم الجبين
+                    drawNeonLine(canvasCtx, currentFaceLandmarks, [103, 67, 10, 297, 332], '#00ffcc', '#00ffcc');
+                    drawNeonLine(canvasCtx, currentFaceLandmarks, [54, 68, 104, 69, 108], '#00ffcc', '#00ffcc');
+                    drawNeonLine(canvasCtx, currentFaceLandmarks, [284, 298, 333, 299, 337], '#00ffcc', '#00ffcc');
+                    
+                    // وشم الخد الأيسر
+                    drawNeonLine(canvasCtx, currentFaceLandmarks, [116, 123, 147, 213, 192], '#ff00ff', '#ff00ff');
+                    drawNeonLine(canvasCtx, currentFaceLandmarks, [117, 118, 100, 120], '#ff00ff', '#ff00ff');
+                    
+                    // وشم الخد الأيمن
+                    drawNeonLine(canvasCtx, currentFaceLandmarks, [345, 352, 376, 433, 416], '#ff00ff', '#ff00ff');
+                    drawNeonLine(canvasCtx, currentFaceLandmarks, [346, 347, 329, 349], '#ff00ff', '#ff00ff');
                 }
             }
             
+            // الختم
+            let watermarkSize = Math.floor(canvasElement.width * 0.045);
+            canvasCtx.font = "bold " + watermarkSize + "px Tahoma";
+            canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
+            canvasCtx.shadowColor = "rgba(0,0,0,0.9)";
+            canvasCtx.shadowBlur = 8;
+            canvasCtx.scale(-1, 1);
+            canvasCtx.fillText("Maged Filters ✨", -canvasElement.width + 20, canvasElement.height - 30);
+
             canvasCtx.restore();
         });
 
-        // 3. محرك الكاميرا الذكي والمخفف للضغط
         function startCamera() {
             if(camera) { camera.stop(); }
             loadingMsg.style.display = 'block';
             camera = new Camera(videoElement, {
                 onFrame: async () => { 
                     try {
-                        // دائماً شغل العزل
                         await selfieSegmentation.send({image: videoElement});
-                        // شغل الفلاتر فقط إذا ما كانت على "بدون" (بيخفف التعليق 100%)
                         if (currentFilter !== 'none') {
                             await faceMesh.send({image: videoElement});
                         } else {
