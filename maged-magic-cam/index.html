@@ -46,7 +46,7 @@
         </header>
 
         <div class="camera-stage">
-            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> إعداد الكاميرا الاحترافية...</div>
+            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> إعداد الدمج الاحترافي...</div>
             <video id="input_video" autoplay playsinline style="display: none;"></video>
             <canvas id="output_canvas"></canvas>
             <div id="flash-effect"></div>
@@ -60,8 +60,8 @@
 
             <div class="char-section" id="sec-char">
                 <div class="filter-carousel">
-                    <div class="filter-btn char-btn" data-char="none" style="font-size: 1.2rem;">🚫</div>
-                    <div class="filter-btn char-btn active-btn" data-char="maged">👨‍🦲</div>
+                    <div class="filter-btn char-btn active-btn" data-char="none" style="font-size: 1.2rem;">🚫</div>
+                    <div class="filter-btn char-btn" data-char="maged">👨‍🦲</div>
                     <div class="filter-btn char-btn" data-char="mooney">🐵</div>
                     <div class="filter-btn char-btn" data-char="abboud">🧑</div>
                 </div>
@@ -69,9 +69,9 @@
 
             <div class="bg-section" id="sec-bg">
                 <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="race" style="background-image: url('https://images.unsplash.com/photo-1517282009859-f000ec3b26af?auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn active-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="race" style="background-image: url('https://images.unsplash.com/photo-1547394765-185e1e68f34e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                 </div>
             </div>
 
@@ -87,7 +87,7 @@
         const canvasCtx = canvasElement.getContext('2d');
         const loadingMsg = document.getElementById('loading-msg');
         
-        let currentChar = 'maged';
+        let currentChar = 'none'; // خليناها تبلش بدون رفيق متل ما طلبت
         let currentBg = 'ship';
 
         const charImages = { 'maged': new Image(), 'mooney': new Image(), 'abboud': new Image() };
@@ -95,13 +95,14 @@
         charImages['mooney'].src = 'mooney.png';
         charImages['abboud'].src = 'abboud.png';
 
+        // روابط قوية وموثوقة جداً للخلفيات
         const bgImages = { 'ship': new Image(), 'race': new Image(), 'galaxy': new Image() };
         bgImages['ship'].crossOrigin = "anonymous";
-        bgImages['ship'].src = 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?auto=format&fit=crop&w=1080&q=85'; 
+        bgImages['ship'].src = 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
         bgImages['race'].crossOrigin = "anonymous";
-        bgImages['race'].src = 'https://images.unsplash.com/photo-1517282009859-f000ec3b26af?auto=format&fit=crop&w=1080&q=85'; 
+        bgImages['race'].src = 'https://images.unsplash.com/photo-1547394765-185e1e68f34e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; // خلفية سايبربانك/سباق جديدة مضمونة
         bgImages['galaxy'].crossOrigin = "anonymous";
-        bgImages['galaxy'].src = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1080&q=85'; 
+        bgImages['galaxy'].src = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
 
         function switchTab(tabName) {
             document.getElementById('tab-char').classList.remove('active-tab');
@@ -138,15 +139,17 @@
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // === 1. رسم الكاميرا الأصلية بوضوح تام ===
+            // 1. رسم صورتك الأصلية
             canvasCtx.globalCompositeOperation = 'source-over';
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-            // === 2. قص الخلفية باستخدام القناع (طريقة destination-in تعطي قص حاد ونظيف جداً) ===
+            // 2. سر الدمج الناعم: تنعيم القناع (الماسك) قبل القص لتختفي الحواف المشرشرة!
             canvasCtx.globalCompositeOperation = 'destination-in';
+            canvasCtx.filter = 'blur(2px)'; // هاد الفلتر بيعمل حواف ناعمة جداً
             canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.filter = 'none';
 
-            // === 3. وضع الخلفية الخيالية وراءك ===
+            // 3. رسم الخلفية الخيالية خلفك
             canvasCtx.globalCompositeOperation = 'destination-over';
             if (bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
                 canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
@@ -155,7 +158,14 @@
                 canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             }
 
-            // === 4. رسم الرفيق (إذا لم يكن "بدون رفيق") ===
+            // 4. توحيد الإضاءة (Color Grading) لتبدو بقلب الحدث
+            canvasCtx.globalCompositeOperation = 'overlay';
+            if (currentBg === 'ship') canvasCtx.fillStyle = 'rgba(100, 200, 255, 0.1)'; 
+            else if (currentBg === 'race') canvasCtx.fillStyle = 'rgba(255, 50, 100, 0.1)'; 
+            else canvasCtx.fillStyle = 'rgba(200, 100, 255, 0.15)'; 
+            canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+
+            // 5. رسم الرفيق (مؤجل لحتى نتأكد إنو الخلفية صارت ممتازة)
             canvasCtx.globalCompositeOperation = 'source-over';
             if (currentChar !== 'none' && charImages[currentChar].complete && charImages[currentChar].naturalWidth !== 0) {
                 
@@ -188,31 +198,11 @@
                 canvasCtx.save();
                 canvasCtx.translate(xPos + (charWidth / 2), animatedYPos + (charHeight / 2));
                 canvasCtx.rotate(swayAngle);
-                
                 canvasCtx.drawImage(tempCanvas, -charWidth / 2, -charHeight / 2);
-
-                if (currentBg === 'ship' || currentBg === 'galaxy') {
-                    let headY = -charHeight / 2 + (charHeight * 0.15); 
-                    let helmetRadius = charWidth * 0.35; 
-
-                    canvasCtx.beginPath();
-                    canvasCtx.arc(0, headY, helmetRadius, 0, Math.PI * 2);
-                    canvasCtx.fillStyle = 'rgba(150, 210, 255, 0.2)'; 
-                    canvasCtx.fill();
-                    
-                    canvasCtx.lineWidth = 3;
-                    canvasCtx.strokeStyle = 'rgba(100, 200, 255, 0.5)';
-                    canvasCtx.stroke();
-
-                    canvasCtx.beginPath();
-                    canvasCtx.arc(-helmetRadius * 0.3, headY - helmetRadius * 0.3, helmetRadius * 0.2, 0, Math.PI * 2);
-                    canvasCtx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-                    canvasCtx.fill();
-                }
-
                 canvasCtx.restore();
             }
             
+            // الختم
             let watermarkSize = Math.floor(canvasElement.width * 0.045);
             canvasCtx.font = "bold " + watermarkSize + "px Tahoma";
             canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
@@ -227,8 +217,7 @@
             return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
         }});
         
-        // السر هنا: رفعنا دقة الموديل لأعلى مستوى (0 بدلاً من 1) ليمنع التقطيع والتشوهات
-        selfieSegmentation.setOptions({ modelSelection: 0 });
+        selfieSegmentation.setOptions({ modelSelection: 0 }); // دقة قص عالية
         selfieSegmentation.onResults(onResults);
 
         const camera = new Camera(videoElement, {
