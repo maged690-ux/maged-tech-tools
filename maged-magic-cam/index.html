@@ -1,342 +1,48 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maged Filter Cam</title>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script>
+    // ... (نفس إعدادات الكاميرا السابقة)
 
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body, html { width: 100%; height: 100%; background-color: #000; overflow: hidden; }
-        .app-container { width: 100vw; height: 100dvh; position: relative; }
-        .camera-stage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        #output_canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-        header { position: absolute; top: 0; left: 0; width: 100%; padding: 25px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: transparent; }
-        .icon-btn { color: #fff; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); background: none; border: none; cursor: pointer; }
-        header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,255,200,0.8); }
-        #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.8); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
-        #flash-effect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.15s ease-out; }
-        .controls { position: absolute; bottom: 40px; left: 0; width: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; background: transparent; pointer-events: none; }
-        .controls > * { pointer-events: auto; }
-        .tabs { display: flex; gap: 30px; margin-bottom: 15px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
-        .tab { font-size: 1rem; color: rgba(255,255,255,0.6); font-weight: bold; cursor: pointer; padding-bottom: 5px; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,1); }
-        .tab.active-tab { color: #fff; border-bottom: 2px solid #fff; }
-        .filter-section, .bg-section { width: 100%; }
-        .filter-section { display: none; }
-        .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 15px; width: 100%; scroll-snap-type: x mandatory; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
-        .filter-carousel::-webkit-scrollbar { display: none; }
-        .filter-btn { flex: 0 0 auto; width: 65px; height: 65px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; line-height: 1; scroll-snap-align: center; }
-        .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(0,255,200,0.6); }
-        .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s; margin-top: 5px; }
-        .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.1s; }
-        .capture-ring:active .capture-inner { transform: scale(0.85); background: #e0e0e0; }
-    </style>
-</head>
-<body>
+    function onResults(results) {
+        // ... (كود العزل والدمج نفس الشيء)
 
-    <div class="app-container">
-        <header>
-            <a href="../index.html" class="icon-btn"><i class="fa-solid fa-xmark"></i></a>
-            <h1>Maged Filters ✨</h1>
-            <button id="flip-cam-btn" class="icon-btn"><i class="fa-solid fa-camera-rotate"></i></button>
-        </header>
-
-        <div class="camera-stage">
-            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تشغيل الكاميرا...</div>
-            <video id="input_video" autoplay playsinline style="display: none;"></video>
-            <canvas id="output_canvas"></canvas>
-            <div id="flash-effect"></div>
-        </div>
-
-        <div class="controls">
-            <div class="tabs">
-                <div class="tab active-tab" id="tab-bg" onclick="switchTab('bg')">الخلفيات</div>
-                <div class="tab" id="tab-filter" onclick="switchTab('filter')">الفلاتر</div>
-            </div>
-
-            <div class="filter-section" id="sec-filter">
-                <div class="filter-carousel">
-                    <div class="filter-btn filter-opt active-btn" data-filter="none" style="font-size: 1.2rem;">🚫</div>
-                    <div class="filter-btn filter-opt" data-filter="beauty" style="font-size: 1.2rem;">✨</div>
-                    <div class="filter-btn filter-opt" data-filter="cyber" style="font-size: 1.2rem;">🕶️</div>
-                    <div class="filter-btn filter-opt" data-filter="paint" style="font-size: 1.2rem;">🌌</div>
-                </div>
-            </div>
-
-            <div class="bg-section" id="sec-bg" style="display: block;">
-                <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="moon" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="paris" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="egypt" style="background-image: url('https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                </div>
-            </div>
-
-            <div class="capture-ring" id="capture-btn">
-                <div class="capture-inner"></div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const videoElement = document.getElementById('input_video');
-        const canvasElement = document.getElementById('output_canvas');
-        const canvasCtx = canvasElement.getContext('2d');
-        const loadingMsg = document.getElementById('loading-msg');
+        // === التعديل الاحترافي هنا ===
+        canvasCtx.globalCompositeOperation = 'source-over';
         
-        let currentFilter = 'none'; 
-        let currentBg = 'galaxy';
-        let isFrontCam = true; 
-        let camera; 
-        let currentFaceLandmarks = null;
-
-        const bgImages = { 
-            'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
-            'paris': new Image(), 'egypt': new Image()
-        };
-        bgImages['galaxy'].crossOrigin = "anonymous"; bgImages['galaxy'].src = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
-        bgImages['moon'].crossOrigin = "anonymous"; bgImages['moon'].src = 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
-        bgImages['ship'].crossOrigin = "anonymous"; bgImages['ship'].src = 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
-        bgImages['paris'].crossOrigin = "anonymous"; bgImages['paris'].src = 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
-        bgImages['egypt'].crossOrigin = "anonymous"; bgImages['egypt'].src = 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
-
-        function switchTab(tabName) {
-            document.getElementById('tab-filter').classList.remove('active-tab');
-            document.getElementById('tab-bg').classList.remove('active-tab');
-            document.getElementById('sec-filter').style.display = 'none';
-            document.getElementById('sec-bg').style.display = 'none';
-            document.getElementById('tab-' + tabName).classList.add('active-tab');
-            document.getElementById('sec-' + tabName).style.display = 'block';
-        }
-
-        document.querySelectorAll('.filter-opt').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.filter-opt').forEach(b => b.classList.remove('active-btn'));
-                e.currentTarget.classList.add('active-btn');
-                currentFilter = e.currentTarget.dataset.filter;
-            });
-        });
-
-        document.querySelectorAll('.bg-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.bg-btn').forEach(b => b.classList.remove('active-btn'));
-                e.currentTarget.classList.add('active-btn');
-                currentBg = e.currentTarget.dataset.bg;
-            });
-        });
-
-        const faceMesh = new FaceMesh({locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
-        }});
-        faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
-        faceMesh.onResults((results) => {
-            if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-                currentFaceLandmarks = results.multiFaceLandmarks[0];
-            } else {
-                currentFaceLandmarks = null;
-            }
-        });
-
-        const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
-        }});
-        selfieSegmentation.setOptions({ modelSelection: 0 });
-        
-        // دالة مساعدة لرسم خطوط الوشم بدقة
-        function drawNeonLine(ctx, landmarks, indices, color, glow) {
-            ctx.beginPath();
-            indices.forEach((idx, i) => {
-                const pt = landmarks[idx];
-                const x = pt.x * canvasElement.width;
-                const y = pt.y * canvasElement.height;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
-            });
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 3;
-            ctx.shadowColor = glow;
-            ctx.shadowBlur = 15;
-            ctx.stroke();
-        }
-
-        selfieSegmentation.onResults((results) => {
-            loadingMsg.style.display = 'none';
-            if (canvasElement.width !== results.image.width) {
-                canvasElement.width = results.image.width;
-                canvasElement.height = results.image.height;
-            }
-
-            canvasCtx.save();
-            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
-            // 1. العزل
+        // 1. فلتر الجمال التلقائي (دائماً شغال)
+        if (currentFaceLandmarks) {
+            // تنعيم خفيف جداً للجلد باستخدام فلتر إضاءة ناعمة
+            canvasCtx.fillStyle = 'rgba(255, 230, 210, 0.08)'; 
+            canvasCtx.globalCompositeOperation = 'soft-light';
+            canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             canvasCtx.globalCompositeOperation = 'source-over';
-            canvasCtx.filter = 'contrast(300%) brightness(90%)';
-            canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
-            canvasCtx.filter = 'none';
-
-            canvasCtx.globalCompositeOperation = 'source-in';
-            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
-
-            canvasCtx.globalCompositeOperation = 'destination-over';
-            if (bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
-                canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
-            } else {
-                canvasCtx.fillStyle = '#111'; 
-                canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
-            }
-
-            // === 2. الفلاتر التفاعلية (Magic AR Masks) ===
-            canvasCtx.globalCompositeOperation = 'source-over';
-            if (currentFilter !== 'none' && currentFaceLandmarks) {
-                
-                // حساب النقاط الأساسية للوجه (أطراف العيون لحساب الدوران والحجم)
-                const leftEyeEdge = currentFaceLandmarks[234]; // الحافة اليسرى للوجه
-                const rightEyeEdge = currentFaceLandmarks[454]; // الحافة اليمنى للوجه
-                const x1 = leftEyeEdge.x * canvasElement.width;
-                const y1 = leftEyeEdge.y * canvasElement.height;
-                const x2 = rightEyeEdge.x * canvasElement.width;
-                const y2 = rightEyeEdge.y * canvasElement.height;
-                
-                // حساب مركز الوجه، زاوية الميلان، وعرض الوجه
-                const cx = (x1 + x2) / 2;
-                const cy = (y1 + y2) / 2;
-                const angle = Math.atan2(y2 - y1, x2 - x1);
-                const faceWidth = Math.hypot(x2 - x1, y2 - y1);
-
-                // ✨ فلتر الجمال (Beauty): إضاءة دافئة ناعمة على الوجه
-                if (currentFilter === 'beauty') {
-                    const faceOval = [10, 338, 297, 332, 284, 251, 389, 356, 454, 323, 361, 288, 397, 365, 379, 378, 400, 377, 152, 148, 176, 149, 150, 136, 172, 58, 132, 93, 234, 127, 162, 21, 54, 103, 67, 10];
-                    canvasCtx.beginPath();
-                    faceOval.forEach((idx, i) => {
-                        const pt = currentFaceLandmarks[idx];
-                        const px = pt.x * canvasElement.width;
-                        const py = pt.y * canvasElement.height;
-                        if (i === 0) canvasCtx.moveTo(px, py);
-                        else canvasCtx.lineTo(px, py);
-                    });
-                    canvasCtx.closePath();
-                    canvasCtx.fillStyle = 'rgba(255, 220, 180, 0.15)'; // إضاءة دافئة
-                    canvasCtx.shadowColor = 'rgba(255, 220, 180, 0.5)';
-                    canvasCtx.shadowBlur = 20;
-                    canvasCtx.fill();
-                }
-                
-                // 🕶️ فلتر السايبربانك (Cyber Visor): نظارة نيون ثلاثية الأبعاد
-                else if (currentFilter === 'cyber') {
-                    const visorWidth = faceWidth * 1.3;
-                    const visorHeight = visorWidth * 0.35;
-                    
-                    canvasCtx.save();
-                    canvasCtx.translate(cx, cy); // الذهاب لمركز العيون
-                    canvasCtx.rotate(angle);     // الدوران مع ميلان الرأس
-                    
-                    // رسم زجاج النظارة (تدرج لوني)
-                    let grad = canvasCtx.createLinearGradient(-visorWidth/2, 0, visorWidth/2, 0);
-                    grad.addColorStop(0, 'rgba(0, 255, 255, 0.7)'); // سيان
-                    grad.addColorStop(0.5, 'rgba(255, 0, 255, 0.5)'); // زهري
-                    grad.addColorStop(1, 'rgba(0, 255, 255, 0.7)');
-                    
-                    canvasCtx.fillStyle = grad;
-                    canvasCtx.shadowColor = '#0ff';
-                    canvasCtx.shadowBlur = 25;
-                    
-                    // رسم شكل النظارة المستقبلية
-                    canvasCtx.beginPath();
-                    canvasCtx.roundRect(-visorWidth/2, -visorHeight/2, visorWidth, visorHeight, [15, 15, 40, 40]);
-                    canvasCtx.fill();
-                    
-                    // إضافة إطار خارجي للنظارة
-                    canvasCtx.lineWidth = 2;
-                    canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-                    canvasCtx.stroke();
-                    
-                    canvasCtx.restore();
-                }
-                
-                // 🌌 فلتر وشم الفضاء (Face Paint): خطوط متوهجة
-                else if (currentFilter === 'paint') {
-                    // وشم الجبين
-                    drawNeonLine(canvasCtx, currentFaceLandmarks, [103, 67, 10, 297, 332], '#00ffcc', '#00ffcc');
-                    drawNeonLine(canvasCtx, currentFaceLandmarks, [54, 68, 104, 69, 108], '#00ffcc', '#00ffcc');
-                    drawNeonLine(canvasCtx, currentFaceLandmarks, [284, 298, 333, 299, 337], '#00ffcc', '#00ffcc');
-                    
-                    // وشم الخد الأيسر
-                    drawNeonLine(canvasCtx, currentFaceLandmarks, [116, 123, 147, 213, 192], '#ff00ff', '#ff00ff');
-                    drawNeonLine(canvasCtx, currentFaceLandmarks, [117, 118, 100, 120], '#ff00ff', '#ff00ff');
-                    
-                    // وشم الخد الأيمن
-                    drawNeonLine(canvasCtx, currentFaceLandmarks, [345, 352, 376, 433, 416], '#ff00ff', '#ff00ff');
-                    drawNeonLine(canvasCtx, currentFaceLandmarks, [346, 347, 329, 349], '#ff00ff', '#ff00ff');
-                }
-            }
-            
-            // الختم
-            let watermarkSize = Math.floor(canvasElement.width * 0.045);
-            canvasCtx.font = "bold " + watermarkSize + "px Tahoma";
-            canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
-            canvasCtx.shadowColor = "rgba(0,0,0,0.9)";
-            canvasCtx.shadowBlur = 8;
-            canvasCtx.scale(-1, 1);
-            canvasCtx.fillText("Maged Filters ✨", -canvasElement.width + 20, canvasElement.height - 30);
-
-            canvasCtx.restore();
-        });
-
-        function startCamera() {
-            if(camera) { camera.stop(); }
-            loadingMsg.style.display = 'block';
-            camera = new Camera(videoElement, {
-                onFrame: async () => { 
-                    try {
-                        await selfieSegmentation.send({image: videoElement});
-                        if (currentFilter !== 'none') {
-                            await faceMesh.send({image: videoElement});
-                        } else {
-                            currentFaceLandmarks = null;
-                        }
-                    } catch (e) { console.log(e); }
-                },
-                facingMode: isFrontCam ? 'user' : 'environment'
-            });
-            camera.start();
-            canvasElement.style.transform = isFrontCam ? 'scaleX(-1)' : 'scaleX(1)';
         }
 
-        startCamera();
-
-        document.getElementById('flip-cam-btn').addEventListener('click', () => {
-            isFrontCam = !isFrontCam;
-            startCamera();
-        });
-
-        document.getElementById('capture-btn').addEventListener('click', () => {
-            const flash = document.getElementById('flash-effect');
-            flash.style.opacity = '1';
-            setTimeout(() => flash.style.opacity = '0', 150);
+        // 2. الفلاتر التفاعلية المحدثة
+        if (currentFilter !== 'none' && currentFaceLandmarks) {
+            // ... (نفس منطق الحسابات السابق للميلان)
             
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = canvasElement.width;
-            tempCanvas.height = canvasElement.height;
-            const tCtx = tempCanvas.getContext('2d');
-            if (isFrontCam) {
-                tCtx.translate(tempCanvas.width, 0);
-                tCtx.scale(-1, 1);
+            // 🕶️ فلتر السايبربانك المطور (انسيابي)
+            if (currentFilter === 'cyber') {
+                canvasCtx.save();
+                canvasCtx.translate(cx, cy);
+                canvasCtx.rotate(angle);
+                
+                // شكل نظارة "انسيابي" بدل المربع
+                canvasCtx.beginPath();
+                canvasCtx.ellipse(0, 0, visorWidth/2, visorHeight/1.5, 0, 0, Math.PI * 2);
+                canvasCtx.fillStyle = 'rgba(0, 255, 255, 0.3)';
+                canvasCtx.shadowColor = '#0ff';
+                canvasCtx.shadowBlur = 30;
+                canvasCtx.fill();
+                canvasCtx.restore();
             }
-            tCtx.drawImage(canvasElement, 0, 0);
             
-            const dataURL = tempCanvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.download = 'Maged-Filter-Cam.png';
-            link.href = dataURL;
-            link.click();
-        });
-    </script>
-</body>
-</html>
+            // 🌌 وشم الفضاء النبضي
+            else if (currentFilter === 'paint') {
+                const pulse = Math.abs(Math.sin(Date.now() * 0.005)); // تأثير النبض
+                drawNeonLine(canvasCtx, currentFaceLandmarks, [103, 67, 10, 297, 332], `rgba(0,255,204,${0.5 + pulse*0.5})`, '#00ffcc');
+                // ... (نفس باقي الخطوط)
+            }
+        }
+        // ... (باقي الكود)
+    }
+</script>
