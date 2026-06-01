@@ -173,25 +173,58 @@
             }
             canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // 4. رسم الشخصيات الاحترافية المقصوصة
+            // 4. رسم الشخصيات الاحترافية وتفريغ الخلفيات الزائدة برمجياً
             canvasCtx.globalCompositeOperation = 'source-over';
             
-            // تحديد عرض الشخصية كنسبة من عرض الشاشة وطولها بناءً على العرض
-            let charWidth = Math.floor(canvasElement.width * 0.45); 
-            let charHeight = Math.floor(charWidth * 2.2); // نسبة مناسبة لشخصية بطول كامل
-            
-            // التأكد من أن الصورة تم تحميلها قبل محاولة رسمها
             if (charImages[currentChar].complete && charImages[currentChar].naturalWidth !== 0) {
-                if(currentChar === 'maged') {
-                    // وضع شخصيتك على اليسار
-                    canvasCtx.drawImage(charImages['maged'], 20, canvasElement.height - charHeight - 20, charWidth, charHeight);
-                } else if(currentChar === 'mooney') {
-                    // وضع موني على اليمين
-                    canvasCtx.drawImage(charImages['mooney'], canvasElement.width - charWidth - 20, canvasElement.height - charHeight - 20, charWidth, charHeight);
-                } else {
-                    // وضع عبود على اليمين
-                    canvasCtx.drawImage(charImages['abboud'], canvasElement.width - charWidth - 20, canvasElement.height - charHeight - 20, charWidth, charHeight);
+                
+                // حساب العرض والطول مع الحفاظ على الأبعاد الأصلية للصورة لمنع التمدد
+                let charWidth = Math.floor(canvasElement.width * 0.45); 
+                let imageRatio = charImages[currentChar].naturalHeight / charImages[currentChar].naturalWidth;
+                let charHeight = Math.floor(charWidth * imageRatio);
+                
+                // === إضافة الانسيابية وحركة التنفس/الطوفان التلقائية ===
+                const time = Date.now() * 0.0025; // سرعة الحركة والتأرجح
+                const floatOffset = Math.sin(time) * 12; // مقدار الصعود والنزول (12 بيكسل)
+                
+                let baseYPos = canvasElement.height - charHeight - 20;
+                let animatedYPos = baseYPos + floatOffset;
+                
+                // تحديد التموضع الأفقي بناءً على الشخصية المختارة
+                let xPos = (currentChar === 'maged') ? 20 : canvasElement.width - charWidth - 20;
+
+                // إنشاء Canvas مؤقت لمعالجة مصفوفة بكسلات الصورة وإزالة الخلفيات السادة
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = charWidth;
+                tempCanvas.height = charHeight;
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                // رسم الصورة على الكانفاس المؤقت أولاً
+                tempCtx.drawImage(charImages[currentChar], 0, 0, charWidth, charHeight);
+                
+                // تعديل قيم مصفوفة الـ RGBA للبكسلات
+                const imgData = tempCtx.getImageData(0, 0, charWidth, charHeight);
+                const data = imgData.data;
+                
+                for (let i = 0; i < data.length; i += 4) {
+                    let r = data[i];     
+                    let g = data[i+1];   
+                    let b = data[i+2];   
+                    
+                    // الكشف عن بكسلات الخلفية البيضاء (المرتبطة بتطبيق القص الحالي) أو السوداء
+                    const isWhite = (r > 235 && g > 235 && b > 235);
+                    const isBlack = (r < 35 && g < 35 && b < 35);
+                    
+                    if (isWhite || isBlack) {
+                        data[i + 3] = 0; // تعديل قيمة الشفافية لتصبح مخفية تماماً
+                    }
                 }
+                
+                // حقن البيانات المنقاة مجدداً داخل الكانفاس المؤقت
+                tempCtx.putImageData(imgData, 0, 0);
+
+                // إخراج الصورة النهائية المفرغة مع تطبيق التأثير الانسيابي على الشاشة
+                canvasCtx.drawImage(tempCanvas, xPos, animatedYPos);
             }
             
             // الختم
