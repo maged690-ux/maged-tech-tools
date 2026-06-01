@@ -46,7 +46,7 @@
         <div class="camera-stage">
             <div id="loading-msg">الكاميرا قيد التجهيز... ⏳</div>
             <video id="input_video" autoplay playsinline style="display: none;"></video>
-            <canvas id="output_canvas" width="480" height="640"></canvas>
+            <canvas id="output_canvas"></canvas>
             <div id="flash-effect"></div>
         </div>
 
@@ -101,9 +101,14 @@
 
         // دالة الرسم وعزل الخلفية (الذكاء الاصطناعي)
         function onResults(results) {
-            // إخفاء رسالة التحميل بس تشتغل الكاميرا
             loadingMsg.style.display = 'none';
             
+            // تحديث أبعاد الكانفاس لتطابق أبعاد الكاميرا الحقيقية بدون تمطيط
+            if (canvasElement.width !== results.image.width) {
+                canvasElement.width = results.image.width;
+                canvasElement.height = results.image.height;
+            }
+
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
@@ -127,21 +132,26 @@
             }
             canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // 4. رسم الشخصيات (فوق الشخص والخلفية)
+            // 4. رسم الشخصيات بأحجام متناسبة مع دقة الموبايل العالية
             canvasCtx.globalCompositeOperation = 'source-over';
-            canvasCtx.font = "60px Arial";
+            
+            // حساب حجم الإيموجي نسبة لعرض الشاشة ليكون مناسب دائماً
+            let emojiSize = Math.floor(canvasElement.width * 0.15); 
+            canvasCtx.font = emojiSize + "px Arial";
+
             if(currentChar === 'maged') {
-                canvasCtx.fillText("👨‍🦲", 50, 100);
+                canvasCtx.fillText("👨‍🦲", 50, emojiSize + 50);
             } else if(currentChar === 'mooney') {
-                canvasCtx.fillText("🐵", canvasElement.width - 120, 100);
+                canvasCtx.fillText("🐵", canvasElement.width - emojiSize - 40, emojiSize + 50);
             } else {
                 canvasCtx.fillText("🧑", 50, canvasElement.height - 150);
             }
             
-            // ختم المنصة المائي
-            canvasCtx.font = "bold 20px Tahoma";
+            // ختم المنصة المائي متناسب مع دقة الشاشة
+            let watermarkSize = Math.floor(canvasElement.width * 0.05);
+            canvasCtx.font = "bold " + watermarkSize + "px Tahoma";
             canvasCtx.fillStyle = "rgba(255,255,255,0.7)";
-            canvasCtx.fillText("Maged Tech 📸", 20, canvasElement.height - 30);
+            canvasCtx.fillText("Maged Tech 📸", 20, canvasElement.height - 40);
 
             canvasCtx.restore();
         }
@@ -153,13 +163,12 @@
         selfieSegmentation.setOptions({ modelSelection: 1 });
         selfieSegmentation.onResults(onResults);
 
-        // تشغيل الكاميرا
+        // تشغيل الكاميرا الأمامية بأبعادها الطبيعية
         const camera = new Camera(videoElement, {
             onFrame: async () => {
                 await selfieSegmentation.send({image: videoElement});
             },
-            width: 480,
-            height: 640
+            facingMode: 'user' // لضمان فتح كاميرا السيلفي
         });
         camera.start();
 
