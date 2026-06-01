@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>كابينة تصوير Maged Tech</title>
     
-    <!-- مكتبات جوجل للذكاء الاصطناعي -->
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
-    <!-- أيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!-- كود التصميم والألوان مدمج هنا -->
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #1a1a2e; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
@@ -40,14 +37,12 @@
 <body>
 
     <div class="app-container">
-        <!-- عنوان الصفحة وزر الرجوع -->
         <header>
             <a href="../index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i> رجوع للمنصة</a>
             <h1>ماجيك كام 📸</h1>
             <p>صور مع شخصيات Maged Tech</p>
         </header>
 
-        <!-- منطقة العرض (الكاميرا والطبقات) -->
         <div class="camera-stage">
             <div id="loading-msg">الكاميرا قيد التجهيز... ⏳</div>
             <video id="input_video" autoplay playsinline style="display: none;"></video>
@@ -55,7 +50,6 @@
             <div id="flash-effect"></div>
         </div>
 
-        <!-- أزرار التحكم -->
         <div class="controls">
             <h3>اختر رفيق الصورة:</h3>
             <div class="characters-buttons">
@@ -76,7 +70,113 @@
         </div>
     </div>
 
-    <!-- كود الجافاسكريبت رح يجي هون بعدين -->
-    <script></script>
+    <script>
+        const videoElement = document.getElementById('input_video');
+        const canvasElement = document.getElementById('output_canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        const loadingMsg = document.getElementById('loading-msg');
+        
+        let currentChar = 'maged';
+        let currentBg = 'neon';
+
+        // برمجة أزرار الشخصيات
+        const charBtns = document.querySelectorAll('.char-btn');
+        charBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                charBtns.forEach(b => b.classList.remove('active-btn'));
+                e.target.classList.add('active-btn');
+                currentChar = e.target.dataset.char;
+            });
+        });
+
+        // برمجة أزرار الخلفيات
+        const bgBtns = document.querySelectorAll('.bg-btn');
+        bgBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                bgBtns.forEach(b => b.classList.remove('active-btn'));
+                e.target.classList.add('active-btn');
+                currentBg = e.target.dataset.bg;
+            });
+        });
+
+        // دالة الرسم وعزل الخلفية (الذكاء الاصطناعي)
+        function onResults(results) {
+            // إخفاء رسالة التحميل بس تشتغل الكاميرا
+            loadingMsg.style.display = 'none';
+            
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+            // 1. رسم قناع العزل (الماسك)
+            canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
+
+            // 2. رسم صورة الشخص فقط داخل القناع
+            canvasCtx.globalCompositeOperation = 'source-in';
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+            // 3. رسم الخلفية الخيالية (تحت الشخص)
+            canvasCtx.globalCompositeOperation = 'destination-over';
+            if(currentBg === 'neon') {
+                let grad = canvasCtx.createLinearGradient(0,0, 0, canvasElement.height);
+                grad.addColorStop(0, "#833ab4"); grad.addColorStop(0.5, "#fd1d1d"); grad.addColorStop(1, "#fcb045");
+                canvasCtx.fillStyle = grad;
+            } else if (currentBg === 'cyber') {
+                canvasCtx.fillStyle = '#0f3460';
+            } else {
+                canvasCtx.fillStyle = '#025023'; // ماتريكس أخضر
+            }
+            canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+
+            // 4. رسم الشخصيات (فوق الشخص والخلفية)
+            canvasCtx.globalCompositeOperation = 'source-over';
+            canvasCtx.font = "60px Arial";
+            if(currentChar === 'maged') {
+                canvasCtx.fillText("👨‍🦲", 50, 100);
+            } else if(currentChar === 'mooney') {
+                canvasCtx.fillText("🐵", canvasElement.width - 120, 100);
+            } else {
+                canvasCtx.fillText("🧑", 50, canvasElement.height - 150);
+            }
+            
+            // ختم المنصة المائي
+            canvasCtx.font = "bold 20px Tahoma";
+            canvasCtx.fillStyle = "rgba(255,255,255,0.7)";
+            canvasCtx.fillText("Maged Tech 📸", 20, canvasElement.height - 30);
+
+            canvasCtx.restore();
+        }
+
+        // إعداد مكتبة العزل
+        const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
+        }});
+        selfieSegmentation.setOptions({ modelSelection: 1 });
+        selfieSegmentation.onResults(onResults);
+
+        // تشغيل الكاميرا
+        const camera = new Camera(videoElement, {
+            onFrame: async () => {
+                await selfieSegmentation.send({image: videoElement});
+            },
+            width: 480,
+            height: 640
+        });
+        camera.start();
+
+        // برمجة زر التقاط الصورة السحرية
+        document.getElementById('capture-btn').addEventListener('click', () => {
+            // ومضة الفلاش
+            const flash = document.getElementById('flash-effect');
+            flash.style.opacity = '1';
+            setTimeout(() => flash.style.opacity = '0', 100);
+            
+            // حفظ الصورة
+            const dataURL = canvasElement.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = 'Maged-Magic-Cam.png';
+            link.href = dataURL;
+            link.click();
+        });
+    </script>
 </body>
 </html>
