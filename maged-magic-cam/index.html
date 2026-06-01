@@ -10,9 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* إعدادات الشاشة الكاملة الصارمة */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
-        
         body, html { width: 100%; height: 100%; background-color: #000; overflow: hidden; }
         .app-container { width: 100vw; height: 100dvh; position: relative; }
         
@@ -79,9 +77,9 @@
 
             <div class="bg-section" id="sec-bg">
                 <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="neon" style="background-image: url('https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="cyber" style="background-image: url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="matrix" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn active-btn" data-bg="neon" style="background-color: #833ab4;"></div>
+                    <div class="filter-btn bg-btn" data-bg="cyber" style="background-color: #0f3460;"></div>
+                    <div class="filter-btn bg-btn" data-bg="matrix" style="background-color: #025023;"></div>
                 </div>
             </div>
 
@@ -106,14 +104,14 @@
         charImages['mooney'].src = 'mooney.png';
         charImages['abboud'].src = 'abboud.png';
 
-        // 2. تحميل الخلفيات السينمائية عالية الدقة
+        // 2. تحميل صور خلفيات أسرع وأوضح (بدون تعليق)
         const bgImages = { 'neon': new Image(), 'cyber': new Image(), 'matrix': new Image() };
         bgImages['neon'].crossOrigin = "anonymous";
-        bgImages['neon'].src = 'https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=1080&q=80'; 
+        bgImages['neon'].src = 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=800&q=70'; // إضاءة نيون واضحة
         bgImages['cyber'].crossOrigin = "anonymous";
-        bgImages['cyber'].src = 'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?auto=format&fit=crop&w=1080&q=80'; 
+        bgImages['cyber'].src = 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=800&q=70'; // مدينة سايبربانك
         bgImages['matrix'].crossOrigin = "anonymous";
-        bgImages['matrix'].src = 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1080&q=80';
+        bgImages['matrix'].src = 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=70'; // القلعة اللي عجبتك
 
         function switchTab(tabName) {
             document.getElementById('tab-char').classList.remove('active-tab');
@@ -140,7 +138,7 @@
             });
         });
 
-        // محرك الرسم الاحترافي (Pro Rendering Engine)
+        // محرك الرسم الذكي
         function onResults(results) {
             loadingMsg.style.display = 'none';
             if (canvasElement.width !== results.image.width) {
@@ -151,51 +149,45 @@
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // --- 1. العزل السينمائي بحواف ناعمة ---
-            canvasCtx.filter = 'blur(4px)'; // تنعيم الحواف لدمج واقعي
+            // 1. العزل السينمائي مع تنعيم حواف خفيف
+            canvasCtx.filter = 'blur(3px)';
             canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
             canvasCtx.filter = 'none';
 
-            // --- 2. رسم الشخص ---
+            // 2. رسم وجهك بألوانه الطبيعية الواضحة (تم إلغاء الفلتر اللوني المزعج)
             canvasCtx.globalCompositeOperation = 'source-in';
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-            // --- 3. الإضاءة المحيطية (Color Grading) لدمج الوجه مع الخلفية ---
-            canvasCtx.globalCompositeOperation = 'soft-light';
-            if(currentBg === 'neon') canvasCtx.fillStyle = 'rgba(255, 50, 150, 0.4)'; // إضاءة زهرية/بنفسجية
-            else if (currentBg === 'cyber') canvasCtx.fillStyle = 'rgba(15, 100, 255, 0.4)'; // إضاءة زرقاء
-            else canvasCtx.fillStyle = 'rgba(50, 200, 50, 0.3)'; // إضاءة خضراء
-            canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
-
-            // --- 4. رسم الاستوديو (الخلفية السينمائية) ---
+            // 3. رسم الخلفية السينمائية
             canvasCtx.globalCompositeOperation = 'destination-over';
-            if (bgImages[currentBg].complete) {
+            if (bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
                 canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
             } else {
-                canvasCtx.fillStyle = '#111';
+                // لون احتياطي في حال تأخرت الصورة بالتحميل
+                canvasCtx.fillStyle = '#222';
                 canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             }
 
-            // --- 5. رسم الرفيق التفاعلي مع حركة الحياة ---
+            // 4. رسم الرفيق: حجم أكبر، تموضع أفضل، وحركة انسيابية واضحة
             canvasCtx.globalCompositeOperation = 'source-over';
             if (charImages[currentChar].complete && charImages[currentChar].naturalWidth !== 0) {
                 
-                // حجم أوضح للشخصية
-                let charWidth = Math.floor(canvasElement.width * 0.55); 
+                // تكبير الحجم ليصبح مناسباً (65% من العرض بدلاً من 45%)
+                let charWidth = Math.floor(canvasElement.width * 0.65); 
                 let imageRatio = charImages[currentChar].naturalHeight / charImages[currentChar].naturalWidth;
                 let charHeight = Math.floor(charWidth * imageRatio);
                 
-                // معادلات الحياة (تنفس، طوفان، وتمايل)
-                const time = Date.now() * 0.002; 
-                const floatOffset = Math.sin(time) * 12; 
-                const breathScale = 1 + Math.sin(time * 1.5) * 0.015; 
-                const swayAngle = Math.cos(time * 1.2) * 0.02; 
+                // === حركات انسيابية ناعمة وبطيئة ===
+                const time = Date.now() * 0.0015; // إبطاء سرعة الحركة لتصبح أروق
+                const floatOffset = Math.sin(time) * 20; // صعود ونزول ملحوظ (20 بيكسل)
+                const swayAngle = Math.cos(time * 0.8) * 0.04; // تمايل يمين ويسار بهدوء
                 
-                let baseYPos = canvasElement.height - charHeight - 15;
+                // تثبيت الشخصية في الأسفل بشكل صحيح
+                let baseYPos = canvasElement.height - charHeight + 30; // إزاحة للأسفل لتثبيت القدمين
                 let animatedYPos = baseYPos + floatOffset;
-                let xPos = (currentChar === 'maged') ? 15 : canvasElement.width - charWidth - 15;
+                let xPos = (currentChar === 'maged') ? 5 : canvasElement.width - charWidth - 5;
 
-                // تفريغ الخلفية الزائدة برمجياً
+                // إنشاء Canvas مؤقت لتفريغ اللون الأبيض/الأسود
                 const tempCanvas = document.createElement('canvas');
                 tempCanvas.width = charWidth;
                 tempCanvas.height = charHeight;
@@ -204,25 +196,21 @@
                 tempCtx.drawImage(charImages[currentChar], 0, 0, charWidth, charHeight);
                 const imgData = tempCtx.getImageData(0, 0, charWidth, charHeight);
                 const data = imgData.data;
-                
                 for (let i = 0; i < data.length; i += 4) {
                     let r = data[i], g = data[i+1], b = data[i+2];   
-                    const isWhite = (r > 235 && g > 235 && b > 235);
-                    const isBlack = (r < 35 && g < 35 && b < 35);
-                    if (isWhite || isBlack) data[i + 3] = 0; 
+                    if ((r > 235 && g > 235 && b > 235) || (r < 30 && g < 30 && b < 30)) data[i + 3] = 0; 
                 }
                 tempCtx.putImageData(imgData, 0, 0);
 
-                // تطبيق الحركات الحية والرسم
+                // تطبيق الحركات الانسيابية
                 canvasCtx.save();
                 canvasCtx.translate(xPos + (charWidth / 2), animatedYPos + (charHeight / 2));
                 canvasCtx.rotate(swayAngle);
-                canvasCtx.scale(breathScale, breathScale);
                 canvasCtx.drawImage(tempCanvas, -charWidth / 2, -charHeight / 2);
                 canvasCtx.restore();
             }
             
-            // الختم الاحترافي
+            // الختم
             let watermarkSize = Math.floor(canvasElement.width * 0.045);
             canvasCtx.font = "bold " + watermarkSize + "px Tahoma";
             canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
@@ -252,7 +240,7 @@
             
             const dataURL = canvasElement.toDataURL('image/png');
             const link = document.createElement('a');
-            link.download = 'Maged-Studio-Pro.png';
+            link.download = 'Maged-Studio.png';
             link.href = dataURL;
             link.click();
         });
