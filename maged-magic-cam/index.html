@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maged Universe Cam</title>
+    <title>Maged Filter Cam</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -14,10 +15,10 @@
         body, html { width: 100%; height: 100%; background-color: #000; overflow: hidden; }
         .app-container { width: 100vw; height: 100dvh; position: relative; }
         .camera-stage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        #output_canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); } /* قلب الكاميرا لتبدو كمرآة طبيعية */
+        #output_canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
         header { position: absolute; top: 0; left: 0; width: 100%; padding: 25px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: transparent; }
         .icon-btn { color: #fff; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); background: none; border: none; cursor: pointer; }
-        header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,200,100,0.8); }
+        header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,255,200,0.8); }
         #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.8); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
         #flash-effect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.15s ease-out; }
         .controls { position: absolute; bottom: 40px; left: 0; width: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; background: transparent; pointer-events: none; }
@@ -25,13 +26,12 @@
         .tabs { display: flex; gap: 30px; margin-bottom: 15px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
         .tab { font-size: 1rem; color: rgba(255,255,255,0.6); font-weight: bold; cursor: pointer; padding-bottom: 5px; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,1); }
         .tab.active-tab { color: #fff; border-bottom: 2px solid #fff; }
-        .char-section, .bg-section { width: 100%; }
-        .char-section { display: none; }
-        /* تحسين شريط التمرير ليصبح سلس ويستوعب خلفيات كثيرة */
+        .filter-section, .bg-section { width: 100%; }
+        .filter-section { display: none; }
         .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 15px; width: 100%; scroll-snap-type: x mandatory; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
         .filter-carousel::-webkit-scrollbar { display: none; }
         .filter-btn { flex: 0 0 auto; width: 65px; height: 65px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; line-height: 1; scroll-snap-align: center; }
-        .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(255,255,255,0.6); }
+        .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(0,255,200,0.6); }
         .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s; margin-top: 5px; }
         .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.1s; }
         .capture-ring:active .capture-inner { transform: scale(0.85); background: #e0e0e0; }
@@ -42,12 +42,12 @@
     <div class="app-container">
         <header>
             <a href="../index.html" class="icon-btn"><i class="fa-solid fa-xmark"></i></a>
-            <h1>Maged Universe 🌌</h1>
+            <h1>Maged Filters ✨</h1>
             <button id="flip-cam-btn" class="icon-btn"><i class="fa-solid fa-camera-rotate"></i></button>
         </header>
 
         <div class="camera-stage">
-            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تجهيز العوالم...</div>
+            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تشغيل الفلاتر...</div>
             <video id="input_video" autoplay playsinline style="display: none;"></video>
             <canvas id="output_canvas"></canvas>
             <div id="flash-effect"></div>
@@ -56,15 +56,15 @@
         <div class="controls">
             <div class="tabs">
                 <div class="tab active-tab" id="tab-bg" onclick="switchTab('bg')">الخلفيات</div>
-                <div class="tab" id="tab-char" onclick="switchTab('char')">الرفيق</div>
+                <div class="tab" id="tab-filter" onclick="switchTab('filter')">الفلاتر</div>
             </div>
 
-            <div class="char-section" id="sec-char">
+            <div class="filter-section" id="sec-filter">
                 <div class="filter-carousel">
-                    <div class="filter-btn char-btn active-btn" data-char="none" style="font-size: 1.2rem;">🚫</div>
-                    <div class="filter-btn char-btn" data-char="maged">👨‍🦲</div>
-                    <div class="filter-btn char-btn" data-char="mooney">🐵</div>
-                    <div class="filter-btn char-btn" data-char="abboud">🧑</div>
+                    <div class="filter-btn filter-opt active-btn" data-filter="none" style="font-size: 1.2rem;">🚫</div>
+                    <div class="filter-btn filter-opt" data-filter="beauty" style="font-size: 1.2rem;">✨</div>
+                    <div class="filter-btn filter-opt" data-filter="cyber" style="font-size: 1.2rem;">🕶️</div>
+                    <div class="filter-btn filter-opt" data-filter="paint" style="font-size: 1.2rem;">🌌</div>
                 </div>
             </div>
 
@@ -75,7 +75,6 @@
                     <div class="filter-btn bg-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                     <div class="filter-btn bg-btn" data-bg="paris" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                     <div class="filter-btn bg-btn" data-bg="egypt" style="background-image: url('https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="ny" style="background-image: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                 </div>
             </div>
 
@@ -91,42 +90,37 @@
         const canvasCtx = canvasElement.getContext('2d');
         const loadingMsg = document.getElementById('loading-msg');
         
-        let currentChar = 'none'; 
+        let currentFilter = 'none'; 
         let currentBg = 'galaxy';
         let isFrontCam = true; 
         let camera; 
 
-        const charImages = { 'maged': new Image(), 'mooney': new Image(), 'abboud': new Image() };
-        charImages['maged'].src = 'maged.png';
-        charImages['mooney'].src = 'mooney.png';
-        charImages['abboud'].src = 'abboud.png';
-
-        // جميع الخلفيات بدقة عالية
+        // إعداد الخلفيات
         const bgImages = { 
             'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
-            'paris': new Image(), 'egypt': new Image(), 'ny': new Image() 
+            'paris': new Image(), 'egypt': new Image()
         };
         bgImages['galaxy'].crossOrigin = "anonymous"; bgImages['galaxy'].src = 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
         bgImages['moon'].crossOrigin = "anonymous"; bgImages['moon'].src = 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
         bgImages['ship'].crossOrigin = "anonymous"; bgImages['ship'].src = 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
         bgImages['paris'].crossOrigin = "anonymous"; bgImages['paris'].src = 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
         bgImages['egypt'].crossOrigin = "anonymous"; bgImages['egypt'].src = 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
-        bgImages['ny'].crossOrigin = "anonymous"; bgImages['ny'].src = 'https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85'; 
 
+        // نظام التبويبات
         function switchTab(tabName) {
-            document.getElementById('tab-char').classList.remove('active-tab');
+            document.getElementById('tab-filter').classList.remove('active-tab');
             document.getElementById('tab-bg').classList.remove('active-tab');
-            document.getElementById('sec-char').style.display = 'none';
+            document.getElementById('sec-filter').style.display = 'none';
             document.getElementById('sec-bg').style.display = 'none';
             document.getElementById('tab-' + tabName).classList.add('active-tab');
             document.getElementById('sec-' + tabName).style.display = 'block';
         }
 
-        document.querySelectorAll('.char-btn').forEach(btn => {
+        document.querySelectorAll('.filter-opt').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.char-btn').forEach(b => b.classList.remove('active-btn'));
+                document.querySelectorAll('.filter-opt').forEach(b => b.classList.remove('active-btn'));
                 e.currentTarget.classList.add('active-btn');
-                currentChar = e.currentTarget.dataset.char;
+                currentFilter = e.currentTarget.dataset.filter;
             });
         });
 
@@ -138,7 +132,35 @@
             });
         });
 
-        function onResults(results) {
+        // متغير لتخزين نقاط الوجه (468 نقطة)
+        let currentFaceLandmarks = null;
+
+        // إعداد ذكاء اصطناعي 1: شبكة الوجه (Face Mesh) للفلاتر
+        const faceMesh = new FaceMesh({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
+        }});
+        faceMesh.setOptions({
+            maxNumFaces: 1,
+            refineLandmarks: true, // تفعيل تعقب قزحية العين
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+        faceMesh.onResults((results) => {
+            if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+                currentFaceLandmarks = results.multiFaceLandmarks[0];
+            } else {
+                currentFaceLandmarks = null;
+            }
+        });
+
+        // إعداد ذكاء اصطناعي 2: العزل السينمائي (Selfie Segmentation)
+        const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
+        }});
+        selfieSegmentation.setOptions({ modelSelection: 0 }); // أدق موديل للقص
+        
+        // محرك الرسم المدمج (يجمع العزل مع نقاط الوجه)
+        selfieSegmentation.onResults((results) => {
             loadingMsg.style.display = 'none';
             if (canvasElement.width !== results.image.width) {
                 canvasElement.width = results.image.width;
@@ -148,17 +170,17 @@
             canvasCtx.save();
             canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-            // === 1. السر لقتل الهالة البيضاء (The Contrast Hack) ===
+            // 1. القص الحاد لقتل الهالة البيضاء
             canvasCtx.globalCompositeOperation = 'source-over';
-            canvasCtx.filter = 'contrast(300%) brightness(90%)'; // زيادة التباين لقص الحواف بقوة وتخفيف السطوع
+            canvasCtx.filter = 'contrast(300%) brightness(90%)';
             canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
             canvasCtx.filter = 'none';
 
-            // === 2. رسم الكاميرا جوا القناع الحاد ===
+            // 2. دمج صورتك
             canvasCtx.globalCompositeOperation = 'source-in';
             canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-            // === 3. رسم الخلفية المختارة ===
+            // 3. دمج الخلفية
             canvasCtx.globalCompositeOperation = 'destination-over';
             if (bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
                 canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
@@ -167,42 +189,25 @@
                 canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             }
 
-            // === 4. رسم الرفيق ===
+            // === 4. رسم الفلتر (تتبع الوجه) ===
             canvasCtx.globalCompositeOperation = 'source-over';
-            if (currentChar !== 'none' && charImages[currentChar].complete && charImages[currentChar].naturalWidth !== 0) {
-                
-                let charWidth = Math.floor(canvasElement.width * 0.65); 
-                let imageRatio = charImages[currentChar].naturalHeight / charImages[currentChar].naturalWidth;
-                let charHeight = Math.floor(charWidth * imageRatio);
-                
-                const time = Date.now() * 0.0015; 
-                const floatOffset = Math.sin(time) * 20; 
-                const swayAngle = Math.cos(time * 0.8) * 0.04; 
-                
-                let baseYPos = canvasElement.height - charHeight + 30; 
-                let animatedYPos = baseYPos + floatOffset;
-                // تعديل الموقع ليتناسب مع قلب الكاميرا
-                let xPos = (currentChar === 'maged') ? canvasElement.width - charWidth - 5 : 5;
+            if (currentFilter !== 'none' && currentFaceLandmarks) {
+                // رسم شبكة تتبع الوجه باللون النيون للتأكد من عمل الذكاء الاصطناعي (المرحلة 1)
+                canvasCtx.fillStyle = 'rgba(0, 255, 200, 0.8)';
+                canvasCtx.shadowColor = 'rgba(0, 255, 200, 1)';
+                canvasCtx.shadowBlur = 5;
 
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = charWidth;
-                tempCanvas.height = charHeight;
-                const tempCtx = tempCanvas.getContext('2d');
-                
-                tempCtx.drawImage(charImages[currentChar], 0, 0, charWidth, charHeight);
-                const imgData = tempCtx.getImageData(0, 0, charWidth, charHeight);
-                const data = imgData.data;
-                for (let i = 0; i < data.length; i += 4) {
-                    let r = data[i], g = data[i+1], b = data[i+2];   
-                    if ((r > 235 && g > 235 && b > 235) || (r < 30 && g < 30 && b < 30)) data[i + 3] = 0; 
+                for (let i = 0; i < currentFaceLandmarks.length; i++) {
+                    const pt = currentFaceLandmarks[i];
+                    // تحويل الإحداثيات النسبية إلى بكسلات حقيقية على الشاشة
+                    const x = pt.x * canvasElement.width;
+                    const y = pt.y * canvasElement.height;
+
+                    canvasCtx.beginPath();
+                    // رسم نقاط صغيرة جداً
+                    canvasCtx.arc(x, y, 1.2, 0, 2 * Math.PI);
+                    canvasCtx.fill();
                 }
-                tempCtx.putImageData(imgData, 0, 0);
-
-                canvasCtx.save();
-                canvasCtx.translate(xPos + (charWidth / 2), animatedYPos + (charHeight / 2));
-                canvasCtx.rotate(swayAngle);
-                canvasCtx.drawImage(tempCanvas, -charWidth / 2, -charHeight / 2);
-                canvasCtx.restore();
             }
             
             // الختم
@@ -211,30 +216,27 @@
             canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
             canvasCtx.shadowColor = "rgba(0,0,0,0.9)";
             canvasCtx.shadowBlur = 8;
-            // إرجاع اتجاه النص ليكون صحيحاً بعد قلب الكاميرا
             canvasCtx.scale(-1, 1);
-            canvasCtx.fillText("Maged Universe 🌌", -canvasElement.width + 20, canvasElement.height - 30);
+            canvasCtx.fillText("Maged Filters ✨", -canvasElement.width + 20, canvasElement.height - 30);
 
             canvasCtx.restore();
-        }
+        });
 
-        const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
-        }});
-        
-        selfieSegmentation.setOptions({ modelSelection: 0 }); // أدق موديل للقص
-        selfieSegmentation.onResults(onResults);
-
+        // تشغيل الكاميرا وإرسال البث للموديلين معاً (العزل وتتبع الوجه)
         function startCamera() {
             if(camera) { camera.stop(); }
             loadingMsg.style.display = 'block';
             camera = new Camera(videoElement, {
-                onFrame: async () => { await selfieSegmentation.send({image: videoElement}); },
+                onFrame: async () => { 
+                    // ننتظر الذكاء الاصطناعي ليحلل الصورة في كلا الموديلين
+                    await Promise.all([
+                        selfieSegmentation.send({image: videoElement}),
+                        faceMesh.send({image: videoElement})
+                    ]);
+                },
                 facingMode: isFrontCam ? 'user' : 'environment'
             });
             camera.start();
-            
-            // قلب الـ Canvas أفقياً إذا كانت سيلفي لتشبه المرآة
             canvasElement.style.transform = isFrontCam ? 'scaleX(-1)' : 'scaleX(1)';
         }
 
@@ -250,7 +252,6 @@
             flash.style.opacity = '1';
             setTimeout(() => flash.style.opacity = '0', 150);
             
-            // تصحيح اتجاه الصورة قبل الحفظ
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = canvasElement.width;
             tempCanvas.height = canvasElement.height;
@@ -263,7 +264,7 @@
             
             const dataURL = tempCanvas.toDataURL('image/png');
             const link = document.createElement('a');
-            link.download = 'Maged-Universe.png';
+            link.download = 'Maged-Filter-Cam.png';
             link.href = dataURL;
             link.click();
         });
