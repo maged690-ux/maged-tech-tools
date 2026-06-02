@@ -6,23 +6,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { background: #030712; color: #fff; font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; margin: 0; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .menu-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 400px; padding: 18px; margin-bottom: 12px; background: #1e293b; color: white; border-radius: 15px; text-decoration: none; font-weight: bold; transition: 0.3s; }
-        .menu-btn:hover { background: #334155; transform: translateY(-2px); }
+        .header { text-align: center; margin-bottom: 20px; }
+        .calendar-card { background: #1e293b; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; border: 1px solid #38bdf8; }
+        .clock { font-size: 2.2rem; font-weight: bold; color: #00ffff; margin: 5px 0; }
+        .dates { color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px; }
+        .prayer-list { list-style: none; padding: 0; text-align: right; font-size: 0.9rem; }
+        .prayer-list li { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #334155; }
+        .menu-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 400px; padding: 18px; margin-bottom: 12px; background: #1e293b; color: white; border-radius: 15px; text-decoration: none; font-weight: bold; }
+        .menu-btn:hover { background: #334155; }
         .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; }
-        .btn-social { padding: 15px; border-radius: 12px; text-decoration: none; color: white; text-align: center; font-weight: bold; }
+        .btn-social { padding: 12px; border-radius: 12px; text-decoration: none; color: white; text-align: center; font-weight: bold; font-size: 0.9rem; }
         #redirectModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); flex-direction: column; align-items: center; justify-content: center; z-index: 1000; text-align: center; }
         #countdown { font-size: 5rem; color: #00ffff; }
     </style>
 </head>
 <body>
+
     <div class="header"><h1>Maged Tech ⚡</h1></div>
 
-    <!-- الأدوات -->
-    <a href="maged-magic-cam/index.html" class="menu-btn">استوديو الخيال <i class="fa-solid fa-camera"></i></a>
-    <a href="codes.html" class="menu-btn">أكواد الفحص <i class="fa-solid fa-microchip"></i></a>
+    <div class="calendar-card">
+        <div id="live-clock" class="clock">00:00:00</div>
+        <div id="dates-display" class="dates">جاري تحميل التاريخ...</div>
+        <ul class="prayer-list" id="prayers-container"></ul>
+    </div>
 
-    <!-- الحسابات (تفتح مباشرة بدون عداد) -->
+    <!-- الأدوات -->
+    <a href="apps/fatora/index.html" class="menu-btn">نظام الفاتورة <i class="fa-solid fa-file-invoice-dollar" style="color: #00ff9d;"></i></a>
+    <a href="maged-magic-cam/index.html" class="menu-btn">استوديو الخيال (الكاميرا) <i class="fa-solid fa-camera"></i></a>
+    <a href="codes.html" class="menu-btn">أكواد فحص الأجهزة <i class="fa-solid fa-microchip"></i></a>
+
+    <!-- الحسابات -->
     <div class="social-grid">
         <a href="https://youtube.com/@maged115599" class="btn-social" style="background: #ff0000;">يوتيوب</a>
         <a href="https://t.me/Maged_Tech" class="btn-social" style="background: #0088cc;">تيليجرام</a>
@@ -31,18 +44,43 @@
         <a href="https://www.snapchat.com/add/maged-say" class="btn-social" style="background: #fffc00; color: #000;">سناب شات</a>
     </div>
 
-    <!-- نافذة التحويل (تظهر فقط إذا كان هناك رابط ?to= في المتصفح) -->
     <div id="redirectModal">
         <h2>جاري التحويل...</h2>
         <div id="countdown">5</div>
     </div>
 
     <script>
+        function formatTime12(time24) {
+            let [h, m] = time24.split(':');
+            h = parseInt(h);
+            let suffix = h >= 12 ? 'م' : 'ص';
+            h = h % 12 || 12;
+            return `${h}:${m} ${suffix}`;
+        }
+
+        setInterval(() => {
+            const now = new Date();
+            let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            let suffix = h >= 12 ? 'م' : 'ص';
+            h = h % 12 || 12;
+            document.getElementById('live-clock').innerText = `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} ${suffix}`;
+        }, 1000);
+        
+        fetch('https://api.aladhan.com/v1/timingsByCity?city=Damascus&country=Syria&method=8')
+            .then(res => res.json())
+            .then(data => {
+                const date = data.data.date;
+                document.getElementById('dates-display').innerText = `${date.gregorian.date} | ${date.hijri.date}`;
+                const p = data.data.timings;
+                const list = { 'Fajr': 'الفجر', 'Dhuhr': 'الظهر', 'Asr': 'العصر', 'Maghrib': 'المغرب', 'Isha': 'العشاء' };
+                const container = document.getElementById('prayers-container');
+                for (let k in list) container.innerHTML += `<li><span>${list[k]}</span> <span>${formatTime12(p[k])}</span></li>`;
+            });
+
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const target = urlParams.get('to');
             if (target) {
-                // إظهار العداد فقط إذا كان هناك رابط قادم من خارج الموقع
                 const modal = document.getElementById('redirectModal');
                 const counter = document.getElementById('countdown');
                 modal.style.display = 'flex';
