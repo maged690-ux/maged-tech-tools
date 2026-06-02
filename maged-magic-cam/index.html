@@ -61,7 +61,7 @@
 
             <div class="filter-section" id="sec-filter">
                 <div class="filter-carousel">
-                    <div class="filter-btn filter-opt" data-filter="none" style="font-size: 1.2rem;">🚫</div>
+                    <div class="filter-btn filter-opt" data-filter="cute" style="font-size: 1.2rem;">🌸</div>
                     <div class="filter-btn filter-opt active-btn" data-filter="beauty" style="font-size: 1.2rem;">✨</div>
                     <div class="filter-btn filter-opt" data-filter="cyber" style="font-size: 1.2rem;">🕶️</div>
                     <div class="filter-btn filter-opt" data-filter="paint" style="font-size: 1.2rem;">🌌</div>
@@ -224,7 +224,7 @@
                         const angle = Math.atan2(y2 - y1, x2 - x1);
                         const eyeDist = Math.hypot(x2 - x1, y2 - y1); 
 
-                        // 1. فلتر الجمال الدائم (يشتغل كطبقة أساسية دائماً، حتى لو اخترت الإلغاء 🚫)
+                        // 1. فلتر الجمال الدائم (Base Layer - شغال دائماً تحت كل الفلاتر)
                         canvasCtx.save();
                         canvasCtx.globalCompositeOperation = 'overlay'; 
                         let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.2, cx, cy, eyeDist * 1.8);
@@ -242,8 +242,42 @@
                         canvasCtx.fill(); 
                         canvasCtx.restore();
                         
-                        // 2. الفلاتر الإضافية (تتغير حسب الزر، وتختفي مع زر الإلغاء)
-                        if (currentFilter === 'cyber') {
+                        // 2. الفلاتر الإضافية المتغيرة حسب الزر المختار
+                        
+                        // فلتر مورد الخدود (الكيوت 🌸)
+                        if (currentFilter === 'cute') {
+                            canvasCtx.save();
+                            canvasCtx.globalCompositeOperation = 'soft-light'; 
+                            
+                            const blushRadius = eyeDist * 0.45;
+                            const leftCheekX = x1;
+                            const leftCheekY = y1 + (eyeDist * 0.45);
+                            const rightCheekX = x2;
+                            const rightCheekY = y2 + (eyeDist * 0.45);
+
+                            // خدود يسار
+                            let leftBlush = canvasCtx.createRadialGradient(leftCheekX, leftCheekY, 0, leftCheekX, leftCheekY, blushRadius);
+                            leftBlush.addColorStop(0, 'rgba(255, 105, 180, 0.55)'); 
+                            leftBlush.addColorStop(1, 'rgba(255, 105, 180, 0)');
+                            canvasCtx.fillStyle = leftBlush;
+                            canvasCtx.beginPath();
+                            canvasCtx.arc(leftCheekX, leftCheekY, blushRadius, 0, Math.PI * 2);
+                            canvasCtx.fill();
+
+                            // خدود يمين
+                            let rightBlush = canvasCtx.createRadialGradient(rightCheekX, rightCheekY, 0, rightCheekX, rightCheekY, blushRadius);
+                            rightBlush.addColorStop(0, 'rgba(255, 105, 180, 0.55)');
+                            rightBlush.addColorStop(1, 'rgba(255, 105, 180, 0)');
+                            canvasCtx.fillStyle = rightBlush;
+                            canvasCtx.beginPath();
+                            canvasCtx.arc(rightCheekX, rightCheekY, blushRadius, 0, Math.PI * 2);
+                            canvasCtx.fill();
+
+                            canvasCtx.restore();
+                        }
+                        
+                        // فلتر نظارة السايبربانك (🕶️)
+                        else if (currentFilter === 'cyber') {
                             const visorWidth = eyeDist * 1.8; 
                             const visorHeight = visorWidth * 0.35; 
                             
@@ -286,6 +320,8 @@
                             
                             canvasCtx.restore();
                         }
+                        
+                        // فلتر وشم الفضاء (🌌)
                         else if (currentFilter === 'paint') {
                             const pulse = Math.abs(Math.sin(Date.now() * 0.005)); 
                             const colorAlpha = 0.5 + pulse * 0.5;
