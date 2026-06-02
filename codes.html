@@ -2,59 +2,74 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أكواد ماجد تك الشاملة</title>
+    <title>منصة ماجد تك - Maged Tech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { font-family: sans-serif; background: #0b0f19; color: #f8fafc; padding: 15px; }
-        .card { background: #151f32; padding: 20px; border-radius: 20px; max-width: 500px; margin: auto; }
-        input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 10px; border: none; background: #0b0f19; color: white; box-sizing: border-box; }
-        .code-item { background: #1e293b; padding: 12px; margin-bottom: 8px; border-radius: 10px; border-right: 4px solid #38bdf8; display: flex; justify-content: space-between; align-items: center; }
+        body { background: #030712; color: #fff; font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; margin: 0; }
+        .header { text-align: center; margin-bottom: 20px; }
+        
+        /* قسم مواقيت الصلاة */
+        .prayer-card { background: #1e293b; padding: 15px; border-radius: 15px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; }
+        
+        .menu-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 400px; padding: 18px; margin-bottom: 12px; background: #1e293b; color: white; border-radius: 15px; text-decoration: none; font-weight: bold; }
+        .menu-btn:hover { background: #334155; }
+        
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; }
+        .btn-social { padding: 12px; border-radius: 12px; text-decoration: none; color: white; text-align: center; font-weight: bold; font-size: 0.9rem; }
+        
+        #redirectModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+        #countdown { font-size: 5rem; color: #00ffff; }
     </style>
 </head>
 <body>
-<div class="card">
-    <h2 style="text-align:center;">مركز الأكواد الشامل</h2>
-    <input type="text" id="searchInput" onkeyup="searchCodes()" placeholder="ابحث باسم الجهاز أو نوع الفحص...">
-    <div id="codesList"></div>
-    <button onclick="window.location.href='index.html'" style="background:#475569; color:white; border:none; padding:12px; border-radius:10px; width:100%; margin-top:20px; font-weight:bold;">العودة للرئيسية</button>
-</div>
 
-<script>
-    const allCodes = [
-        // سامسونج
-        {device: "سامسونج", code: "*#0*#", desc: "فحص الشاشة واللمس"},
-        {device: "سامسونج", code: "*#0228#", desc: "معلومات البطارية ومعايرة"},
-        {device: "سامسونج", code: "*#1234#", desc: "معلومات إصدار السوفتوير"},
-        // هواوي
-        {device: "هواوي", code: "*#*#2846579#*#*", desc: "القائمة الهندسية السرية"},
-        {device: "هواوي", code: "*#*#0000#*#*", desc: "معلومات الجهاز"},
-        // شاومي
-        {device: "شاومي", code: "*#*#6484#*#*", desc: "قائمة فحص المهندس (CIT)"},
-        {device: "شاومي", code: "*#*#4636#*#*", desc: "معلومات الشبكة والبطارية"},
-        // إنفينكس وتكنو (MTK)
-        {device: "إنفينكس/تكنو", code: "*#*#9646633#*#*", desc: "القائمة الهندسية MTK (شامل)"},
-        {device: "إنفينكس/تكنو", code: "*#*#83781#*#*", desc: "وضع الاختبار الهندسي"},
-        // آيفون
-        {device: "آيفون", code: "*3001#12345#*", desc: "وضع الاختبار الهندسي"},
-        {device: "آيفون", code: "*#06#", desc: "عرض رقم IMEI"},
-        // عام
-        {device: "عام", code: "*#06#", desc: "عرض رقم IMEI"},
-        {device: "عام", code: "*#*#4636#*#*", desc: "معلومات الهاتف والشبكة"}
-    ];
+    <div class="header"><h1>Maged Tech ⚡</h1></div>
 
-    function searchCodes() {
-        let input = document.getElementById("searchInput").value.toLowerCase();
-        let list = document.getElementById("codesList");
-        let filtered = allCodes.filter(c => c.device.toLowerCase().includes(input) || c.desc.toLowerCase().includes(input));
+    <!-- مواقيت الصلاة -->
+    <div class="prayer-card">
+        <h3 id="date-display">جاري تحديث التاريخ...</h3>
+        <div id="live-clock" style="font-size: 2rem; font-weight: bold;">00:00:00</div>
+    </div>
+
+    <!-- الأدوات -->
+    <a href="apps/fatora/index.html" class="menu-btn">نظام الفاتورة <i class="fa-solid fa-file-invoice"></i></a>
+    <a href="maged-magic-cam/index.html" class="menu-btn">استوديو الخيال (الكاميرا) <i class="fa-solid fa-camera"></i></a>
+    <a href="codes.html" class="menu-btn">أكواد فحص الأجهزة <i class="fa-solid fa-microchip"></i></a>
+
+    <!-- الحسابات -->
+    <div class="social-grid">
+        <a href="https://youtube.com/@maged115599" class="btn-social" style="background: #ff0000;">يوتيوب</a>
+        <a href="https://t.me/Maged_Tech" class="btn-social" style="background: #0088cc;">تيليجرام</a>
+        <a href="https://www.facebook.com/share/1J8HF8p72E/" class="btn-social" style="background: #1877f2;">فيسبوك</a>
+        <a href="https://www.instagram.com/magedtech.official" class="btn-social" style="background: #e1306c;">إنستغرام</a>
+        <a href="https://www.snapchat.com/add/maged-say" class="btn-social" style="background: #fffc00; color: #000;">سناب شات</a>
+    </div>
+
+    <div id="redirectModal">
+        <h2>جاري التحويل...</h2>
+        <div id="countdown">5</div>
+    </div>
+
+    <script>
+        // ساعة ومواقيت الصلاة
+        setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-SY'); }, 1000);
         
-        list.innerHTML = filtered.map(c => `
-            <div class="code-item">
-                <div><strong>${c.device}:</strong> ${c.desc}<br><span style="color:#38bdf8;">${c.code}</span></div>
-                <a href="tel:${c.code.replace(/#/g, '%23')}" style="background:#25d366; color:white; padding:8px 12px; border-radius:8px; text-decoration:none; font-weight:bold;">فحص</a>
-            </div>
-        `).join('');
-    }
-    searchCodes();
-</script>
+        // نظام التحويل الذكي
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const target = urlParams.get('to');
+            if (target) {
+                const modal = document.getElementById('redirectModal');
+                const counter = document.getElementById('countdown');
+                modal.style.display = 'flex';
+                let count = 5;
+                const timer = setInterval(() => {
+                    count--;
+                    counter.innerText = count;
+                    if (count <= 0) { clearInterval(timer); window.location.href = target; }
+                }, 1000);
+            }
+        }
+    </script>
 </body>
 </html>
