@@ -3,77 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maged Tech | Professional Platform</title>
+    <title>Maged Tech | المنصة الرسمية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root { --neon: #00f2ff; --bg: #050505; --glass: rgba(255, 255, 255, 0.05); }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; margin: 0; }
+        :root { 
+            --neon: #00f2ff; 
+            --neon-pink: #ff0055;
+            --bg-color: #05050a;
+        }
         
-        .brand-box { text-align: center; margin: 30px 0; }
-        .brand-box h1 { font-size: 2.5rem; letter-spacing: 2px; color: #fff; text-shadow: 0 0 20px var(--neon); margin: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        .clock-card { background: var(--glass); backdrop-filter: blur(10px); padding: 20px; border-radius: 25px; width: 90%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        body { 
+            background-color: var(--bg-color); 
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 242, 255, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 0, 85, 0.08), transparent 25%);
+            color: #fff; 
+            font-family: 'Tajawal', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 30px 20px; 
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ---------------- قسم اللوغو والهوية ---------------- */
+        .brand-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* حلقة النيون حول اللوغو */
+        .logo-ring {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--neon), var(--neon-pink));
+            padding: 4px;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .logo-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: #111;
+            /* يمكنك تغيير هذا الرابط لصورة اللوغو تبعك أو الـ Avatar 3D */
+            background-image: url('https://cdn-icons-png.flaticon.com/512/3062/3062325.png'); 
+            background-size: cover;
+            background-position: center;
+            border: 4px solid #05050a;
+        }
+
+        .brand-name {
+            font-size: 2.8rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #fff, var(--neon));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 5px 15px rgba(0, 242, 255, 0.2);
+        }
+
+        /* ---------------- كرت الساعة ---------------- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 420px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
+            transform: skewX(-20deg);
+            animation: shine 5s infinite;
+        }
+
+        #live-clock { font-size: 2.8rem; font-weight: 900; color: var(--neon); letter-spacing: 2px; text-shadow: 0 0 20px rgba(0, 242, 255, 0.5); margin-bottom: 5px; }
+        #date-text { color: #a0a0b0; font-size: 1rem; font-weight: 500; }
+
+        /* ---------------- الأزرار (تأثيرات 3D) ---------------- */
+        .btn-3d {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(20, 20, 25, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-right: 4px solid var(--neon);
+            padding: 20px 25px;
+            margin-bottom: 16px;
+            border-radius: 18px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.15rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.4);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .btn-3d i { font-size: 1.6rem; color: var(--neon); transition: 0.3s; }
+
+        .btn-3d:hover {
+            transform: translateY(-5px) scale(1.02);
+            background: rgba(30, 30, 40, 0.8);
+            border-color: var(--neon);
+            box-shadow: 0 15px 25px rgba(0, 242, 255, 0.2);
+        }
         
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 242, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); } }
-        
-        .menu-btn { width: 90%; max-width: 400px; padding: 18px; margin-bottom: 15px; background: linear-gradient(135deg, #1a1a1a, #0f0f0f); border: 1px solid #333; color: white; border-radius: 20px; text-decoration: none; font-weight: 600; display: flex; align-items: center; justify-content: space-between; transition: 0.4s; animation: pulse 3s infinite; }
-        .menu-btn:hover { border-color: var(--neon); transform: translateY(-3px); }
-        
-        #prayer-content { display: none; padding: 15px; background: #111; border-radius: 15px; width: 90%; max-width: 400px; margin-top: -10px; margin-bottom: 15px; border: 1px solid #333; font-size: 0.9rem; }
-        .prayer-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #222; }
-        
-        .social-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 90%; max-width: 400px; margin-top: 20px; }
-        .btn-social { display: flex; justify-content: center; align-items: center; padding: 15px; border-radius: 15px; text-decoration: none; color: white; font-weight: bold; transition: 0.3s; border: 1px solid #333; font-size: 1.8rem; }
-        .btn-social:hover { transform: translateY(-3px); filter: brightness(1.2); }
-        
-        .fb { background: #1877F2; grid-column: span 3; font-size: 1.2rem; gap: 10px; }
-        .ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); grid-column: span 3; font-size: 1.2rem; gap: 10px; }
-        .yt { background: #FF0000; aspect-ratio: 1 / 1; }
-        .sc { background: #FFFC00; color: #000 !important; aspect-ratio: 1 / 1; }
-        .tg { background: #0088CC; aspect-ratio: 1 / 1; }
+        .btn-3d:hover i { transform: scale(1.2) rotate(5deg); text-shadow: 0 0 15px var(--neon); }
+
+        .btn-3d:active { transform: translateY(2px); box-shadow: 0 5px 10px rgba(0,0,0,0.5); }
+
+        /* مواقيت الصلاة المنسدلة */
+        #prayer-content { display: none; padding: 20px; background: rgba(0,0,0,0.4); border-radius: 18px; width: 100%; max-width: 420px; margin-top: -10px; margin-bottom: 20px; border: 1px solid rgba(0,242,255,0.2); font-size: 1.1rem; font-weight: bold; }
+        .prayer-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+        .prayer-row:last-child { border-bottom: none; }
+
+        /* ---------------- شبكة السوشيال ميديا ---------------- */
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 420px;
+            margin-top: 10px;
+        }
+
+        .social-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: white;
+            font-weight: 900;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .social-item::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.1); opacity: 0; transition: 0.3s; }
+        .social-item:hover::after { opacity: 1; }
+        .social-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+
+        .fb { background: linear-gradient(135deg, #1877F2, #0d5bb5); grid-column: span 3; font-size: 1.4rem; gap: 12px; }
+        .ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); grid-column: span 3; font-size: 1.4rem; gap: 12px; }
+        .yt { background: linear-gradient(135deg, #FF0000, #b30000); aspect-ratio: 1 / 1; }
+        .sc { background: linear-gradient(135deg, #FFFC00, #d4d100); color: #000 !important; aspect-ratio: 1 / 1; }
+        .tg { background: linear-gradient(135deg, #0088CC, #005f8f); aspect-ratio: 1 / 1; }
+
+        /* ---------------- انيميشن ---------------- */
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
     </style>
 </head>
 <body>
 
-    <div class="brand-box">
-        <h1>MAGED <span style="color:var(--neon)">TECH</span></h1>
+    <div class="brand-container">
+        <div class="logo-ring">
+            <div class="logo-img"></div>
+        </div>
+        <div class="brand-name">Maged Tech</div>
     </div>
 
-    <div class="clock-card">
-        <div id="live-clock" style="font-size: 1.8rem; font-weight: bold; color: var(--neon);">00:00</div>
-        <div id="date-text" style="color: #888; font-size: 0.8rem;">...</div>
+    <div class="glass-card">
+        <div id="live-clock">00:00</div>
+        <div id="date-text">...</div>
     </div>
 
-    <a href="#" class="menu-btn" onclick="document.getElementById('prayer-content').style.display = (document.getElementById('prayer-content').style.display === 'block' ? 'none' : 'block');">
+    <a href="#" class="btn-3d" onclick="document.getElementById('prayer-content').style.display = (document.getElementById('prayer-content').style.display === 'block' ? 'none' : 'block');">
         <span>مواقيت الصلاة | Prayer Times</span>
-        <i class="fa-solid fa-mosque" style="color:var(--neon)"></i>
+        <i class="fa-solid fa-mosque"></i>
     </a>
     <div id="prayer-content"></div>
 
-    <a href="/maged-tech-tools/apps/fatora/index.html" class="menu-btn">
+    <a href="https://maged690-ux.github.io/maged-tech-tools/apps/fatora/index.html" class="btn-3d">
         <span>نظام الفواتير | Invoicing System</span>
-        <i class="fa-solid fa-file-invoice-dollar" style="color:var(--neon)"></i>
+        <i class="fa-solid fa-file-invoice-dollar"></i>
     </a>
 
-    <a href="/maged-tech-tools/maged-magic-cam/index.html" class="menu-btn">
+    <a href="https://maged690-ux.github.io/maged-tech-tools/maged-magic-cam/index.html" class="btn-3d">
         <span>استوديو الخيال | Magic Cam Studio</span>
-        <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--neon)"></i>
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
     </a>
 
-    <a href="/maged-tech-tools/codes.html" class="menu-btn">
+    <a href="https://maged690-ux.github.io/maged-tech-tools/codes.html" class="btn-3d">
         <span>أكواد الأجهزة | Diagnostic Codes</span>
-        <i class="fa-solid fa-microchip" style="color:var(--neon)"></i>
+        <i class="fa-solid fa-microchip"></i>
     </a>
 
     <div class="social-grid">
-        <a href="https://www.facebook.com/share/1J8HF8p72E/" class="btn-social fb"><i class="fa-brands fa-facebook"></i> Facebook</a>
-        <a href="https://www.instagram.com/magedtech.official" class="btn-social ig"><i class="fa-brands fa-instagram"></i> Instagram</a>
-        <a href="https://youtube.com/@maged115599" class="btn-social yt"><i class="fa-brands fa-youtube"></i></a>
-        <a href="https://www.snapchat.com/add/maged-say" class="btn-social sc"><i class="fa-brands fa-snapchat"></i></a>
-        <a href="https://t.me/Maged_Tech" class="btn-social tg"><i class="fa-brands fa-telegram"></i></a>
+        <a href="https://www.facebook.com/share/1J8HF8p72E/" class="social-item fb">
+            <i class="fa-brands fa-facebook"></i> Maged Tech Facebook
+        </a>
+        <a href="https://www.instagram.com/magedtech.official" class="social-item ig">
+            <i class="fa-brands fa-instagram"></i> MagedTech.Official
+        </a>
+        
+        <a href="https://youtube.com/@maged115599" class="social-item yt"><i class="fa-brands fa-youtube"></i></a>
+        <a href="https://www.snapchat.com/add/maged-say" class="social-item sc"><i class="fa-brands fa-snapchat"></i></a>
+        <a href="https://t.me/Maged_Tech" class="social-item tg"><i class="fa-brands fa-telegram"></i></a>
     </div>
 
     <script>
+        // سكربت الساعة
         function formatTime12(time24) {
             let [h, m] = time24.split(':');
             h = parseInt(h);
@@ -88,10 +248,12 @@
             let suff = h >= 12 ? ' PM' : ' AM';
             h = h % 12 || 12;
             document.getElementById('live-clock').innerText = `${h}:${m.toString().padStart(2,'0')} ${suff}`;
+            
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('date-text').innerText = now.toLocaleDateString('ar-SY', options);
         }, 1000);
 
+        // سكربت مواقيت الصلاة
         fetch('https://api.aladhan.com/v1/timingsByCity?city=Damascus&country=Syria&method=8')
             .then(res => res.json())
             .then(data => {
@@ -102,7 +264,7 @@
                     container.innerHTML += `<div class="prayer-row"><span>${name}</span><span style="color:var(--neon)">${formatTime12(list[name])}</span></div>`;
                 }
             })
-            .catch(err => console.log('خطأ في جلب المواقيت: ', err));
+            .catch(err => console.log('خطأ في جلب المواقيت', err));
     </script>
 </body>
 </html>
