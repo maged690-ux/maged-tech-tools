@@ -38,7 +38,6 @@
     </style>
 </head>
 <body>
-
     <div class="app-container">
         <header>
             <a href="../index.html" class="icon-btn"><i class="fa-solid fa-xmark"></i></a>
@@ -70,12 +69,11 @@
 
             <div class="bg-section" id="sec-bg" style="display: block;">
                 <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="moon" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="paris" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="egypt" style="background-image: url('https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="ny" style="background-image: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn active-btn" data-bg="umayyad" style="background-image: url('umayyad.jpg');"></div>
+                    <div class="filter-btn bg-btn" data-bg="noria" style="background-image: url('noria.jpg');"></div>
+                    <div class="filter-btn bg-btn" data-bg="homs" style="background-image: url('homs.jpg');"></div>
+                    <div class="filter-btn bg-btn" data-bg="bridge" style="background-image: url('bridge.jpg');"></div>
+                    <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                 </div>
             </div>
 
@@ -84,7 +82,6 @@
             </div>
         </div>
     </div>
-
     <script>
         const videoElement = document.getElementById('input_video');
         const canvasElement = document.getElementById('output_canvas');
@@ -92,14 +89,14 @@
         const loadingMsg = document.getElementById('loading-msg');
         
         let currentFilter = 'beauty'; 
-        let currentBg = 'galaxy';
+        let currentBg = 'umayyad'; // الخلفية الافتراضية الأولى
         let isFrontCam = true; 
         let camera; 
         let currentFaceLandmarks = null;
 
         const bgImages = { 
-            'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
-            'paris': new Image(), 'egypt': new Image(), 'ny': new Image()
+            'umayyad': new Image(), 'noria': new Image(), 
+            'homs': new Image(), 'bridge': new Image(), 'galaxy': new Image()
         };
         
         function safeLoadImage(imgObj, url) {
@@ -108,12 +105,11 @@
             imgObj.src = url;
         }
 
+        safeLoadImage(bgImages['umayyad'], 'umayyad.jpg');
+        safeLoadImage(bgImages['noria'], 'noria.jpg');
+        safeLoadImage(bgImages['homs'], 'homs.jpg');
+        safeLoadImage(bgImages['bridge'], 'bridge.jpg');
         safeLoadImage(bgImages['galaxy'], 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['moon'], 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['ship'], 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['paris'], 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['egypt'], 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['ny'], 'https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
 
         function switchTab(tabName) {
             document.getElementById('tab-filter').classList.remove('active-tab');
@@ -172,7 +168,6 @@
             ctx.shadowBlur = 15;
             ctx.stroke();
         }
-
         selfieSegmentation.onResults((results) => {
             try {
                 loadingMsg.style.display = 'none';
@@ -201,7 +196,6 @@
                     canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
                 }
 
-                // === فلاتر الوجه الاحترافية ===
                 canvasCtx.globalCompositeOperation = 'source-over';
                 
                 if (currentFaceLandmarks) {
@@ -224,14 +218,13 @@
                         const angle = Math.atan2(y2 - y1, x2 - x1);
                         const eyeDist = Math.hypot(x2 - x1, y2 - y1); 
 
-                        // 1. فلتر الجمال الدائم (Base Layer - شغال دائماً تحت كل الفلاتر)
+                        // التجميل الأساسي (شغال دائماً)
                         canvasCtx.save();
                         canvasCtx.globalCompositeOperation = 'overlay'; 
                         let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.2, cx, cy, eyeDist * 1.8);
                         beautyGrad.addColorStop(0, 'rgba(255, 235, 215, 0.45)'); 
                         beautyGrad.addColorStop(0.5, 'rgba(255, 220, 200, 0.25)'); 
                         beautyGrad.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
-                        
                         canvasCtx.fillStyle = beautyGrad;
                         canvasCtx.beginPath();
                         canvasCtx.arc(cx, cy, eyeDist * 1.8, 0, Math.PI * 2);
@@ -242,74 +235,54 @@
                         canvasCtx.fill(); 
                         canvasCtx.restore();
                         
-                        // 2. الفلاتر الإضافية المتغيرة حسب الزر المختار
-                        
-                        // فلتر مورد الخدود (الكيوت 🌸)
+                        // الفلاتر المتغيرة
                         if (currentFilter === 'cute') {
                             canvasCtx.save();
                             canvasCtx.globalCompositeOperation = 'soft-light'; 
-                            
                             const blushRadius = eyeDist * 0.45;
-                            const leftCheekX = x1;
-                            const leftCheekY = y1 + (eyeDist * 0.45);
-                            const rightCheekX = x2;
-                            const rightCheekY = y2 + (eyeDist * 0.45);
 
-                            // خدود يسار
-                            let leftBlush = canvasCtx.createRadialGradient(leftCheekX, leftCheekY, 0, leftCheekX, leftCheekY, blushRadius);
+                            let leftBlush = canvasCtx.createRadialGradient(x1, y1 + (eyeDist * 0.45), 0, x1, y1 + (eyeDist * 0.45), blushRadius);
                             leftBlush.addColorStop(0, 'rgba(255, 105, 180, 0.55)'); 
                             leftBlush.addColorStop(1, 'rgba(255, 105, 180, 0)');
                             canvasCtx.fillStyle = leftBlush;
                             canvasCtx.beginPath();
-                            canvasCtx.arc(leftCheekX, leftCheekY, blushRadius, 0, Math.PI * 2);
+                            canvasCtx.arc(x1, y1 + (eyeDist * 0.45), blushRadius, 0, Math.PI * 2);
                             canvasCtx.fill();
 
-                            // خدود يمين
-                            let rightBlush = canvasCtx.createRadialGradient(rightCheekX, rightCheekY, 0, rightCheekX, rightCheekY, blushRadius);
+                            let rightBlush = canvasCtx.createRadialGradient(x2, y2 + (eyeDist * 0.45), 0, x2, y2 + (eyeDist * 0.45), blushRadius);
                             rightBlush.addColorStop(0, 'rgba(255, 105, 180, 0.55)');
                             rightBlush.addColorStop(1, 'rgba(255, 105, 180, 0)');
                             canvasCtx.fillStyle = rightBlush;
                             canvasCtx.beginPath();
-                            canvasCtx.arc(rightCheekX, rightCheekY, blushRadius, 0, Math.PI * 2);
+                            canvasCtx.arc(x2, y2 + (eyeDist * 0.45), blushRadius, 0, Math.PI * 2);
                             canvasCtx.fill();
-
                             canvasCtx.restore();
                         }
-                        
-                        // فلتر نظارة السايبربانك (🕶️)
                         else if (currentFilter === 'cyber') {
                             const visorWidth = eyeDist * 1.8; 
                             const visorHeight = visorWidth * 0.35; 
-                            
                             canvasCtx.save();
                             canvasCtx.translate(nx, ny + (visorHeight * 0.15));
                             canvasCtx.rotate(angle);
-                            
                             canvasCtx.beginPath();
                             canvasCtx.moveTo(-visorWidth/2, -visorHeight/2);
                             canvasCtx.lineTo(visorWidth/2, -visorHeight/2); 
                             canvasCtx.lineTo(visorWidth/2.2, visorHeight/2);
-                            
                             canvasCtx.lineTo(visorWidth*0.15, visorHeight/2);
                             canvasCtx.lineTo(0, visorHeight*0.1); 
                             canvasCtx.lineTo(-visorWidth*0.15, visorHeight/2);
-                            
                             canvasCtx.lineTo(-visorWidth/2.2, visorHeight/2); 
                             canvasCtx.closePath();
-                            
                             let glassGrad = canvasCtx.createLinearGradient(0, -visorHeight/2, 0, visorHeight/2);
                             glassGrad.addColorStop(0, 'rgba(10, 15, 30, 0.95)');
                             glassGrad.addColorStop(1, 'rgba(0, 255, 255, 0.6)');
-                            
                             canvasCtx.fillStyle = glassGrad;
                             canvasCtx.fill();
-                            
                             canvasCtx.lineWidth = 2.5;
                             canvasCtx.strokeStyle = '#00ffff';
                             canvasCtx.shadowColor = '#00ffff';
                             canvasCtx.shadowBlur = 15;
                             canvasCtx.stroke();
-                            
                             canvasCtx.beginPath();
                             canvasCtx.moveTo(-visorWidth/2.1, -visorHeight/3);
                             canvasCtx.lineTo(visorWidth/2.1, -visorHeight/3);
@@ -317,22 +290,16 @@
                             canvasCtx.lineWidth = 1.5;
                             canvasCtx.shadowBlur = 5;
                             canvasCtx.stroke();
-                            
                             canvasCtx.restore();
                         }
-                        
-                        // فلتر وشم الفضاء (🌌)
                         else if (currentFilter === 'paint') {
                             const pulse = Math.abs(Math.sin(Date.now() * 0.005)); 
                             const colorAlpha = 0.5 + pulse * 0.5;
-                            
                             drawNeonLine(canvasCtx, currentFaceLandmarks, [103, 67, 10, 297, 332], `rgba(0, 255, 204, ${colorAlpha})`, '#00ffcc');
                             drawNeonLine(canvasCtx, currentFaceLandmarks, [54, 68, 104, 69, 108], `rgba(0, 255, 204, ${colorAlpha})`, '#00ffcc');
                             drawNeonLine(canvasCtx, currentFaceLandmarks, [284, 298, 333, 299, 337], `rgba(0, 255, 204, ${colorAlpha})`, '#00ffcc');
-                            
                             drawNeonLine(canvasCtx, currentFaceLandmarks, [116, 123, 147, 213, 192], `rgba(255, 0, 255, ${colorAlpha})`, '#ff00ff');
                             drawNeonLine(canvasCtx, currentFaceLandmarks, [117, 118, 100, 120], `rgba(255, 0, 255, ${colorAlpha})`, '#ff00ff');
-                            
                             drawNeonLine(canvasCtx, currentFaceLandmarks, [345, 352, 376, 433, 416], `rgba(255, 0, 255, ${colorAlpha})`, '#ff00ff');
                             drawNeonLine(canvasCtx, currentFaceLandmarks, [346, 347, 329, 349], `rgba(255, 0, 255, ${colorAlpha})`, '#ff00ff');
                         }
@@ -353,7 +320,6 @@
                 canvasCtx.restore(); 
             }
         });
-
         function startCamera() {
             if(camera) { camera.stop(); }
             loadingMsg.style.display = 'block';
