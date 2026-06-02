@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Maged Filter Cam Pro</title>
-    
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
         body, html { width: 100%; height: 100%; background-color: #000; overflow: hidden; }
@@ -32,20 +30,12 @@
         .filter-carousel::-webkit-scrollbar { display: none; }
         .filter-btn { flex: 0 0 auto; width: 65px; height: 65px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; line-height: 1; scroll-snap-align: center; }
         .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(0,255,200,0.6); }
-        
-        /* حركات زر التقاط الصورة وتسجيل الفيديو */
         .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s, border-color 0.3s; margin-top: 5px; touch-action: none; }
         .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.2s; }
         .capture-ring:active .capture-inner:not(.recording) { transform: scale(0.85); background: #e0e0e0; }
-        
-        /* تأثير النبض عند تصوير الفيديو */
         .capture-ring.recording { border-color: #ff3b30; animation: pulse-ring 1.5s infinite; }
         .capture-inner.recording { background: #ff3b30 !important; transform: scale(0.5) !important; border-radius: 10px; }
-        @keyframes pulse-ring {
-            0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 59, 48, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
-        }
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
     </style>
 </head>
 <body>
@@ -55,20 +45,17 @@
             <h1>Maged Pro ✨</h1>
             <button id="flip-cam-btn" class="icon-btn"><i class="fa-solid fa-camera-rotate"></i></button>
         </header>
-
         <div class="camera-stage">
             <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تشغيل الكاميرا...</div>
             <video id="input_video" autoplay playsinline style="display: none;"></video>
             <canvas id="output_canvas"></canvas>
             <div id="flash-effect"></div>
         </div>
-
         <div class="controls">
             <div class="tabs">
                 <div class="tab active-tab" id="tab-bg" onclick="switchTab('bg')">الخلفيات</div>
                 <div class="tab" id="tab-filter" onclick="switchTab('filter')">الفلاتر</div>
             </div>
-
             <div class="filter-section" id="sec-filter">
                 <div class="filter-carousel">
                     <div class="filter-btn filter-opt" data-filter="cute" style="font-size: 1.2rem;">🌸</div>
@@ -77,10 +64,13 @@
                     <div class="filter-btn filter-opt" data-filter="paint" style="font-size: 1.2rem;">🌌</div>
                 </div>
             </div>
-
             <div class="bg-section" id="sec-bg" style="display: block;">
                 <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="scifi_ship" style="background-image: url('https://images.unsplash.com/photo-1533972751724-d135853c8c44?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');">🛸</div>
+                    <div class="filter-btn bg-btn active-btn" data-bg="starwars4" style="background-image: url('IMG-20260602-WA0011.jpg');">💥</div>
+                    
+                    <div class="filter-btn bg-btn" data-bg="starwars1" style="background-image: url('IMG-20260602-WA0007.jpg');">🛸</div>
+                    <div class="filter-btn bg-btn" data-bg="starwars2" style="background-image: url('IMG-20260602-WA0008.jpg');">🚀</div>
+                    <div class="filter-btn bg-btn" data-bg="starwars3" style="background-image: url('IMG-20260602-WA0010.jpg');">⚔️</div>
                     
                     <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                     <div class="filter-btn bg-btn" data-bg="moon" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
@@ -95,7 +85,6 @@
                     <div class="filter-btn bg-btn" data-bg="bridge" style="background-image: url('bridge.jpg');"></div>
                 </div>
             </div>
-
             <div class="capture-ring" id="capture-btn">
                 <div class="capture-inner"></div>
             </div>
@@ -108,14 +97,14 @@
         const loadingMsg = document.getElementById('loading-msg');
         
         let currentFilter = 'beauty'; 
-        let currentBg = 'scifi_ship'; // تم تعيين المركبة الفضائية النيون كخلفية افتراضية
+        let currentBg = 'starwars4'; // تعيين صورة المعركة كافتراضية
         let isFrontCam = true; 
         let camera; 
         let currentFaceLandmarks = null;
 
-        // مصفوفة كل الصور (القديمة + الجديدة + السورية)
         const bgImages = { 
-            'scifi_ship': new Image(),
+            'starwars4': new Image(),
+            'starwars1': new Image(), 'starwars2': new Image(), 'starwars3': new Image(),
             'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
             'paris': new Image(), 'egypt': new Image(), 'ny': new Image(),
             'umayyad': new Image(), 'noria': new Image(), 
@@ -124,22 +113,23 @@
         
         function safeLoadImage(imgObj, url) {
             imgObj.crossOrigin = "anonymous"; 
-            imgObj.onerror = () => { console.warn("Failed to load background: " + url); };
+            imgObj.onerror = () => { console.warn("Failed to load: " + url); };
             imgObj.src = url;
         }
 
-        // المركبة الفضائية الخيالية (نيون سايبربانك)
-        safeLoadImage(bgImages['scifi_ship'], 'https://images.unsplash.com/photo-1533972751724-d135853c8c44?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-
-        // الفضاء والمدن (القديمة)
+        // تحميل جميع الخلفيات (المحلية والروابط)
+        safeLoadImage(bgImages['starwars4'], 'IMG-20260602-WA0011.jpg');
+        safeLoadImage(bgImages['starwars1'], 'IMG-20260602-WA0007.jpg');
+        safeLoadImage(bgImages['starwars2'], 'IMG-20260602-WA0008.jpg');
+        safeLoadImage(bgImages['starwars3'], 'IMG-20260602-WA0010.jpg');
+        
         safeLoadImage(bgImages['galaxy'], 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
         safeLoadImage(bgImages['moon'], 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
         safeLoadImage(bgImages['ship'], 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
         safeLoadImage(bgImages['paris'], 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
         safeLoadImage(bgImages['egypt'], 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
         safeLoadImage(bgImages['ny'], 'https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-
-        // المعالم السورية
+        
         safeLoadImage(bgImages['umayyad'], 'umayyad.jpg');
         safeLoadImage(bgImages['noria'], 'noria.jpg');
         safeLoadImage(bgImages['homs'], 'homs.jpg');
@@ -170,48 +160,29 @@
             });
         });
 
-        const faceMesh = new FaceMesh({locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`;
-        }});
+        const faceMesh = new FaceMesh({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
         faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
-        faceMesh.onResults((results) => {
-            if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-                currentFaceLandmarks = results.multiFaceLandmarks[0];
-            } else {
-                currentFaceLandmarks = null;
-            }
-        });
+        faceMesh.onResults((results) => { currentFaceLandmarks = results.multiFaceLandmarks ? results.multiFaceLandmarks[0] : null; });
 
-        const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => {
-            return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`;
-        }});
+        const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`});
         selfieSegmentation.setOptions({ modelSelection: 0 });
         
         function drawNeonLine(ctx, landmarks, indices, color, glow) {
             ctx.beginPath();
             indices.forEach((idx, i) => {
                 const pt = landmarks[idx];
-                const x = pt.x * canvasElement.width;
-                const y = pt.y * canvasElement.height;
-                if (i === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
+                const x = pt.x * canvasElement.width, y = pt.y * canvasElement.height;
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
             });
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 3;
-            ctx.shadowColor = glow;
-            ctx.shadowBlur = 15;
-            ctx.stroke();
+            ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.shadowColor = glow; ctx.shadowBlur = 15; ctx.stroke();
         }
 
         selfieSegmentation.onResults((results) => {
             try {
                 loadingMsg.style.display = 'none';
-                
-                if (canvasElement.width !== results.image.width || canvasElement.height !== results.image.height) {
-                    canvasElement.width = results.image.width;
-                    canvasElement.height = results.image.height;
+                if (canvasElement.width !== results.image.width) {
+                    canvasElement.width = results.image.width; canvasElement.height = results.image.height;
                 }
-
                 canvasCtx.save();
                 canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
@@ -224,36 +195,25 @@
                 canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
                 canvasCtx.globalCompositeOperation = 'destination-over';
+                // رسم الخلفية إذا كانت موجودة وتم تحميلها بنجاح
                 if (bgImages[currentBg] && bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
                     canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
                 } else {
-                    canvasCtx.fillStyle = '#111'; 
-                    canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+                    canvasCtx.fillStyle = '#111'; canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
                 }
 
                 canvasCtx.globalCompositeOperation = 'source-over';
-                
                 if (currentFaceLandmarks) {
-                    const leftEye = currentFaceLandmarks[130]; 
-                    const rightEye = currentFaceLandmarks[359]; 
-                    const noseBridge = currentFaceLandmarks[168]; 
-                    
+                    const leftEye = currentFaceLandmarks[130], rightEye = currentFaceLandmarks[359], noseBridge = currentFaceLandmarks[168]; 
                     if (leftEye && rightEye && noseBridge) {
-                        const x1 = leftEye.x * canvasElement.width;
-                        const y1 = leftEye.y * canvasElement.height;
-                        const x2 = rightEye.x * canvasElement.width;
-                        const y2 = rightEye.y * canvasElement.height;
-                        
-                        const nx = noseBridge.x * canvasElement.width;
-                        const ny = noseBridge.y * canvasElement.height;
-                        
-                        const cx = (x1 + x2) / 2;
-                        const cy = (y1 + y2) / 2;
-                        
+                        const x1 = leftEye.x * canvasElement.width, y1 = leftEye.y * canvasElement.height;
+                        const x2 = rightEye.x * canvasElement.width, y2 = rightEye.y * canvasElement.height;
+                        const nx = noseBridge.x * canvasElement.width, ny = noseBridge.y * canvasElement.height;
+                        const cx = (x1 + x2) / 2, cy = (y1 + y2) / 2;
                         const angle = Math.atan2(y2 - y1, x2 - x1);
                         const eyeDist = Math.hypot(x2 - x1, y2 - y1); 
 
-                        // التجميل الأساسي (شغال دائماً كـ Base Layer)
+                        // فلتر التجميل الأساسي الدائم
                         canvasCtx.save();
                         canvasCtx.globalCompositeOperation = 'overlay'; 
                         let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.2, cx, cy, eyeDist * 1.8);
@@ -261,9 +221,7 @@
                         beautyGrad.addColorStop(0.5, 'rgba(255, 220, 200, 0.25)'); 
                         beautyGrad.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
                         canvasCtx.fillStyle = beautyGrad;
-                        canvasCtx.beginPath();
-                        canvasCtx.arc(cx, cy, eyeDist * 1.8, 0, Math.PI * 2);
-                        canvasCtx.fill();
+                        canvasCtx.beginPath(); canvasCtx.arc(cx, cy, eyeDist * 1.8, 0, Math.PI * 2); canvasCtx.fill();
                         
                         canvasCtx.globalCompositeOperation = 'soft-light';
                         canvasCtx.fillStyle = 'rgba(255, 240, 230, 0.15)';
@@ -275,27 +233,15 @@
                             canvasCtx.save();
                             canvasCtx.globalCompositeOperation = 'soft-light'; 
                             const blushRadius = eyeDist * 0.45;
-
-                            let leftBlush = canvasCtx.createRadialGradient(x1, y1 + (eyeDist * 0.45), 0, x1, y1 + (eyeDist * 0.45), blushRadius);
-                            leftBlush.addColorStop(0, 'rgba(255, 105, 180, 0.55)'); 
-                            leftBlush.addColorStop(1, 'rgba(255, 105, 180, 0)');
-                            canvasCtx.fillStyle = leftBlush;
-                            canvasCtx.beginPath();
-                            canvasCtx.arc(x1, y1 + (eyeDist * 0.45), blushRadius, 0, Math.PI * 2);
-                            canvasCtx.fill();
-
-                            let rightBlush = canvasCtx.createRadialGradient(x2, y2 + (eyeDist * 0.45), 0, x2, y2 + (eyeDist * 0.45), blushRadius);
-                            rightBlush.addColorStop(0, 'rgba(255, 105, 180, 0.55)');
-                            rightBlush.addColorStop(1, 'rgba(255, 105, 180, 0)');
-                            canvasCtx.fillStyle = rightBlush;
-                            canvasCtx.beginPath();
-                            canvasCtx.arc(x2, y2 + (eyeDist * 0.45), blushRadius, 0, Math.PI * 2);
-                            canvasCtx.fill();
+                            [[x1, y1], [x2, y2]].forEach(([x, y]) => {
+                                let blush = canvasCtx.createRadialGradient(x, y + (eyeDist * 0.45), 0, x, y + (eyeDist * 0.45), blushRadius);
+                                blush.addColorStop(0, 'rgba(255, 105, 180, 0.55)'); blush.addColorStop(1, 'rgba(255, 105, 180, 0)');
+                                canvasCtx.fillStyle = blush;
+                                canvasCtx.beginPath(); canvasCtx.arc(x, y + (eyeDist * 0.45), blushRadius, 0, Math.PI * 2); canvasCtx.fill();
+                            });
                             canvasCtx.restore();
-                        }
-                        else if (currentFilter === 'cyber') {
-                            const visorWidth = eyeDist * 1.8; 
-                            const visorHeight = visorWidth * 0.35; 
+                        } else if (currentFilter === 'cyber') {
+                            const visorWidth = eyeDist * 1.8, visorHeight = visorWidth * 0.35; 
                             canvasCtx.save();
                             canvasCtx.translate(nx, ny + (visorHeight * 0.15));
                             canvasCtx.rotate(angle);
@@ -309,51 +255,31 @@
                             canvasCtx.lineTo(-visorWidth/2.2, visorHeight/2); 
                             canvasCtx.closePath();
                             let glassGrad = canvasCtx.createLinearGradient(0, -visorHeight/2, 0, visorHeight/2);
-                            glassGrad.addColorStop(0, 'rgba(10, 15, 30, 0.95)');
-                            glassGrad.addColorStop(1, 'rgba(0, 255, 255, 0.6)');
-                            canvasCtx.fillStyle = glassGrad;
-                            canvasCtx.fill();
-                            canvasCtx.lineWidth = 2.5;
-                            canvasCtx.strokeStyle = '#00ffff';
-                            canvasCtx.shadowColor = '#00ffff';
-                            canvasCtx.shadowBlur = 15;
-                            canvasCtx.stroke();
-                            canvasCtx.beginPath();
-                            canvasCtx.moveTo(-visorWidth/2.1, -visorHeight/3);
-                            canvasCtx.lineTo(visorWidth/2.1, -visorHeight/3);
-                            canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-                            canvasCtx.lineWidth = 1.5;
-                            canvasCtx.shadowBlur = 5;
-                            canvasCtx.stroke();
+                            glassGrad.addColorStop(0, 'rgba(10, 15, 30, 0.95)'); glassGrad.addColorStop(1, 'rgba(0, 255, 255, 0.6)');
+                            canvasCtx.fillStyle = glassGrad; canvasCtx.fill();
+                            canvasCtx.lineWidth = 2.5; canvasCtx.strokeStyle = '#00ffff'; canvasCtx.shadowColor = '#00ffff'; canvasCtx.shadowBlur = 15; canvasCtx.stroke();
+                            canvasCtx.beginPath(); canvasCtx.moveTo(-visorWidth/2.1, -visorHeight/3); canvasCtx.lineTo(visorWidth/2.1, -visorHeight/3);
+                            canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; canvasCtx.lineWidth = 1.5; canvasCtx.shadowBlur = 5; canvasCtx.stroke();
                             canvasCtx.restore();
-                        }
-                        else if (currentFilter === 'paint') {
-                            const pulse = Math.abs(Math.sin(Date.now() * 0.005)); 
-                            const colorAlpha = 0.5 + pulse * 0.5;
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [103, 67, 10, 297, 332], `rgba(0, 255, 204, ${colorAlpha})`, '#00ffcc');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [54, 68, 104, 69, 108], `rgba(0, 255, 204, ${colorAlpha})`, '#00ffcc');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [284, 298, 333, 299, 337], `rgba(0, 255, 204, ${colorAlpha})`, '#00ffcc');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [116, 123, 147, 213, 192], `rgba(255, 0, 255, ${colorAlpha})`, '#ff00ff');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [117, 118, 100, 120], `rgba(255, 0, 255, ${colorAlpha})`, '#ff00ff');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [345, 352, 376, 433, 416], `rgba(255, 0, 255, ${colorAlpha})`, '#ff00ff');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [346, 347, 329, 349], `rgba(255, 0, 255, ${colorAlpha})`, '#ff00ff');
+                        } else if (currentFilter === 'paint') {
+                            const pulse = Math.abs(Math.sin(Date.now() * 0.005)), cA = 0.5 + pulse * 0.5;
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [103, 67, 10, 297, 332], `rgba(0, 255, 204, ${cA})`, '#00ffcc');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [54, 68, 104, 69, 108], `rgba(0, 255, 204, ${cA})`, '#00ffcc');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [284, 298, 333, 299, 337], `rgba(0, 255, 204, ${cA})`, '#00ffcc');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [116, 123, 147, 213, 192], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [117, 118, 100, 120], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [345, 352, 376, 433, 416], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [346, 347, 329, 349], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
                         }
                     }
                 }
                 
-                let watermarkSize = Math.floor(canvasElement.width * 0.045);
-                canvasCtx.font = "bold " + watermarkSize + "px Tahoma";
-                canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
-                canvasCtx.shadowColor = "rgba(0,0,0,0.9)";
-                canvasCtx.shadowBlur = 8;
-                canvasCtx.scale(-1, 1);
-                canvasCtx.fillText("Maged Pro ✨", -canvasElement.width + 20, canvasElement.height - 30);
-
+                let wSize = Math.floor(canvasElement.width * 0.045);
+                canvasCtx.font = "bold " + wSize + "px Tahoma"; canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
+                canvasCtx.shadowColor = "rgba(0,0,0,0.9)"; canvasCtx.shadowBlur = 8;
+                canvasCtx.scale(-1, 1); canvasCtx.fillText("Maged Pro ✨", -canvasElement.width + 20, canvasElement.height - 30);
                 canvasCtx.restore();
-            } catch (err) {
-                console.error("Rendering Error:", err);
-                canvasCtx.restore(); 
-            }
+            } catch (err) { console.error("Rendering Error:", err); canvasCtx.restore(); }
         });
 
         function startCamera() {
@@ -361,12 +287,8 @@
             loadingMsg.style.display = 'block';
             camera = new Camera(videoElement, {
                 onFrame: async () => { 
-                    try {
-                        await selfieSegmentation.send({image: videoElement});
-                        await faceMesh.send({image: videoElement});
-                    } catch (e) { 
-                        console.error("MediaPipe Error:", e); 
-                    }
+                    try { await selfieSegmentation.send({image: videoElement}); await faceMesh.send({image: videoElement}); } 
+                    catch (e) { console.error("MediaPipe Error:", e); }
                 },
                 facingMode: isFrontCam ? 'user' : 'environment'
             });
@@ -376,109 +298,46 @@
 
         startCamera();
 
-        document.getElementById('flip-cam-btn').addEventListener('click', () => {
-            isFrontCam = !isFrontCam;
-            startCamera();
-        });
+        document.getElementById('flip-cam-btn').addEventListener('click', () => { isFrontCam = !isFrontCam; startCamera(); });
 
-        // === نظام التقاط الصور وتسجيل الفيديو الذكي ===
         const captureBtn = document.getElementById('capture-btn');
         const captureInner = document.querySelector('.capture-inner');
-        
-        let mediaRecorder;
-        let recordedChunks = [];
-        let pressTimer;
-        let isLongPress = false;
-
-        // تجهيز مسجل الفيديو من شاشة الكانفاس (بدقة 30 فريم)
+        let mediaRecorder, recordedChunks = [], pressTimer, isLongPress = false;
         const canvasStream = canvasElement.captureStream(30);
         
         function startRecording() {
-            isLongPress = true;
-            recordedChunks = [];
-            
-            // اختيار صيغة مدعومة
+            isLongPress = true; recordedChunks = [];
             let options = { mimeType: 'video/webm; codecs=vp9' };
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-                options = { mimeType: 'video/webm' };
-            }
-            
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm' };
             mediaRecorder = new MediaRecorder(canvasStream, options);
-            
-            mediaRecorder.ondataavailable = function(e) {
-                if (e.data.size > 0) recordedChunks.push(e.data);
-            };
-            
-            mediaRecorder.onstop = function() {
+            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+            mediaRecorder.onstop = () => {
                 const blob = new Blob(recordedChunks, { type: 'video/webm' });
                 const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = 'Maged-Pro-Video.webm';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
+                const a = document.createElement('a'); a.style.display = 'none'; a.href = url; a.download = 'Maged-Pro-Video.webm';
+                document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url);
             };
-
             mediaRecorder.start();
-            
-            // تغيير شكل الزر للأحمر
-            captureBtn.classList.add('recording');
-            captureInner.classList.add('recording');
+            captureBtn.classList.add('recording'); captureInner.classList.add('recording');
         }
 
         function stopRecording() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-            }
-            // إرجاع شكل الزر للطبيعي
-            captureBtn.classList.remove('recording');
-            captureInner.classList.remove('recording');
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+            captureBtn.classList.remove('recording'); captureInner.classList.remove('recording');
         }
 
         function takePhoto() {
-            const flash = document.getElementById('flash-effect');
-            flash.style.opacity = '1';
-            setTimeout(() => flash.style.opacity = '0', 150);
-            
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = canvasElement.width;
-            tempCanvas.height = canvasElement.height;
+            const flash = document.getElementById('flash-effect'); flash.style.opacity = '1'; setTimeout(() => flash.style.opacity = '0', 150);
+            const tempCanvas = document.createElement('canvas'); tempCanvas.width = canvasElement.width; tempCanvas.height = canvasElement.height;
             const tCtx = tempCanvas.getContext('2d');
-            if (isFrontCam) {
-                tCtx.translate(tempCanvas.width, 0);
-                tCtx.scale(-1, 1);
-            }
+            if (isFrontCam) { tCtx.translate(tempCanvas.width, 0); tCtx.scale(-1, 1); }
             tCtx.drawImage(canvasElement, 0, 0);
-            
-            const dataURL = tempCanvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.download = 'Maged-Pro.png';
-            link.href = dataURL;
-            link.click();
+            const a = document.createElement('a'); a.download = 'Maged-Pro.png'; a.href = tempCanvas.toDataURL('image/png'); a.click();
         }
 
-        // التحكم باللمس والماوس (ضغطة سريعة = صورة / طويلة = فيديو)
-        const handlePointerDown = (e) => {
-            e.preventDefault(); // منع تحديد النص أو القوائم
-            isLongPress = false;
-            // إذا استمر الضغط 500 ملي ثانية (نصف ثانية)، يبدأ تسجيل الفيديو
-            pressTimer = setTimeout(startRecording, 500); 
-        };
-
-        const handlePointerUp = (e) => {
-            e.preventDefault();
-            clearTimeout(pressTimer); // إلغاء مؤقت الفيديو إذا شال اصبعه بسرعة
-            
-            if (isLongPress) {
-                stopRecording(); // إيقاف وحفظ الفيديو
-            } else {
-                takePhoto(); // التقاط صورة عادية
-            }
-        };
-
-        // ربط الأحداث للكمبيوتر والجوال
+        const handlePointerDown = (e) => { e.preventDefault(); isLongPress = false; pressTimer = setTimeout(startRecording, 500); };
+        const handlePointerUp = (e) => { e.preventDefault(); clearTimeout(pressTimer); if (isLongPress) stopRecording(); else takePhoto(); };
+        
         captureBtn.addEventListener('pointerdown', handlePointerDown);
         captureBtn.addEventListener('pointerup', handlePointerUp);
         captureBtn.addEventListener('pointerleave', handlePointerUp);
