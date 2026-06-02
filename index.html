@@ -12,30 +12,22 @@
         .brand-box { text-align: center; margin: 30px 0; }
         .brand-box h1 { font-size: 2.5rem; letter-spacing: 2px; color: #fff; text-shadow: 0 0 20px var(--neon); margin: 0; }
         
-        /* كرت الساعة والتاريخ */
         .clock-card { background: var(--glass); backdrop-filter: blur(10px); padding: 20px; border-radius: 25px; width: 90%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
         
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 242, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); } }
         
-        /* أزرار القائمة (الروابط) */
         .menu-btn { width: 90%; max-width: 400px; padding: 18px; margin-bottom: 15px; background: linear-gradient(135deg, #1a1a1a, #0f0f0f); border: 1px solid #333; color: white; border-radius: 20px; text-decoration: none; font-weight: 600; display: flex; align-items: center; justify-content: space-between; transition: 0.4s; animation: pulse 3s infinite; }
         .menu-btn:hover { border-color: var(--neon); transform: translateY(-3px); }
         
-        /* مواقيت الصلاة */
         #prayer-content { display: none; padding: 15px; background: #111; border-radius: 15px; width: 90%; max-width: 400px; margin-top: -10px; margin-bottom: 15px; border: 1px solid #333; font-size: 0.9rem; }
         .prayer-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #222; }
         
-        /* شبكة السوشيال ميديا الدقيقة */
         .social-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 90%; max-width: 400px; margin-top: 20px; }
-        
         .btn-social { display: flex; justify-content: center; align-items: center; padding: 15px; border-radius: 15px; text-decoration: none; color: white; font-weight: bold; transition: 0.3s; border: 1px solid #333; font-size: 1.8rem; }
         .btn-social:hover { transform: translateY(-3px); filter: brightness(1.2); }
         
-        /* المستطيلات العريضة */
         .fb { background: #1877F2; grid-column: span 3; font-size: 1.2rem; gap: 10px; }
         .ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); grid-column: span 3; font-size: 1.2rem; gap: 10px; }
-        
-        /* المربعات المتساوية */
         .yt { background: #FF0000; aspect-ratio: 1 / 1; }
         .sc { background: #FFFC00; color: #000 !important; aspect-ratio: 1 / 1; }
         .tg { background: #0088CC; aspect-ratio: 1 / 1; }
@@ -58,36 +50,30 @@
     </a>
     <div id="prayer-content"></div>
 
-    <a href="apps/fatora/index.html" class="menu-btn">
+    <a href="/maged-tech-tools/apps/fatora/index.html" class="menu-btn">
         <span>نظام الفواتير | Invoicing System</span>
         <i class="fa-solid fa-file-invoice-dollar" style="color:var(--neon)"></i>
     </a>
 
-    <a href="maged-magic-cam/index.html" class="menu-btn">
+    <a href="/maged-tech-tools/maged-magic-cam/index.html" class="menu-btn">
         <span>استوديو الخيال | Magic Cam Studio</span>
         <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--neon)"></i>
     </a>
 
-    <a href="codes.html" class="menu-btn">
+    <a href="/maged-tech-tools/codes.html" class="menu-btn">
         <span>أكواد الأجهزة | Diagnostic Codes</span>
         <i class="fa-solid fa-microchip" style="color:var(--neon)"></i>
     </a>
 
     <div class="social-grid">
-        <a href="https://www.facebook.com/share/1J8HF8p72E/" class="btn-social fb">
-            <i class="fa-brands fa-facebook"></i> Facebook
-        </a>
-        <a href="https://www.instagram.com/magedtech.official" class="btn-social ig">
-            <i class="fa-brands fa-instagram"></i> Instagram
-        </a>
-        
+        <a href="https://www.facebook.com/share/1J8HF8p72E/" class="btn-social fb"><i class="fa-brands fa-facebook"></i> Facebook</a>
+        <a href="https://www.instagram.com/magedtech.official" class="btn-social ig"><i class="fa-brands fa-instagram"></i> Instagram</a>
         <a href="https://youtube.com/@maged115599" class="btn-social yt"><i class="fa-brands fa-youtube"></i></a>
         <a href="https://www.snapchat.com/add/maged-say" class="btn-social sc"><i class="fa-brands fa-snapchat"></i></a>
         <a href="https://t.me/Maged_Tech" class="btn-social tg"><i class="fa-brands fa-telegram"></i></a>
     </div>
 
     <script>
-        // سكربت الساعة المباشرة
         function formatTime12(time24) {
             let [h, m] = time24.split(':');
             h = parseInt(h);
@@ -102,13 +88,10 @@
             let suff = h >= 12 ? ' PM' : ' AM';
             h = h % 12 || 12;
             document.getElementById('live-clock').innerText = `${h}:${m.toString().padStart(2,'0')} ${suff}`;
-            
-            // تاريخ عربي
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('date-text').innerText = now.toLocaleDateString('ar-SY', options);
         }, 1000);
 
-        // سكربت جلب مواقيت الصلاة (تلقائياً لمدينة دمشق)
         fetch('https://api.aladhan.com/v1/timingsByCity?city=Damascus&country=Syria&method=8')
             .then(res => res.json())
             .then(data => {
