@@ -206,15 +206,20 @@
                 if (currentFaceLandmarks && currentFilter !== 'none') {
                     const leftEye = currentFaceLandmarks[130]; 
                     const rightEye = currentFaceLandmarks[359]; 
+                    const noseBridge = currentFaceLandmarks[168]; // التمركز على جسر الأنف لضبط النظارة
                     
-                    if (leftEye && rightEye) {
+                    if (leftEye && rightEye && noseBridge) {
                         const x1 = leftEye.x * canvasElement.width;
                         const y1 = leftEye.y * canvasElement.height;
                         const x2 = rightEye.x * canvasElement.width;
                         const y2 = rightEye.y * canvasElement.height;
                         
+                        const nx = noseBridge.x * canvasElement.width;
+                        const ny = noseBridge.y * canvasElement.height;
+                        
                         const cx = (x1 + x2) / 2;
                         const cy = (y1 + y2) / 2;
+                        
                         const angle = Math.atan2(y2 - y1, x2 - x1);
                         const eyeDist = Math.hypot(x2 - x1, y2 - y1); 
 
@@ -238,13 +243,15 @@
                             canvasCtx.restore();
                         }
                         
-                        // 2. فلتر نظارة السايبربانك
+                        // 2. فلتر نظارة السايبربانك (تصغير جذري وتمركز على الأنف)
                         else if (currentFilter === 'cyber') {
-                            const visorWidth = eyeDist * 2.1; 
-                            const visorHeight = visorWidth * 0.30; 
+                            // تصغير العرض ليكون متناسق مع العيون بدقة
+                            const visorWidth = eyeDist * 1.4; 
+                            const visorHeight = visorWidth * 0.35; 
                             
                             canvasCtx.save();
-                            canvasCtx.translate(cx, cy + (eyeDist * 0.15));
+                            // نثبت مركز النظارة على جسر الأنف مع نزول خفيف لتقعد صح
+                            canvasCtx.translate(nx, ny + (visorHeight * 0.15));
                             canvasCtx.rotate(angle);
                             
                             canvasCtx.beginPath();
@@ -252,9 +259,10 @@
                             canvasCtx.lineTo(visorWidth/2, -visorHeight/2); 
                             canvasCtx.lineTo(visorWidth/2.2, visorHeight/2);
                             
-                            canvasCtx.lineTo(visorWidth*0.12, visorHeight/2);
-                            canvasCtx.lineTo(0, visorHeight*0.2); 
-                            canvasCtx.lineTo(-visorWidth*0.12, visorHeight/2);
+                            // تجويف الأنف
+                            canvasCtx.lineTo(visorWidth*0.15, visorHeight/2);
+                            canvasCtx.lineTo(0, visorHeight*0.1); 
+                            canvasCtx.lineTo(-visorWidth*0.15, visorHeight/2);
                             
                             canvasCtx.lineTo(-visorWidth/2.2, visorHeight/2); 
                             canvasCtx.closePath();
@@ -316,7 +324,6 @@
             }
         });
 
-        // هون الدالة اللي عملت المشكلة وتم التعديل عليها لإلغاء إجبار الدقة
         function startCamera() {
             if(camera) { camera.stop(); }
             loadingMsg.style.display = 'block';
@@ -330,7 +337,6 @@
                     }
                 },
                 facingMode: isFrontCam ? 'user' : 'environment'
-                // تم إزالة أسطر الـ width و height للسماح للكاميرا باختيار الدقة المناسبة تلقائياً
             });
             camera.start();
             canvasElement.style.transform = isFrontCam ? 'scaleX(-1)' : 'scaleX(1)';
