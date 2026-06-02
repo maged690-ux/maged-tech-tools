@@ -32,9 +32,20 @@
         .filter-carousel::-webkit-scrollbar { display: none; }
         .filter-btn { flex: 0 0 auto; width: 65px; height: 65px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; line-height: 1; scroll-snap-align: center; }
         .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(0,255,200,0.6); }
-        .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s; margin-top: 5px; }
-        .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.1s; }
-        .capture-ring:active .capture-inner { transform: scale(0.85); background: #e0e0e0; }
+        
+        /* حركات زر التقاط الصورة وتسجيل الفيديو */
+        .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s, border-color 0.3s; margin-top: 5px; touch-action: none; }
+        .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.2s; }
+        .capture-ring:active .capture-inner:not(.recording) { transform: scale(0.85); background: #e0e0e0; }
+        
+        /* تأثير النبض عند تصوير الفيديو */
+        .capture-ring.recording { border-color: #ff3b30; animation: pulse-ring 1.5s infinite; }
+        .capture-inner.recording { background: #ff3b30 !important; transform: scale(0.5) !important; border-radius: 10px; }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 59, 48, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
+        }
     </style>
 </head>
 <body>
@@ -69,11 +80,19 @@
 
             <div class="bg-section" id="sec-bg" style="display: block;">
                 <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="umayyad" style="background-image: url('umayyad.jpg');"></div>
+                    <div class="filter-btn bg-btn active-btn" data-bg="scifi_ship" style="background-image: url('https://images.unsplash.com/photo-1533972751724-d135853c8c44?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');">🛸</div>
+                    
+                    <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="moon" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="paris" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="egypt" style="background-image: url('https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="ny" style="background-image: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    
+                    <div class="filter-btn bg-btn" data-bg="umayyad" style="background-image: url('umayyad.jpg');"></div>
                     <div class="filter-btn bg-btn" data-bg="noria" style="background-image: url('noria.jpg');"></div>
                     <div class="filter-btn bg-btn" data-bg="homs" style="background-image: url('homs.jpg');"></div>
                     <div class="filter-btn bg-btn" data-bg="bridge" style="background-image: url('bridge.jpg');"></div>
-                    <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                 </div>
             </div>
 
@@ -89,14 +108,18 @@
         const loadingMsg = document.getElementById('loading-msg');
         
         let currentFilter = 'beauty'; 
-        let currentBg = 'umayyad'; // الخلفية الافتراضية الأولى
+        let currentBg = 'scifi_ship'; // تم تعيين المركبة الفضائية النيون كخلفية افتراضية
         let isFrontCam = true; 
         let camera; 
         let currentFaceLandmarks = null;
 
+        // مصفوفة كل الصور (القديمة + الجديدة + السورية)
         const bgImages = { 
+            'scifi_ship': new Image(),
+            'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
+            'paris': new Image(), 'egypt': new Image(), 'ny': new Image(),
             'umayyad': new Image(), 'noria': new Image(), 
-            'homs': new Image(), 'bridge': new Image(), 'galaxy': new Image()
+            'homs': new Image(), 'bridge': new Image()
         };
         
         function safeLoadImage(imgObj, url) {
@@ -105,11 +128,22 @@
             imgObj.src = url;
         }
 
+        // المركبة الفضائية الخيالية (نيون سايبربانك)
+        safeLoadImage(bgImages['scifi_ship'], 'https://images.unsplash.com/photo-1533972751724-d135853c8c44?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+
+        // الفضاء والمدن (القديمة)
+        safeLoadImage(bgImages['galaxy'], 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+        safeLoadImage(bgImages['moon'], 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+        safeLoadImage(bgImages['ship'], 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+        safeLoadImage(bgImages['paris'], 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+        safeLoadImage(bgImages['egypt'], 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+        safeLoadImage(bgImages['ny'], 'https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+
+        // المعالم السورية
         safeLoadImage(bgImages['umayyad'], 'umayyad.jpg');
         safeLoadImage(bgImages['noria'], 'noria.jpg');
         safeLoadImage(bgImages['homs'], 'homs.jpg');
         safeLoadImage(bgImages['bridge'], 'bridge.jpg');
-        safeLoadImage(bgImages['galaxy'], 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
 
         function switchTab(tabName) {
             document.getElementById('tab-filter').classList.remove('active-tab');
@@ -168,6 +202,7 @@
             ctx.shadowBlur = 15;
             ctx.stroke();
         }
+
         selfieSegmentation.onResults((results) => {
             try {
                 loadingMsg.style.display = 'none';
@@ -218,7 +253,7 @@
                         const angle = Math.atan2(y2 - y1, x2 - x1);
                         const eyeDist = Math.hypot(x2 - x1, y2 - y1); 
 
-                        // التجميل الأساسي (شغال دائماً)
+                        // التجميل الأساسي (شغال دائماً كـ Base Layer)
                         canvasCtx.save();
                         canvasCtx.globalCompositeOperation = 'overlay'; 
                         let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.2, cx, cy, eyeDist * 1.8);
@@ -320,6 +355,7 @@
                 canvasCtx.restore(); 
             }
         });
+
         function startCamera() {
             if(camera) { camera.stop(); }
             loadingMsg.style.display = 'block';
@@ -345,32 +381,107 @@
             startCamera();
         });
 
-        document.getElementById('capture-btn').addEventListener('click', () => {
-            try {
-                const flash = document.getElementById('flash-effect');
-                flash.style.opacity = '1';
-                setTimeout(() => flash.style.opacity = '0', 150);
-                
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = canvasElement.width;
-                tempCanvas.height = canvasElement.height;
-                const tCtx = tempCanvas.getContext('2d');
-                if (isFrontCam) {
-                    tCtx.translate(tempCanvas.width, 0);
-                    tCtx.scale(-1, 1);
-                }
-                tCtx.drawImage(canvasElement, 0, 0);
-                
-                const dataURL = tempCanvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = 'Maged-Pro.png';
-                link.href = dataURL;
-                link.click();
-            } catch (err) {
-                console.error("Capture Error:", err);
-                alert("تعذر التقاط الصورة بسبب قيود المتصفح أو الأمان.");
+        // === نظام التقاط الصور وتسجيل الفيديو الذكي ===
+        const captureBtn = document.getElementById('capture-btn');
+        const captureInner = document.querySelector('.capture-inner');
+        
+        let mediaRecorder;
+        let recordedChunks = [];
+        let pressTimer;
+        let isLongPress = false;
+
+        // تجهيز مسجل الفيديو من شاشة الكانفاس (بدقة 30 فريم)
+        const canvasStream = canvasElement.captureStream(30);
+        
+        function startRecording() {
+            isLongPress = true;
+            recordedChunks = [];
+            
+            // اختيار صيغة مدعومة
+            let options = { mimeType: 'video/webm; codecs=vp9' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options = { mimeType: 'video/webm' };
             }
-        });
+            
+            mediaRecorder = new MediaRecorder(canvasStream, options);
+            
+            mediaRecorder.ondataavailable = function(e) {
+                if (e.data.size > 0) recordedChunks.push(e.data);
+            };
+            
+            mediaRecorder.onstop = function() {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'Maged-Pro-Video.webm';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+
+            mediaRecorder.start();
+            
+            // تغيير شكل الزر للأحمر
+            captureBtn.classList.add('recording');
+            captureInner.classList.add('recording');
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+            // إرجاع شكل الزر للطبيعي
+            captureBtn.classList.remove('recording');
+            captureInner.classList.remove('recording');
+        }
+
+        function takePhoto() {
+            const flash = document.getElementById('flash-effect');
+            flash.style.opacity = '1';
+            setTimeout(() => flash.style.opacity = '0', 150);
+            
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvasElement.width;
+            tempCanvas.height = canvasElement.height;
+            const tCtx = tempCanvas.getContext('2d');
+            if (isFrontCam) {
+                tCtx.translate(tempCanvas.width, 0);
+                tCtx.scale(-1, 1);
+            }
+            tCtx.drawImage(canvasElement, 0, 0);
+            
+            const dataURL = tempCanvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.download = 'Maged-Pro.png';
+            link.href = dataURL;
+            link.click();
+        }
+
+        // التحكم باللمس والماوس (ضغطة سريعة = صورة / طويلة = فيديو)
+        const handlePointerDown = (e) => {
+            e.preventDefault(); // منع تحديد النص أو القوائم
+            isLongPress = false;
+            // إذا استمر الضغط 500 ملي ثانية (نصف ثانية)، يبدأ تسجيل الفيديو
+            pressTimer = setTimeout(startRecording, 500); 
+        };
+
+        const handlePointerUp = (e) => {
+            e.preventDefault();
+            clearTimeout(pressTimer); // إلغاء مؤقت الفيديو إذا شال اصبعه بسرعة
+            
+            if (isLongPress) {
+                stopRecording(); // إيقاف وحفظ الفيديو
+            } else {
+                takePhoto(); // التقاط صورة عادية
+            }
+        };
+
+        // ربط الأحداث للكمبيوتر والجوال
+        captureBtn.addEventListener('pointerdown', handlePointerDown);
+        captureBtn.addEventListener('pointerup', handlePointerUp);
+        captureBtn.addEventListener('pointerleave', handlePointerUp);
     </script>
 </body>
 </html>
