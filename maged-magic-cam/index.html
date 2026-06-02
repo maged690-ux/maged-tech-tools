@@ -210,30 +210,38 @@
                 
                 const eyeDist = Math.hypot(x2 - x1, y2 - y1); 
 
-                // 1. فلتر الجمال (إضاءة وتصفية للبشرة بنظام Overlay)
+                // 1. فلتر الجمال (طبقتين لزيادة النضارة والتنعيم)
                 if (currentFilter === 'beauty') {
                     canvasCtx.save();
-                    canvasCtx.globalCompositeOperation = 'overlay'; 
                     
-                    let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.1, cx, cy, eyeDist * 1.5);
-                    beautyGrad.addColorStop(0, 'rgba(255, 225, 205, 0.35)'); 
-                    beautyGrad.addColorStop(0.6, 'rgba(255, 210, 190, 0.15)'); 
+                    // الطبقة الأولى: إضاءة وتصفية (Overlay)
+                    canvasCtx.globalCompositeOperation = 'overlay'; 
+                    let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.2, cx, cy, eyeDist * 1.8);
+                    beautyGrad.addColorStop(0, 'rgba(255, 235, 215, 0.45)'); 
+                    beautyGrad.addColorStop(0.5, 'rgba(255, 220, 200, 0.25)'); 
                     beautyGrad.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
                     
                     canvasCtx.fillStyle = beautyGrad;
                     canvasCtx.beginPath();
-                    canvasCtx.arc(cx, cy, eyeDist * 1.6, 0, Math.PI * 2);
+                    canvasCtx.arc(cx, cy, eyeDist * 1.8, 0, Math.PI * 2);
                     canvasCtx.fill();
+                    
+                    // الطبقة الثانية: تنعيم خفيف (Soft Light)
+                    canvasCtx.globalCompositeOperation = 'soft-light';
+                    canvasCtx.fillStyle = 'rgba(255, 240, 230, 0.15)';
+                    canvasCtx.fill(); 
+
                     canvasCtx.restore();
                 }
                 
-                // 2. فلتر نظارة السايبربانك (مقاس واقعي وأنيق)
+                // 2. فلتر نظارة السايبربانك (تعديل المقاس والنزول للأنف)
                 else if (currentFilter === 'cyber') {
-                    const visorWidth = eyeDist * 2.3; 
-                    const visorHeight = visorWidth * 0.28; 
+                    const visorWidth = eyeDist * 2.1; 
+                    const visorHeight = visorWidth * 0.30; 
                     
                     canvasCtx.save();
-                    canvasCtx.translate(cx, cy);
+                    // نزلناها لتحت شوي لتقعد عالأنف صح
+                    canvasCtx.translate(cx, cy + (eyeDist * 0.15));
                     canvasCtx.rotate(angle);
                     
                     canvasCtx.beginPath();
@@ -241,16 +249,17 @@
                     canvasCtx.lineTo(visorWidth/2, -visorHeight/2); 
                     canvasCtx.lineTo(visorWidth/2.2, visorHeight/2);
                     
+                    // تعميق تجويف الأنف
                     canvasCtx.lineTo(visorWidth*0.12, visorHeight/2);
-                    canvasCtx.lineTo(0, visorHeight*0.1); 
+                    canvasCtx.lineTo(0, visorHeight*0.2); 
                     canvasCtx.lineTo(-visorWidth*0.12, visorHeight/2);
                     
                     canvasCtx.lineTo(-visorWidth/2.2, visorHeight/2); 
                     canvasCtx.closePath();
                     
                     let glassGrad = canvasCtx.createLinearGradient(0, -visorHeight/2, 0, visorHeight/2);
-                    glassGrad.addColorStop(0, 'rgba(15, 20, 35, 0.9)');
-                    glassGrad.addColorStop(1, 'rgba(0, 220, 255, 0.5)');
+                    glassGrad.addColorStop(0, 'rgba(10, 15, 30, 0.95)');
+                    glassGrad.addColorStop(1, 'rgba(0, 255, 255, 0.6)');
                     
                     canvasCtx.fillStyle = glassGrad;
                     canvasCtx.fill();
@@ -264,9 +273,9 @@
                     canvasCtx.beginPath();
                     canvasCtx.moveTo(-visorWidth/2.1, -visorHeight/3);
                     canvasCtx.lineTo(visorWidth/2.1, -visorHeight/3);
-                    canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                    canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
                     canvasCtx.lineWidth = 1.5;
-                    canvasCtx.shadowBlur = 3;
+                    canvasCtx.shadowBlur = 5;
                     canvasCtx.stroke();
                     
                     canvasCtx.restore();
