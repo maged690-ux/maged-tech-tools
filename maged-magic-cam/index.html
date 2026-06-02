@@ -201,12 +201,13 @@
                     canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
                 }
 
+                // === فلاتر الوجه الاحترافية ===
                 canvasCtx.globalCompositeOperation = 'source-over';
                 
-                if (currentFaceLandmarks && currentFilter !== 'none') {
+                if (currentFaceLandmarks) {
                     const leftEye = currentFaceLandmarks[130]; 
                     const rightEye = currentFaceLandmarks[359]; 
-                    const noseBridge = currentFaceLandmarks[168]; // التمركز على جسر الأنف لضبط النظارة
+                    const noseBridge = currentFaceLandmarks[168]; 
                     
                     if (leftEye && rightEye && noseBridge) {
                         const x1 = leftEye.x * canvasElement.width;
@@ -223,34 +224,30 @@
                         const angle = Math.atan2(y2 - y1, x2 - x1);
                         const eyeDist = Math.hypot(x2 - x1, y2 - y1); 
 
-                        // 1. فلتر الجمال
-                        if (currentFilter === 'beauty') {
-                            canvasCtx.save();
-                            canvasCtx.globalCompositeOperation = 'overlay'; 
-                            let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.2, cx, cy, eyeDist * 1.8);
-                            beautyGrad.addColorStop(0, 'rgba(255, 235, 215, 0.45)'); 
-                            beautyGrad.addColorStop(0.5, 'rgba(255, 220, 200, 0.25)'); 
-                            beautyGrad.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
-                            
-                            canvasCtx.fillStyle = beautyGrad;
-                            canvasCtx.beginPath();
-                            canvasCtx.arc(cx, cy, eyeDist * 1.8, 0, Math.PI * 2);
-                            canvasCtx.fill();
-                            
-                            canvasCtx.globalCompositeOperation = 'soft-light';
-                            canvasCtx.fillStyle = 'rgba(255, 240, 230, 0.15)';
-                            canvasCtx.fill(); 
-                            canvasCtx.restore();
-                        }
+                        // 1. فلتر الجمال الدائم (يشتغل كطبقة أساسية دائماً، حتى لو اخترت الإلغاء 🚫)
+                        canvasCtx.save();
+                        canvasCtx.globalCompositeOperation = 'overlay'; 
+                        let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.2, cx, cy, eyeDist * 1.8);
+                        beautyGrad.addColorStop(0, 'rgba(255, 235, 215, 0.45)'); 
+                        beautyGrad.addColorStop(0.5, 'rgba(255, 220, 200, 0.25)'); 
+                        beautyGrad.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
                         
-                        // 2. فلتر نظارة السايبربانك (تصغير جذري وتمركز على الأنف)
-                        else if (currentFilter === 'cyber') {
-                            // تصغير العرض ليكون متناسق مع العيون بدقة
+                        canvasCtx.fillStyle = beautyGrad;
+                        canvasCtx.beginPath();
+                        canvasCtx.arc(cx, cy, eyeDist * 1.8, 0, Math.PI * 2);
+                        canvasCtx.fill();
+                        
+                        canvasCtx.globalCompositeOperation = 'soft-light';
+                        canvasCtx.fillStyle = 'rgba(255, 240, 230, 0.15)';
+                        canvasCtx.fill(); 
+                        canvasCtx.restore();
+                        
+                        // 2. الفلاتر الإضافية (تتغير حسب الزر، وتختفي مع زر الإلغاء)
+                        if (currentFilter === 'cyber') {
                             const visorWidth = eyeDist * 1.8; 
                             const visorHeight = visorWidth * 0.35; 
                             
                             canvasCtx.save();
-                            // نثبت مركز النظارة على جسر الأنف مع نزول خفيف لتقعد صح
                             canvasCtx.translate(nx, ny + (visorHeight * 0.15));
                             canvasCtx.rotate(angle);
                             
@@ -259,7 +256,6 @@
                             canvasCtx.lineTo(visorWidth/2, -visorHeight/2); 
                             canvasCtx.lineTo(visorWidth/2.2, visorHeight/2);
                             
-                            // تجويف الأنف
                             canvasCtx.lineTo(visorWidth*0.15, visorHeight/2);
                             canvasCtx.lineTo(0, visorHeight*0.1); 
                             canvasCtx.lineTo(-visorWidth*0.15, visorHeight/2);
@@ -290,8 +286,6 @@
                             
                             canvasCtx.restore();
                         }
-                        
-                        // 3. فلتر وشم الفضاء النبضي
                         else if (currentFilter === 'paint') {
                             const pulse = Math.abs(Math.sin(Date.now() * 0.005)); 
                             const colorAlpha = 0.5 + pulse * 0.5;
