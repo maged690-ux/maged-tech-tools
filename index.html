@@ -18,19 +18,20 @@
 <body>
     <div class="header"><h1>Maged Tech ⚡</h1></div>
 
+    <!-- الأدوات -->
     <a href="maged-magic-cam/index.html" class="menu-btn">استوديو الخيال <i class="fa-solid fa-camera"></i></a>
     <a href="codes.html" class="menu-btn">أكواد الفحص <i class="fa-solid fa-microchip"></i></a>
-    <a href="ar-scanner.html" class="menu-btn">ماسح الـ AR <i class="fa-solid fa-qrcode"></i></a>
-    <a href="lab.html" class="menu-btn">المختبر التقني <i class="fa-solid fa-flask"></i></a>
 
+    <!-- الحسابات (تفتح مباشرة بدون عداد) -->
     <div class="social-grid">
-        <a href="javascript:void(0)" onclick="startRedirect('https://youtube.com/@maged115599')" class="btn-social" style="background: #ff0000;">يوتيوب</a>
-        <a href="javascript:void(0)" onclick="startRedirect('https://t.me/Maged_Tech')" class="btn-social" style="background: #0088cc;">تيليجرام</a>
-        <a href="javascript:void(0)" onclick="startRedirect('https://www.facebook.com/share/1J8HF8p72E/')" class="btn-social" style="background: #1877f2;">فيسبوك</a>
-        <a href="javascript:void(0)" onclick="startRedirect('https://www.instagram.com/magedtech.official')" class="btn-social" style="background: #e1306c;">إنستغرام</a>
-        <a href="javascript:void(0)" onclick="startRedirect('https://www.snapchat.com/add/maged-say')" class="btn-social" style="background: #fffc00; color: #000;">سناب شات</a>
+        <a href="https://youtube.com/@maged115599" class="btn-social" style="background: #ff0000;">يوتيوب</a>
+        <a href="https://t.me/Maged_Tech" class="btn-social" style="background: #0088cc;">تيليجرام</a>
+        <a href="https://www.facebook.com/share/1J8HF8p72E/" class="btn-social" style="background: #1877f2;">فيسبوك</a>
+        <a href="https://www.instagram.com/magedtech.official" class="btn-social" style="background: #e1306c;">إنستغرام</a>
+        <a href="https://www.snapchat.com/add/maged-say" class="btn-social" style="background: #fffc00; color: #000;">سناب شات</a>
     </div>
 
+    <!-- نافذة التحويل (تظهر فقط إذا كان هناك رابط ?to= في المتصفح) -->
     <div id="redirectModal">
         <h2>جاري التحويل...</h2>
         <div id="countdown">5</div>
@@ -39,19 +40,19 @@
     <script>
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('to')) startRedirect(urlParams.get('to'));
-        }
-        function startRedirect(url) {
-            const modal = document.getElementById('redirectModal');
-            const counter = document.getElementById('countdown');
-            modal.style.display = 'flex';
-            let count = 5;
-            counter.innerText = count;
-            const timer = setInterval(() => {
-                count--;
-                counter.innerText = count;
-                if (count <= 0) { clearInterval(timer); window.location.href = url; }
-            }, 1000);
+            const target = urlParams.get('to');
+            if (target) {
+                // إظهار العداد فقط إذا كان هناك رابط قادم من خارج الموقع
+                const modal = document.getElementById('redirectModal');
+                const counter = document.getElementById('countdown');
+                modal.style.display = 'flex';
+                let count = 5;
+                const timer = setInterval(() => {
+                    count--;
+                    counter.innerText = count;
+                    if (count <= 0) { clearInterval(timer); window.location.href = target; }
+                }, 1000);
+            }
         }
     </script>
 </body>
