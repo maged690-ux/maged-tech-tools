@@ -1,292 +1,339 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MYQRN25PTT"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-MYQRN25PTT');
-    </script>
-    
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة ماجد تك - Maged Tech</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Maged Filter Cam Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Reem+Kufi:wght@500;700&family=Tajawal:wght@500;700&display=swap" rel="stylesheet">
-    
     <style>
-        :root { 
-            --primary: #38bdf8; 
-            --primary-glow: rgba(56, 189, 248, 0.3);
-            --bg-dark: #030712; 
-            --card-glass: rgba(15, 23, 42, 0.55); 
-            --card-border: rgba(56, 189, 248, 0.15);
-            --text-main: #f8fafc; 
-            --text-muted: #94a3b8;
-            --fb-blue: #1877F2;
-            --ig-pink: #E1306C;
-            --magic-pink: #e94560;
-            --magic-glow: rgba(233, 69, 96, 0.4);
-        }
-        
-        body { 
-            font-family: 'Cairo', 'Segoe UI', sans-serif; 
-            background: radial-gradient(circle at 50% 50%, #0f172a 0%, var(--bg-dark) 100%); 
-            color: var(--text-main); 
-            padding: 20px; 
-            margin: 0; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        body::before {
-            content: ''; position: absolute; width: 400px; height: 400px; background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%); top: 10%; left: 10%; z-index: 0; pointer-events: none;
-        }
-
-        .header { margin-bottom: 35px; text-align: center; position: relative; z-index: 10; }
-        .header h1 { font-size: 42px; font-weight: 800; color: #ffffff; letter-spacing: 3px; text-shadow: 0 0 30px var(--primary-glow); margin: 0; }
-        .header h1 span { color: var(--primary); }
-        .header p { color: var(--text-muted); margin-top: 12px; font-size: 16px; font-weight: 600; }
-        
-        /* الأكورديون */
-        .accordion { background: var(--card-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); color: var(--primary); cursor: pointer; padding: 18px; width: 100%; max-width: 550px; border: 1px solid var(--card-border); text-align: center; font-size: 17px; border-radius: 16px; margin-bottom: 20px; font-weight: 700; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-sizing: border-box; z-index: 10; }
-        .accordion:hover { background: rgba(30, 41, 59, 0.6); border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); transform: translateY(-2px); }
-        .panel { padding: 0 20px; display: none; background: rgba(10, 15, 30, 0.85); backdrop-filter: blur(15px); border-radius: 16px; color: #cbd5e1; line-height: 1.8; margin-bottom: 20px; width: 100%; max-width: 550px; text-align: right; border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box; z-index: 10; }
-        
-        /* الروزنامة الذكية */
-        .calendar-widget { background: var(--card-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: 20px; padding: 25px 20px; width: 100%; max-width: 550px; text-align: center; margin-bottom: 25px; box-sizing: border-box; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .calendar-widget h3 { color: var(--primary); margin: 0 0 10px 0; font-size: 1.3rem; }
-        .calendar-widget .dates { color: var(--text-muted); font-size: 0.95em; margin-bottom: 15px; }
-        .calendar-widget .clock { font-size: 2.8rem; font-weight: bold; color: #ffffff; direction: ltr; text-shadow: 0 0 20px var(--primary-glow); margin-bottom: 20px; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        .prayer-list { list-style: none; padding: 0; margin: 0; }
-        .prayer-list li { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; font-size: 1.1em; color: #e2e8f0; }
-        .prayer-list li:last-child { border-bottom: none; }
-        .prayer-list li.next-prayer { background: rgba(56, 189, 248, 0.15); border-radius: 10px; color: var(--primary); font-weight: bold; border: 1px solid var(--card-border); }
-
-        /* الأزرار والقوائم */
-        .grid-container { display: flex; flex-direction: column; gap: 18px; width: 100%; max-width: 550px; box-sizing: border-box; z-index: 10; }
-        .row-links { display: flex; gap: 15px; width: 100%; }
-        
-        .btn { flex: 1; padding: 22px 10px; background: var(--card-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: 18px; color: var(--text-main); text-decoration: none; font-weight: 700; font-size: 16px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .btn:hover { border-color: var(--primary); background: rgba(30, 41, 59, 0.5); transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5), 0 0 15px var(--primary-glow); }
-        .btn-active { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border: none; box-shadow: 0 4px 20px rgba(3, 105, 161, 0.4); }
-        .btn-active:hover { background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); box-shadow: 0 8px 25px rgba(56, 189, 248, 0.5); }
-        
-        /* زر ماجيك كام الجديد */
-        .magic-cam-card { background: linear-gradient(135deg, rgba(23, 15, 42, 0.8) 0%, rgba(3, 7, 18, 0.9) 100%); border: 1px solid rgba(233, 69, 96, 0.3); padding: 24px 15px; border-radius: 20px; transition: all 0.4s ease; }
-        .magic-cam-card:hover { border-color: var(--magic-pink); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px var(--magic-glow); background: linear-gradient(135deg, rgba(30, 20, 50, 0.8) 0%, rgba(3, 7, 18, 0.9) 100%); transform: translateY(-4px); }
-        
-        /* زر خدمات قريباً */
-        .btn-teaser { border: 1px dashed rgba(56, 189, 248, 0.4); color: var(--text-muted); background: transparent; border-radius: 18px; width: 100%; box-sizing: border-box; }
-        .btn-teaser:hover { border-color: var(--primary); color: var(--text-main); box-shadow: 0 0 15px var(--primary-glow); }
-
-        /* قسم أزرار السوشيال ميديا */
-        .meta-links-section { width: 100%; max-width: 550px; margin-top: 10px; display: flex; flex-direction: column; gap: 12px; box-sizing: border-box; z-index: 10; }
-        .btn-meta { padding: 16px 15px; border-radius: 14px; text-decoration: none; font-weight: 700; font-size: 15px; color: #ffffff; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .btn-facebook { background: var(--fb-blue); }
-        .btn-facebook:hover { background: #145dbf; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(24, 119, 242, 0.4); }
-        .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
-        .btn-instagram:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(225, 48, 108, 0.4); }
-
-        .social { margin-top: 35px; font-size: 14px; color: #4b5563; z-index: 10; text-align: center; }
-        .social a { color: var(--primary); text-decoration: none; margin: 0 12px; font-weight: 700; transition: 0.3s; }
-        .social a:hover { color: #ffffff; text-shadow: 0 0 10px var(--primary); }
-
-        /* ستايل لوحة التحويل (5 ثواني) */
-        #redirectContainer { display: none; max-width: 500px; width: 90%; padding: 35px; background: var(--card-glass); backdrop-filter: blur(25px); border: 1px solid var(--card-border); border-radius: 24px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.6); z-index: 2000; box-sizing: border-box; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        #countdownCircle { font-size: 4rem; font-weight: 800; color: var(--primary); margin: 20px 0; text-shadow: 0 0 25px var(--primary-glow); animation: pulseCount 1s infinite alternate; }
-        @keyframes pulseCount { from { transform: scale(0.95); opacity: 0.8; } to { transform: scale(1.05); opacity: 1; } }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body, html { width: 100%; height: 100%; background-color: #000; overflow: hidden; }
+        .app-container { width: 100vw; height: 100dvh; position: relative; }
+        .camera-stage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        #output_canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+        header { position: absolute; top: 0; left: 0; width: 100%; padding: 25px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: transparent; }
+        .icon-btn { color: #fff; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); background: none; border: none; cursor: pointer; }
+        header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,255,200,0.8); }
+        #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.8); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        #flash-effect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.15s ease-out; }
+        .controls { position: absolute; bottom: 40px; left: 0; width: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; background: transparent; pointer-events: none; }
+        .controls > * { pointer-events: auto; }
+        .tabs { display: flex; gap: 30px; margin-bottom: 15px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
+        .tab { font-size: 1rem; color: rgba(255,255,255,0.6); font-weight: bold; cursor: pointer; padding-bottom: 5px; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,1); }
+        .tab.active-tab { color: #fff; border-bottom: 2px solid #fff; }
+        .filter-section, .bg-section { width: 100%; }
+        .filter-section { display: none; }
+        .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 15px; width: 100%; scroll-snap-type: x mandatory; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+        .filter-carousel::-webkit-scrollbar { display: none; }
+        .filter-btn { flex: 0 0 auto; width: 65px; height: 65px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; line-height: 1; scroll-snap-align: center; }
+        .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(0,255,200,0.6); }
+        .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s, border-color 0.3s; margin-top: 5px; touch-action: none; }
+        .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.2s; }
+        .capture-ring:active .capture-inner:not(.recording) { transform: scale(0.85); background: #e0e0e0; }
+        .capture-ring.recording { border-color: #ff3b30; animation: pulse-ring 1.5s infinite; }
+        .capture-inner.recording { background: #ff3b30 !important; transform: scale(0.5) !important; border-radius: 10px; }
+        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
     </style>
 </head>
 <body>
-
-    <div id="normalPage" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-
-        <div class="header">
-            <h1>Maged <span>Tech</span></h1>
-            <p>المنصة الذكية للخدمات والصيانة</p>
+    <div class="app-container">
+        <header>
+            <a href="../index.html" class="icon-btn"><i class="fa-solid fa-xmark"></i></a>
+            <h1>Maged Pro ✨</h1>
+            <button id="flip-cam-btn" class="icon-btn"><i class="fa-solid fa-camera-rotate"></i></button>
+        </header>
+        <div class="camera-stage">
+            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تشغيل الكاميرا...</div>
+            <video id="input_video" autoplay playsinline style="display: none;"></video>
+            <canvas id="output_canvas"></canvas>
+            <div id="flash-effect"></div>
         </div>
-
-        <button class="accordion">عن المنصة الذكية 💡</button>
-        <div class="panel">
-            <p style="padding: 15px 0; margin: 0; font-size: 15px;">
-                نظام "ماجد تك" هو منصة رقمية متكاملة لإدارة أعمالك. سواء كنت فنياً أو صاحب متجر، يوفر لك النظام:<br>
-                • <b>إنشاء فواتير احترافية:</b> بضغطة زر وبدون أوراق.<br>
-                • <b>إدارة الطلبات:</b> تتبع طلبات زبائنك من البداية للنهاية.<br>
-                • <b>خصوصية كاملة:</b> بياناتك محفوظة محلياً على جهازك فقط.<br>
-                <br>
-                <i>"حول عملك من الدفاتر الورقية إلى النظام الرقمي بكل سهولة."</i>
-            </p>
-        </div>
-        
-        <div class="calendar-widget">
-            <h3><i class="fa-solid fa-mosque"></i> مواقيت الصلاة</h3>
-            <div class="dates" id="dates-display">جاري جلب الأوقات...</div>
-            <div class="clock" id="live-clock">00:00:00</div>
-            <ul class="prayer-list" id="prayers-container">
-                </ul>
-        </div>
-
-        <div class="grid-container">
-            <div class="row-links">
-                <a href="apps/fatora/index.html" class="btn btn-active">نظام الفاتورة</a>
-                <a href="codes.html" class="btn">أكواد الفحص</a>
+        <div class="controls">
+            <div class="tabs">
+                <div class="tab active-tab" id="tab-bg" onclick="switchTab('bg')">الخلفيات</div>
+                <div class="tab" id="tab-filter" onclick="switchTab('filter')">الفلاتر</div>
             </div>
-            
-            <a href="maged-magic-cam/index.html" class="btn magic-cam-card">
-                <div>
-                    <i class="fa-solid fa-camera-retro" style="font-size: 1.8rem; margin-bottom: 10px; display: block; color: var(--magic-pink); text-shadow: 0 0 15px var(--magic-glow);"></i>
-                    <b style="font-size: 18px; color: #fff;">استوديو الخيال (ماجيك كام) 📸</b>
-                    <span style="display: block; font-size: 13.5px; color: var(--text-muted); font-weight: normal; margin-top: 8px;">تصور مع شخصيات Maged Tech بخلفيات الذكاء الاصطناعي وشاركها!</span>
+            <div class="filter-section" id="sec-filter">
+                <div class="filter-carousel">
+                    <div class="filter-btn filter-opt" data-filter="cute" style="font-size: 1.2rem;">🌸</div>
+                    <div class="filter-btn filter-opt active-btn" data-filter="beauty" style="font-size: 1.2rem;">✨</div>
+                    <div class="filter-btn filter-opt" data-filter="cyber" style="font-size: 1.2rem;">🕶️</div>
+                    <div class="filter-btn filter-opt" data-filter="paint" style="font-size: 1.2rem;">🌌</div>
                 </div>
-            </a>
-
-            <div class="btn btn-teaser" onclick="showTeaser()">خدمات (قريباً)</div>
-        </div>
-
-        <div class="meta-links-section">
-            <a href="https://www.facebook.com/share/1J8HF8p72E/" target="_blank" class="btn-meta btn-facebook">
-                <i class="fa-brands fa-facebook-f"></i> تابعنا على صفحة الفيسبوك الرسمية
-            </a>
-            <a href="https://www.instagram.com/magedtech.official?igsh=ajI4YmIzbmRxbjhp" target="_blank" class="btn-meta btn-instagram">
-                <i class="fa-brands fa-instagram"></i> تابعنا على إنستغرام Maged Tech
-            </a>
-        </div>
-
-        <div class="social">
-            <a href="https://www.youtube.com/@maged115599" target="_blank"><i class="fa-brands fa-youtube"></i> يوتيوب</a> | 
-            <a href="https://t.me/Maged_Tech" target="_blank"><i class="fa-solid fa-paper-plane"></i> تيليجرام</a> | 
-            <a href="https://www.snapchat.com/add/maged-say" target="_blank"><i class="fa-brands fa-snapchat"></i> سناب شات</a>
+            </div>
+            <div class="bg-section" id="sec-bg" style="display: block;">
+                <div class="filter-carousel">
+                    <div class="filter-btn bg-btn active-btn" data-bg="starwars1" style="background-image: url('IMG-20260602-WA0007.jpg');">🛸</div>
+                    <div class="filter-btn bg-btn" data-bg="starwars2" style="background-image: url('IMG-20260602-WA0008.jpg');">🚀</div>
+                    <div class="filter-btn bg-btn" data-bg="starwars3" style="background-image: url('IMG-20260602-WA0010.jpg');">⚔️</div>
+                    
+                    <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="moon" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="paris" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="egypt" style="background-image: url('https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    <div class="filter-btn bg-btn" data-bg="ny" style="background-image: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
+                    
+                    <div class="filter-btn bg-btn" data-bg="umayyad" style="background-image: url('umayyad.jpg');"></div>
+                    <div class="filter-btn bg-btn" data-bg="noria" style="background-image: url('noria.jpg');"></div>
+                    <div class="filter-btn bg-btn" data-bg="homs" style="background-image: url('homs.jpg');"></div>
+                    <div class="filter-btn bg-btn" data-bg="bridge" style="background-image: url('bridge.jpg');"></div>
+                </div>
+            </div>
+            <div class="capture-ring" id="capture-btn">
+                <div class="capture-inner"></div>
+            </div>
         </div>
     </div>
-
-    <audio id="adhanAudio" src="adhan-short.mp3" preload="auto"></audio>
-
-    <div id="redirectContainer">
-        <i class="fa-brands fa-youtube" style="font-size: 3.5rem; color: #ef4444; text-shadow: 0 0 20px rgba(239,68,68,0.4);"></i>
-        <h2 style="margin: 15px 0 5px 0; font-size: 1.5rem; color: #fff;">جاري تحويلك إلى المقطع...</h2>
-        <p style="color: var(--text-muted); font-size: 0.95rem; margin: 0;">أنت الآن تغادر منصة ماجد تك الذكية، انتظر لثوانٍ معدودة</p>
-        <div id="countdownCircle">5</div>
-        <button id="directGoBtn" class="btn btn-active" style="padding: 12px; font-size: 1rem; width: 100%; border-radius: 12px; font-weight: bold;">
-            اضغط هنا للانتقال الفوري المباشر <i class="fa-solid fa-angles-left" style="margin-right: 5px;"></i>
-        </button>
-    </div>
-
     <script>
-        // --- أكورديون المنصة ---
-        var acc = document.getElementsByClassName("accordion");
-        acc[0].addEventListener("click", function() {
-            this.classList.toggle("active");
-            var panel = this.nextElementSibling;
-            panel.style.display = (panel.style.display === "block") ? "none" : "block";
+        const videoElement = document.getElementById('input_video');
+        const canvasElement = document.getElementById('output_canvas');
+        const canvasCtx = canvasElement.getContext('2d', { willReadFrequently: true });
+        const loadingMsg = document.getElementById('loading-msg');
+        
+        let currentFilter = 'beauty'; 
+        let currentBg = 'starwars1';
+        let isFrontCam = true; 
+        let camera; 
+        let currentFaceLandmarks = null;
+
+        const bgImages = { 
+            'starwars1': new Image(), 'starwars2': new Image(), 'starwars3': new Image(),
+            'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
+            'paris': new Image(), 'egypt': new Image(), 'ny': new Image(),
+            'umayyad': new Image(), 'noria': new Image(), 
+            'homs': new Image(), 'bridge': new Image()
+        };
+        
+        function safeLoadImage(imgObj, url) {
+            imgObj.crossOrigin = "anonymous"; 
+            imgObj.onerror = () => { console.warn("Failed to load: " + url); };
+            imgObj.src = url;
+        }
+
+        // تحميل جميع الخلفيات
+        safeLoadImage(bgImages['starwars1'], 'IMG-20260602-WA0007.jpg');
+        safeLoadImage(bgImages['starwars2'], 'IMG-20260602-WA0008.jpg');
+        safeLoadImage(bgImages['starwars3'], 'IMG-20260602-WA0010.jpg');
+        safeLoadImage(bgImages['galaxy'], 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+        safeLoadImage(bgImages['moon'], 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+        safeLoadImage(bgImages['ship'], 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+        safeLoadImage(bgImages['paris'], 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+        safeLoadImage(bgImages['egypt'], 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+        safeLoadImage(bgImages['ny'], 'https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
+        safeLoadImage(bgImages['umayyad'], 'umayyad.jpg');
+        safeLoadImage(bgImages['noria'], 'noria.jpg');
+        safeLoadImage(bgImages['homs'], 'homs.jpg');
+        safeLoadImage(bgImages['bridge'], 'bridge.jpg');
+
+        function switchTab(tabName) {
+            document.getElementById('tab-filter').classList.remove('active-tab');
+            document.getElementById('tab-bg').classList.remove('active-tab');
+            document.getElementById('sec-filter').style.display = 'none';
+            document.getElementById('sec-bg').style.display = 'none';
+            document.getElementById('tab-' + tabName).classList.add('active-tab');
+            document.getElementById('sec-' + tabName).style.display = 'block';
+        }
+
+        document.querySelectorAll('.filter-opt').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-opt').forEach(b => b.classList.remove('active-btn'));
+                e.currentTarget.classList.add('active-btn');
+                currentFilter = e.currentTarget.dataset.filter;
+            });
         });
 
-        // --- رسالة زر خدمات قريباً المحدثة ---
-        function showTeaser() { 
-            alert("ترقبوا قريباً: قسم الخدمات المطور والأدوات البرمجية الحصرية! 🚀\n\nانضموا لقناتنا على التلغرام لاقتراح الأدوات التي تحتاجونها في الورشة، وسنقوم ببرمجتها وإضافتها هنا. ✨"); 
+        document.querySelectorAll('.bg-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.bg-btn').forEach(b => b.classList.remove('active-btn'));
+                e.currentTarget.classList.add('active-btn');
+                currentBg = e.currentTarget.dataset.bg;
+            });
+        });
+
+        const faceMesh = new FaceMesh({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
+        faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
+        faceMesh.onResults((results) => { currentFaceLandmarks = results.multiFaceLandmarks ? results.multiFaceLandmarks[0] : null; });
+
+        const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`});
+        selfieSegmentation.setOptions({ modelSelection: 0 });
+        
+        function drawNeonLine(ctx, landmarks, indices, color, glow) {
+            ctx.beginPath();
+            indices.forEach((idx, i) => {
+                const pt = landmarks[idx];
+                const x = pt.x * canvasElement.width, y = pt.y * canvasElement.height;
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.shadowColor = glow; ctx.shadowBlur = 15; ctx.stroke();
         }
 
-        // دالة مساعدة لتحويل الوقت من 24 إلى 12 ساعة (ص / م)
-        function formatTime12(time24) {
-            let [hours, minutes] = time24.split(':');
-            hours = parseInt(hours, 10);
-            let suffix = hours >= 12 ? 'م' : 'ص';
-            let hours12 = hours % 12;
-            hours12 = hours12 ? hours12 : 12;
-            return `${hours12}:${minutes} ${suffix}`;
-        }
+        selfieSegmentation.onResults((results) => {
+            try {
+                loadingMsg.style.display = 'none';
+                if (canvasElement.width !== results.image.width) {
+                    canvasElement.width = results.image.width; canvasElement.height = results.image.height;
+                }
+                canvasCtx.save();
+                canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
-        // --- محرك الروزنامة والأذان ---
-        let todayPrayers = {};
-        function initCalendar() {
-            const apiUrl = 'https://api.aladhan.com/v1/timingsByCity?city=Damascus&country=Syria&method=8';
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const timings = data.data.timings;
-                    todayPrayers = timings;
-                    const dateGregorian = data.data.date.gregorian.date;
-                    const dateHijri = data.data.date.hijri.date;
-                    document.getElementById('dates-display').innerHTML = `<strong>الميلادي:</strong> ${dateGregorian} &nbsp;|&nbsp; <strong>الهجري:</strong> ${dateHijri}`;
+                canvasCtx.globalCompositeOperation = 'source-over';
+                canvasCtx.filter = 'contrast(200%) brightness(95%)';
+                canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
+                canvasCtx.filter = 'none';
 
-                    const container = document.getElementById('prayers-container');
-                    const prayersToDisplay = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
-                    const arabicNames = {'Fajr': 'الفجر', 'Dhuhr': 'الظهر', 'Asr': 'العصر', 'Maghrib': 'المغرب', 'Isha': 'العشاء'};
-                    
-                    prayersToDisplay.forEach(prayer => {
-                        let formattedTime = formatTime12(timings[prayer]);
-                        container.innerHTML += `<li><span>${arabicNames[prayer]}</span> <span dir="ltr">${formattedTime}</span></li>`;
-                    });
-                })
-                .catch(err => console.log('خطأ في جلب الأوقات:', err));
+                canvasCtx.globalCompositeOperation = 'source-in';
+                canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
 
-            setInterval(() => {
-                const now = new Date();
-                
-                // متغيرات للمقارنة 24 ساعة (للمحرك)
-                const hours24 = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                const seconds = String(now.getSeconds()).padStart(2, '0');
-                const timeNow24 = `${hours24}:${minutes}`;
-                
-                // متغيرات لعرض 12 ساعة
-                let suffix = now.getHours() >= 12 ? 'م' : 'ص';
-                let hours12 = now.getHours() % 12;
-                hours12 = hours12 ? hours12 : 12;
-                const displayHours = String(hours12).padStart(2, '0');
-                
-                document.getElementById('live-clock').innerText = `${displayHours}:${minutes}:${seconds} ${suffix}`;
+                canvasCtx.globalCompositeOperation = 'destination-over';
+                if (bgImages[currentBg] && bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
+                    canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
+                } else {
+                    canvasCtx.fillStyle = '#111'; canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+                }
 
-                if (seconds === '00') {
-                    Object.values(todayPrayers).forEach(prayerTime => {
-                        if (prayerTime === timeNow24) {
-                            const audio = document.getElementById('adhanAudio');
-                            if(audio) audio.play().catch(e => console.log("تحتاج المتصفحات لنقرة أولى للسماح بالصوت."));
+                canvasCtx.globalCompositeOperation = 'source-over';
+                if (currentFaceLandmarks) {
+                    const leftEye = currentFaceLandmarks[130], rightEye = currentFaceLandmarks[359], noseBridge = currentFaceLandmarks[168]; 
+                    if (leftEye && rightEye && noseBridge) {
+                        const x1 = leftEye.x * canvasElement.width, y1 = leftEye.y * canvasElement.height;
+                        const x2 = rightEye.x * canvasElement.width, y2 = rightEye.y * canvasElement.height;
+                        const nx = noseBridge.x * canvasElement.width, ny = noseBridge.y * canvasElement.height;
+                        const cx = (x1 + x2) / 2, cy = (y1 + y2) / 2;
+                        const angle = Math.atan2(y2 - y1, x2 - x1);
+                        const eyeDist = Math.hypot(x2 - x1, y2 - y1); 
+
+                        // فلتر التجميل الأساسي الدائم
+                        canvasCtx.save();
+                        canvasCtx.globalCompositeOperation = 'overlay'; 
+                        let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.2, cx, cy, eyeDist * 1.8);
+                        beautyGrad.addColorStop(0, 'rgba(255, 235, 215, 0.45)'); 
+                        beautyGrad.addColorStop(0.5, 'rgba(255, 220, 200, 0.25)'); 
+                        beautyGrad.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
+                        canvasCtx.fillStyle = beautyGrad;
+                        canvasCtx.beginPath(); canvasCtx.arc(cx, cy, eyeDist * 1.8, 0, Math.PI * 2); canvasCtx.fill();
+                        
+                        canvasCtx.globalCompositeOperation = 'soft-light';
+                        canvasCtx.fillStyle = 'rgba(255, 240, 230, 0.15)';
+                        canvasCtx.fill(); 
+                        canvasCtx.restore();
+                        
+                        // الفلاتر المتغيرة
+                        if (currentFilter === 'cute') {
+                            canvasCtx.save();
+                            canvasCtx.globalCompositeOperation = 'soft-light'; 
+                            const blushRadius = eyeDist * 0.45;
+                            [[x1, y1], [x2, y2]].forEach(([x, y]) => {
+                                let blush = canvasCtx.createRadialGradient(x, y + (eyeDist * 0.45), 0, x, y + (eyeDist * 0.45), blushRadius);
+                                blush.addColorStop(0, 'rgba(255, 105, 180, 0.55)'); blush.addColorStop(1, 'rgba(255, 105, 180, 0)');
+                                canvasCtx.fillStyle = blush;
+                                canvasCtx.beginPath(); canvasCtx.arc(x, y + (eyeDist * 0.45), blushRadius, 0, Math.PI * 2); canvasCtx.fill();
+                            });
+                            canvasCtx.restore();
+                        } else if (currentFilter === 'cyber') {
+                            const visorWidth = eyeDist * 1.8, visorHeight = visorWidth * 0.35; 
+                            canvasCtx.save();
+                            canvasCtx.translate(nx, ny + (visorHeight * 0.15));
+                            canvasCtx.rotate(angle);
+                            canvasCtx.beginPath();
+                            canvasCtx.moveTo(-visorWidth/2, -visorHeight/2);
+                            canvasCtx.lineTo(visorWidth/2, -visorHeight/2); 
+                            canvasCtx.lineTo(visorWidth/2.2, visorHeight/2);
+                            canvasCtx.lineTo(visorWidth*0.15, visorHeight/2);
+                            canvasCtx.lineTo(0, visorHeight*0.1); 
+                            canvasCtx.lineTo(-visorWidth*0.15, visorHeight/2);
+                            canvasCtx.lineTo(-visorWidth/2.2, visorHeight/2); 
+                            canvasCtx.closePath();
+                            let glassGrad = canvasCtx.createLinearGradient(0, -visorHeight/2, 0, visorHeight/2);
+                            glassGrad.addColorStop(0, 'rgba(10, 15, 30, 0.95)'); glassGrad.addColorStop(1, 'rgba(0, 255, 255, 0.6)');
+                            canvasCtx.fillStyle = glassGrad; canvasCtx.fill();
+                            canvasCtx.lineWidth = 2.5; canvasCtx.strokeStyle = '#00ffff'; canvasCtx.shadowColor = '#00ffff'; canvasCtx.shadowBlur = 15; canvasCtx.stroke();
+                            canvasCtx.beginPath(); canvasCtx.moveTo(-visorWidth/2.1, -visorHeight/3); canvasCtx.lineTo(visorWidth/2.1, -visorHeight/3);
+                            canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; canvasCtx.lineWidth = 1.5; canvasCtx.shadowBlur = 5; canvasCtx.stroke();
+                            canvasCtx.restore();
+                        } else if (currentFilter === 'paint') {
+                            const pulse = Math.abs(Math.sin(Date.now() * 0.005)), cA = 0.5 + pulse * 0.5;
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [103, 67, 10, 297, 332], `rgba(0, 255, 204, ${cA})`, '#00ffcc');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [54, 68, 104, 69, 108], `rgba(0, 255, 204, ${cA})`, '#00ffcc');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [284, 298, 333, 299, 337], `rgba(0, 255, 204, ${cA})`, '#00ffcc');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [116, 123, 147, 213, 192], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [117, 118, 100, 120], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [345, 352, 376, 433, 416], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
+                            drawNeonLine(canvasCtx, currentFaceLandmarks, [346, 347, 329, 349], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
                         }
-                    });
+                    }
                 }
-            }, 1000);
+                
+                let wSize = Math.floor(canvasElement.width * 0.045);
+                canvasCtx.font = "bold " + wSize + "px Tahoma"; canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
+                canvasCtx.shadowColor = "rgba(0,0,0,0.9)"; canvasCtx.shadowBlur = 8;
+                canvasCtx.scale(-1, 1); canvasCtx.fillText("Maged Pro ✨", -canvasElement.width + 20, canvasElement.height - 30);
+                canvasCtx.restore();
+            } catch (err) { console.error("Rendering Error:", err); canvasCtx.restore(); }
+        });
+
+        function startCamera() {
+            if(camera) { camera.stop(); }
+            loadingMsg.style.display = 'block';
+            camera = new Camera(videoElement, {
+                onFrame: async () => { 
+                    try { await selfieSegmentation.send({image: videoElement}); await faceMesh.send({image: videoElement}); } 
+                    catch (e) { console.error("MediaPipe Error:", e); }
+                },
+                facingMode: isFrontCam ? 'user' : 'environment'
+            });
+            camera.start();
+            canvasElement.style.transform = isFrontCam ? 'scaleX(-1)' : 'scaleX(1)';
         }
 
-        // --- محرك التحويل (الـ 5 ثواني) ---
-        function checkAndHandleRedirect(urlParams) {
-            const targetUrl = urlParams.get('to');
-            if (!targetUrl) return false;
+        startCamera();
 
-            document.getElementById('normalPage').style.display = 'none';
-            const redirectBox = document.getElementById('redirectContainer');
-            redirectBox.style.display = 'block';
+        document.getElementById('flip-cam-btn').addEventListener('click', () => { isFrontCam = !isFrontCam; startCamera(); });
 
-            let count = 5;
-            const counterElement = document.getElementById('countdownCircle');
-            const goBtn = document.getElementById('directGoBtn');
-
-            goBtn.onclick = function() { window.location.href = targetUrl; };
-
-            const interval = setInterval(() => {
-                count--;
-                counterElement.innerText = count;
-                if (count <= 0) {
-                    clearInterval(interval);
-                    window.location.href = targetUrl; 
-                }
-            }, 1000);
-            return true;
+        const captureBtn = document.getElementById('capture-btn');
+        const captureInner = document.querySelector('.capture-inner');
+        let mediaRecorder, recordedChunks = [], pressTimer, isLongPress = false;
+        const canvasStream = canvasElement.captureStream(30);
+        
+        function startRecording() {
+            isLongPress = true; recordedChunks = [];
+            let options = { mimeType: 'video/webm; codecs=vp9' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm' };
+            mediaRecorder = new MediaRecorder(canvasStream, options);
+            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a'); a.style.display = 'none'; a.href = url; a.download = 'Maged-Pro-Video.webm';
+                document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url);
+            };
+            mediaRecorder.start();
+            captureBtn.classList.add('recording'); captureInner.classList.add('recording');
         }
 
-        // --- دالة التهيئة عند تحميل الصفحة ---
-        window.onload = function() {
-            initCalendar();
-            const urlParams = new URLSearchParams(window.location.search);
-            checkAndHandleRedirect(urlParams);
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+            captureBtn.classList.remove('recording'); captureInner.classList.remove('recording');
         }
+
+        function takePhoto() {
+            const flash = document.getElementById('flash-effect'); flash.style.opacity = '1'; setTimeout(() => flash.style.opacity = '0', 150);
+            const tempCanvas = document.createElement('canvas'); tempCanvas.width = canvasElement.width; tempCanvas.height = canvasElement.height;
+            const tCtx = tempCanvas.getContext('2d');
+            if (isFrontCam) { tCtx.translate(tempCanvas.width, 0); tCtx.scale(-1, 1); }
+            tCtx.drawImage(canvasElement, 0, 0);
+            const a = document.createElement('a'); a.download = 'Maged-Pro.png'; a.href = tempCanvas.toDataURL('image/png'); a.click();
+        }
+
+        const handlePointerDown = (e) => { e.preventDefault(); isLongPress = false; pressTimer = setTimeout(startRecording, 500); };
+        const handlePointerUp = (e) => { e.preventDefault(); clearTimeout(pressTimer); if (isLongPress) stopRecording(); else takePhoto(); };
+        
+        captureBtn.addEventListener('pointerdown', handlePointerDown);
+        captureBtn.addEventListener('pointerup', handlePointerUp);
+        captureBtn.addEventListener('pointerleave', handlePointerUp);
     </script>
 </body>
 </html>
