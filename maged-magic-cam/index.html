@@ -2,348 +2,103 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maged Filter Cam Pro</title>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maged Tech | Professional Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
-        body, html { width: 100%; height: 100%; background-color: #000; overflow: hidden; }
-        .app-container { width: 100vw; height: 100dvh; position: relative; }
-        .camera-stage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-        #output_canvas { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-        header { position: absolute; top: 0; left: 0; width: 100%; padding: 25px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: transparent; }
-        .icon-btn { color: #fff; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); background: none; border: none; cursor: pointer; }
-        header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,255,200,0.8); }
-        #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.8); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
-        #flash-effect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.15s ease-out; }
-        .controls { position: absolute; bottom: 40px; left: 0; width: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; background: transparent; pointer-events: none; }
-        .controls > * { pointer-events: auto; }
-        .tabs { display: flex; gap: 30px; margin-bottom: 15px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
-        .tab { font-size: 1rem; color: rgba(255,255,255,0.6); font-weight: bold; cursor: pointer; padding-bottom: 5px; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,1); }
-        .tab.active-tab { color: #fff; border-bottom: 2px solid #fff; }
-        .filter-section, .bg-section { width: 100%; }
-        .filter-section { display: none; }
-        .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 15px; width: 100%; scroll-snap-type: x mandatory; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
-        .filter-carousel::-webkit-scrollbar { display: none; }
-        .filter-btn { flex: 0 0 auto; width: 65px; height: 65px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; line-height: 1; scroll-snap-align: center; }
-        .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(0,255,200,0.6); }
-        .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s, border-color 0.3s; margin-top: 5px; touch-action: none; }
-        .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.2s; }
-        .capture-ring:active .capture-inner:not(.recording) { transform: scale(0.85); background: #e0e0e0; }
-        .capture-ring.recording { border-color: #ff3b30; animation: pulse-ring 1.5s infinite; }
-        .capture-inner.recording { background: #ff3b30 !important; transform: scale(0.5) !important; border-radius: 10px; }
-        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
+        :root { --neon: #00f2ff; --bg: #050505; --glass: rgba(255, 255, 255, 0.05); }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; margin: 0; }
+        
+        .brand-box { text-align: center; margin: 30px 0; }
+        .brand-box h1 { font-size: 2.5rem; letter-spacing: 2px; color: #fff; text-shadow: 0 0 20px var(--neon); margin: 0; }
+        
+        .clock-card { background: var(--glass); backdrop-filter: blur(10px); padding: 20px; border-radius: 25px; width: 90%; max-width: 400px; text-align: center; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 242, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); } }
+        
+        .menu-btn { width: 90%; max-width: 400px; padding: 18px; margin-bottom: 15px; background: linear-gradient(135deg, #1a1a1a, #0f0f0f); border: 1px solid #333; color: white; border-radius: 20px; text-decoration: none; font-weight: 600; display: flex; align-items: center; justify-content: space-between; transition: 0.4s; animation: pulse 3s infinite; }
+        .menu-btn:hover { border-color: var(--neon); transform: translateY(-3px); }
+        
+        #prayer-content { display: none; padding: 15px; background: #111; border-radius: 15px; width: 90%; max-width: 400px; margin-top: -10px; margin-bottom: 15px; border: 1px solid #333; font-size: 0.9rem; }
+        .prayer-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #222; }
+        
+        .social-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 90%; max-width: 400px; margin-top: 20px; }
+        .btn-social { padding: 15px; border-radius: 12px; text-decoration: none; text-align: center; color: white; font-weight: bold; transition: 0.3s; border: 1px solid #333; }
+        .btn-social:hover { transform: translateY(-3px); filter: brightness(1.2); }
+        
+        .fb { background: #1877F2; grid-column: span 3; }
+        .ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); grid-column: span 3; }
+        .yt { background: #FF0000; }
+        .sc { background: #FFFC00; color: #000 !important; }
+        .tg { background: #0088CC; }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <header>
-            <a href="../index.html" class="icon-btn"><i class="fa-solid fa-xmark"></i></a>
-            <h1>Maged Pro ✨</h1>
-            <button id="flip-cam-btn" class="icon-btn"><i class="fa-solid fa-camera-rotate"></i></button>
-        </header>
-        <div class="camera-stage">
-            <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تشغيل الكاميرا...</div>
-            <video id="input_video" autoplay playsinline style="display: none;"></video>
-            <canvas id="output_canvas"></canvas>
-            <div id="flash-effect"></div>
-        </div>
-        <div class="controls">
-            <div class="tabs">
-                <div class="tab active-tab" id="tab-bg" onclick="switchTab('bg')">الخلفيات</div>
-                <div class="tab" id="tab-filter" onclick="switchTab('filter')">الفلاتر</div>
-            </div>
-            
-            <div class="filter-section" id="sec-filter">
-                <div class="filter-carousel">
-                    <div class="filter-btn filter-opt" data-filter="cute" style="font-size: 1.2rem;">🌸</div>
-                    <div class="filter-btn filter-opt active-btn" data-filter="beauty" style="font-size: 1.2rem;">✨</div>
-                    <div class="filter-btn filter-opt" data-filter="cyber" style="font-size: 1.2rem;">🕶️</div>
-                    <div class="filter-btn filter-opt" data-filter="paint" style="font-size: 1.2rem;">🌌</div>
-                </div>
-            </div>
-            
-            <div class="bg-section" id="sec-bg" style="display: block;">
-                <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="starwars1" style="background-image: url('IMG-20260602-WA0011.jpg');">💥</div>
-                    <div class="filter-btn bg-btn" data-bg="starwars2" style="background-image: url('IMG-20260602-WA0007.jpg');">🛸</div>
-                    <div class="filter-btn bg-btn" data-bg="starwars3" style="background-image: url('IMG-20260602-WA0008.jpg');">🚀</div>
-                    <div class="filter-btn bg-btn" data-bg="starwars4" style="background-image: url('IMG-20260602-WA0010.jpg');">⚔️</div>
-                    
-                    <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="moon" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="paris" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="egypt" style="background-image: url('https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="ny" style="background-image: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    
-                    <div class="filter-btn bg-btn" data-bg="umayyad" style="background-image: url('umayyad.jpg');"></div>
-                    <div class="filter-btn bg-btn" data-bg="noria" style="background-image: url('noria.jpg');"></div>
-                    <div class="filter-btn bg-btn" data-bg="homs" style="background-image: url('homs.jpg');"></div>
-                    <div class="filter-btn bg-btn" data-bg="bridge" style="background-image: url('bridge.jpg');"></div>
-                </div>
-            </div>
-            
-            <div class="capture-ring" id="capture-btn">
-                <div class="capture-inner"></div>
-            </div>
-        </div>
+
+    <div class="brand-box">
+        <h1>MAGED <span style="color:var(--neon)">TECH</span></h1>
     </div>
-    
+
+    <div class="clock-card">
+        <div id="live-clock" style="font-size: 1.8rem; font-weight: bold; color: var(--neon);">00:00</div>
+        <div id="date-text" style="color: #888; font-size: 0.8rem;">...</div>
+    </div>
+
+    <a href="#" class="menu-btn" onclick="document.getElementById('prayer-content').style.display = (document.getElementById('prayer-content').style.display === 'block' ? 'none' : 'block');">
+        <span>مواقيت الصلاة | Prayer Times</span>
+        <i class="fa-solid fa-mosque" style="color:var(--neon)"></i>
+    </a>
+    <div id="prayer-content"></div>
+
+    <a href="apps/fatora/index.html" class="menu-btn">
+        <span>نظام الفواتير | Invoicing System</span>
+        <i class="fa-solid fa-file-invoice-dollar" style="color:var(--neon)"></i>
+    </a>
+
+    <a href="maged-magic-cam/index.html" class="menu-btn">
+        <span>استوديو الخيال | Magic Cam Studio</span>
+        <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--neon)"></i>
+    </a>
+
+    <a href="codes.html" class="menu-btn">
+        <span>أكواد الأجهزة | Diagnostic Codes</span>
+        <i class="fa-solid fa-microchip" style="color:var(--neon)"></i>
+    </a>
+
+    <div class="social-grid">
+        <a href="https://www.facebook.com/share/1J8HF8p72E/" class="btn-social fb">Facebook</a>
+        <a href="https://www.instagram.com/magedtech.official" class="btn-social ig">Instagram</a>
+        <a href="https://youtube.com/@maged115599" class="btn-social yt"><i class="fa-brands fa-youtube"></i></a>
+        <a href="https://www.snapchat.com/add/maged-say" class="btn-social sc"><i class="fa-brands fa-snapchat"></i></a>
+        <a href="https://t.me/Maged_Tech" class="btn-social tg"><i class="fa-brands fa-telegram"></i></a>
+    </div>
+
     <script>
-        const videoElement = document.getElementById('input_video');
-        const canvasElement = document.getElementById('output_canvas');
-        const canvasCtx = canvasElement.getContext('2d', { willReadFrequently: true });
-        const loadingMsg = document.getElementById('loading-msg');
-        
-        let currentFilter = 'beauty'; 
-        let currentBg = 'starwars1'; // تعيين صورة حرب النجوم الأولى كافتراضية
-        let isFrontCam = true; 
-        let camera; 
-        let currentFaceLandmarks = null;
-
-        const bgImages = { 
-            'starwars1': new Image(), 'starwars2': new Image(), 'starwars3': new Image(), 'starwars4': new Image(),
-            'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
-            'paris': new Image(), 'egypt': new Image(), 'ny': new Image(),
-            'umayyad': new Image(), 'noria': new Image(), 
-            'homs': new Image(), 'bridge': new Image()
-        };
-        
-        function safeLoadImage(imgObj, url) {
-            imgObj.crossOrigin = "anonymous"; 
-            imgObj.onerror = () => { console.warn("Failed to load: " + url); };
-            imgObj.src = url;
+        function formatTime12(time24) {
+            let [h, m] = time24.split(':');
+            h = parseInt(h);
+            let suff = h >= 12 ? ' م' : ' ص';
+            h = h % 12 || 12;
+            return `${h}:${m}${suff}`;
         }
-
-        // تحميل الصور الأربعة الخاصة بك هنا
-        safeLoadImage(bgImages['starwars1'], 'IMG-20260602-WA0011.jpg');
-        safeLoadImage(bgImages['starwars2'], 'IMG-20260602-WA0007.jpg');
-        safeLoadImage(bgImages['starwars3'], 'IMG-20260602-WA0008.jpg');
-        safeLoadImage(bgImages['starwars4'], 'IMG-20260602-WA0010.jpg');
-        
-        // باقي الخلفيات
-        safeLoadImage(bgImages['galaxy'], 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['moon'], 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['ship'], 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['paris'], 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['egypt'], 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['ny'], 'https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        
-        safeLoadImage(bgImages['umayyad'], 'umayyad.jpg');
-        safeLoadImage(bgImages['noria'], 'noria.jpg');
-        safeLoadImage(bgImages['homs'], 'homs.jpg');
-        safeLoadImage(bgImages['bridge'], 'bridge.jpg');
-
-        function switchTab(tabName) {
-            document.getElementById('tab-filter').classList.remove('active-tab');
-            document.getElementById('tab-bg').classList.remove('active-tab');
-            document.getElementById('sec-filter').style.display = 'none';
-            document.getElementById('sec-bg').style.display = 'none';
-            document.getElementById('tab-' + tabName).classList.add('active-tab');
-            document.getElementById('sec-' + tabName).style.display = 'block';
-        }
-
-        document.querySelectorAll('.filter-opt').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.filter-opt').forEach(b => b.classList.remove('active-btn'));
-                e.currentTarget.classList.add('active-btn');
-                currentFilter = e.currentTarget.dataset.filter;
-            });
-        });
-
-        document.querySelectorAll('.bg-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.bg-btn').forEach(b => b.classList.remove('active-btn'));
-                e.currentTarget.classList.add('active-btn');
-                currentBg = e.currentTarget.dataset.bg;
-            });
-        });
-
-        const faceMesh = new FaceMesh({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`});
-        faceMesh.setOptions({ maxNumFaces: 1, refineLandmarks: true, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
-        faceMesh.onResults((results) => { currentFaceLandmarks = results.multiFaceLandmarks ? results.multiFaceLandmarks[0] : null; });
-
-        const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`});
-        selfieSegmentation.setOptions({ modelSelection: 0 });
-        
-        function drawNeonLine(ctx, landmarks, indices, color, glow) {
-            ctx.beginPath();
-            indices.forEach((idx, i) => {
-                const pt = landmarks[idx];
-                const x = pt.x * canvasElement.width, y = pt.y * canvasElement.height;
-                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            });
-            ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.shadowColor = glow; ctx.shadowBlur = 15; ctx.stroke();
-        }
-
-        selfieSegmentation.onResults((results) => {
-            try {
-                loadingMsg.style.display = 'none';
-                if (canvasElement.width !== results.image.width) {
-                    canvasElement.width = results.image.width; canvasElement.height = results.image.height;
+        setInterval(() => {
+            const now = new Date();
+            let h = now.getHours(), m = now.getMinutes();
+            let suff = h >= 12 ? ' PM' : ' AM';
+            h = h % 12 || 12;
+            document.getElementById('live-clock').innerText = `${h}:${m.toString().padStart(2,'0')} ${suff}`;
+            document.getElementById('date-text').innerText = new Date().toLocaleDateString('ar-SY');
+        }, 1000);
+        fetch('https://api.aladhan.com/v1/timingsByCity?city=Damascus&country=Syria&method=8')
+            .then(res => res.json())
+            .then(data => {
+                const p = data.data.timings;
+                const list = {'الفجر': p.Fajr, 'الظهر': p.Dhuhr, 'العصر': p.Asr, 'المغرب': p.Maghrib, 'العشاء': p.Isha};
+                const container = document.getElementById('prayer-content');
+                for (let name in list) {
+                    container.innerHTML += `<div class="prayer-row"><span>${name}</span><span>${formatTime12(list[name])}</span></div>`;
                 }
-                canvasCtx.save();
-                canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
-                canvasCtx.globalCompositeOperation = 'source-over';
-                canvasCtx.filter = 'contrast(200%) brightness(95%)';
-                canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
-                canvasCtx.filter = 'none';
-
-                canvasCtx.globalCompositeOperation = 'source-in';
-                canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
-
-                canvasCtx.globalCompositeOperation = 'destination-over';
-                // رسم الخلفية
-                if (bgImages[currentBg] && bgImages[currentBg].complete && bgImages[currentBg].naturalWidth !== 0) {
-                    canvasCtx.drawImage(bgImages[currentBg], 0, 0, canvasElement.width, canvasElement.height);
-                } else {
-                    canvasCtx.fillStyle = '#111'; canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
-                }
-
-                canvasCtx.globalCompositeOperation = 'source-over';
-                if (currentFaceLandmarks) {
-                    const leftEye = currentFaceLandmarks[130], rightEye = currentFaceLandmarks[359], noseBridge = currentFaceLandmarks[168]; 
-                    if (leftEye && rightEye && noseBridge) {
-                        const x1 = leftEye.x * canvasElement.width, y1 = leftEye.y * canvasElement.height;
-                        const x2 = rightEye.x * canvasElement.width, y2 = rightEye.y * canvasElement.height;
-                        const nx = noseBridge.x * canvasElement.width, ny = noseBridge.y * canvasElement.height;
-                        const cx = (x1 + x2) / 2, cy = (y1 + y2) / 2;
-                        const angle = Math.atan2(y2 - y1, x2 - x1);
-                        const eyeDist = Math.hypot(x2 - x1, y2 - y1); 
-
-                        // فلتر التجميل الأساسي الدائم
-                        canvasCtx.save();
-                        canvasCtx.globalCompositeOperation = 'overlay'; 
-                        let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.2, cx, cy, eyeDist * 1.8);
-                        beautyGrad.addColorStop(0, 'rgba(255, 235, 215, 0.45)'); 
-                        beautyGrad.addColorStop(0.5, 'rgba(255, 220, 200, 0.25)'); 
-                        beautyGrad.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
-                        canvasCtx.fillStyle = beautyGrad;
-                        canvasCtx.beginPath(); canvasCtx.arc(cx, cy, eyeDist * 1.8, 0, Math.PI * 2); canvasCtx.fill();
-                        
-                        canvasCtx.globalCompositeOperation = 'soft-light';
-                        canvasCtx.fillStyle = 'rgba(255, 240, 230, 0.15)';
-                        canvasCtx.fill(); 
-                        canvasCtx.restore();
-                        
-                        // الفلاتر المتغيرة
-                        if (currentFilter === 'cute') {
-                            canvasCtx.save();
-                            canvasCtx.globalCompositeOperation = 'soft-light'; 
-                            const blushRadius = eyeDist * 0.45;
-                            [[x1, y1], [x2, y2]].forEach(([x, y]) => {
-                                let blush = canvasCtx.createRadialGradient(x, y + (eyeDist * 0.45), 0, x, y + (eyeDist * 0.45), blushRadius);
-                                blush.addColorStop(0, 'rgba(255, 105, 180, 0.55)'); blush.addColorStop(1, 'rgba(255, 105, 180, 0)');
-                                canvasCtx.fillStyle = blush;
-                                canvasCtx.beginPath(); canvasCtx.arc(x, y + (eyeDist * 0.45), blushRadius, 0, Math.PI * 2); canvasCtx.fill();
-                            });
-                            canvasCtx.restore();
-                        } else if (currentFilter === 'cyber') {
-                            const visorWidth = eyeDist * 1.8, visorHeight = visorWidth * 0.35; 
-                            canvasCtx.save();
-                            canvasCtx.translate(nx, ny + (visorHeight * 0.15));
-                            canvasCtx.rotate(angle);
-                            canvasCtx.beginPath();
-                            canvasCtx.moveTo(-visorWidth/2, -visorHeight/2);
-                            canvasCtx.lineTo(visorWidth/2, -visorHeight/2); 
-                            canvasCtx.lineTo(visorWidth/2.2, visorHeight/2);
-                            canvasCtx.lineTo(visorWidth*0.15, visorHeight/2);
-                            canvasCtx.lineTo(0, visorHeight*0.1); 
-                            canvasCtx.lineTo(-visorWidth*0.15, visorHeight/2);
-                            canvasCtx.lineTo(-visorWidth/2.2, visorHeight/2); 
-                            canvasCtx.closePath();
-                            let glassGrad = canvasCtx.createLinearGradient(0, -visorHeight/2, 0, visorHeight/2);
-                            glassGrad.addColorStop(0, 'rgba(10, 15, 30, 0.95)'); glassGrad.addColorStop(1, 'rgba(0, 255, 255, 0.6)');
-                            canvasCtx.fillStyle = glassGrad; canvasCtx.fill();
-                            canvasCtx.lineWidth = 2.5; canvasCtx.strokeStyle = '#00ffff'; canvasCtx.shadowColor = '#00ffff'; canvasCtx.shadowBlur = 15; canvasCtx.stroke();
-                            canvasCtx.beginPath(); canvasCtx.moveTo(-visorWidth/2.1, -visorHeight/3); canvasCtx.lineTo(visorWidth/2.1, -visorHeight/3);
-                            canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; canvasCtx.lineWidth = 1.5; canvasCtx.shadowBlur = 5; canvasCtx.stroke();
-                            canvasCtx.restore();
-                        } else if (currentFilter === 'paint') {
-                            const pulse = Math.abs(Math.sin(Date.now() * 0.005)), cA = 0.5 + pulse * 0.5;
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [103, 67, 10, 297, 332], `rgba(0, 255, 204, ${cA})`, '#00ffcc');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [54, 68, 104, 69, 108], `rgba(0, 255, 204, ${cA})`, '#00ffcc');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [284, 298, 333, 299, 337], `rgba(0, 255, 204, ${cA})`, '#00ffcc');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [116, 123, 147, 213, 192], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [117, 118, 100, 120], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [345, 352, 376, 433, 416], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
-                            drawNeonLine(canvasCtx, currentFaceLandmarks, [346, 347, 329, 349], `rgba(255, 0, 255, ${cA})`, '#ff00ff');
-                        }
-                    }
-                }
-                
-                let wSize = Math.floor(canvasElement.width * 0.045);
-                canvasCtx.font = "bold " + wSize + "px Tahoma"; canvasCtx.fillStyle = "rgba(255,255,255,0.9)";
-                canvasCtx.shadowColor = "rgba(0,0,0,0.9)"; canvasCtx.shadowBlur = 8;
-                canvasCtx.scale(-1, 1); canvasCtx.fillText("Maged Pro ✨", -canvasElement.width + 20, canvasElement.height - 30);
-                canvasCtx.restore();
-            } catch (err) { console.error("Rendering Error:", err); canvasCtx.restore(); }
-        });
-
-        function startCamera() {
-            if(camera) { camera.stop(); }
-            loadingMsg.style.display = 'block';
-            camera = new Camera(videoElement, {
-                onFrame: async () => { 
-                    try { await selfieSegmentation.send({image: videoElement}); await faceMesh.send({image: videoElement}); } 
-                    catch (e) { console.error("MediaPipe Error:", e); }
-                },
-                facingMode: isFrontCam ? 'user' : 'environment'
             });
-            camera.start();
-            canvasElement.style.transform = isFrontCam ? 'scaleX(-1)' : 'scaleX(1)';
-        }
-
-        startCamera();
-
-        document.getElementById('flip-cam-btn').addEventListener('click', () => { isFrontCam = !isFrontCam; startCamera(); });
-
-        const captureBtn = document.getElementById('capture-btn');
-        const captureInner = document.querySelector('.capture-inner');
-        let mediaRecorder, recordedChunks = [], pressTimer, isLongPress = false;
-        const canvasStream = canvasElement.captureStream(30);
-        
-        function startRecording() {
-            isLongPress = true; recordedChunks = [];
-            let options = { mimeType: 'video/webm; codecs=vp9' };
-            if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm' };
-            mediaRecorder = new MediaRecorder(canvasStream, options);
-            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) recordedChunks.push(e.data); };
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a'); a.style.display = 'none'; a.href = url; a.download = 'Maged-Pro-Video.webm';
-                document.body.appendChild(a); a.click(); window.URL.revokeObjectURL(url);
-            };
-            mediaRecorder.start();
-            captureBtn.classList.add('recording'); captureInner.classList.add('recording');
-        }
-
-        function stopRecording() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-            captureBtn.classList.remove('recording'); captureInner.classList.remove('recording');
-        }
-
-        function takePhoto() {
-            const flash = document.getElementById('flash-effect'); flash.style.opacity = '1'; setTimeout(() => flash.style.opacity = '0', 150);
-            const tempCanvas = document.createElement('canvas'); tempCanvas.width = canvasElement.width; tempCanvas.height = canvasElement.height;
-            const tCtx = tempCanvas.getContext('2d');
-            if (isFrontCam) { tCtx.translate(tempCanvas.width, 0); tCtx.scale(-1, 1); }
-            tCtx.drawImage(canvasElement, 0, 0);
-            const a = document.createElement('a'); a.download = 'Maged-Pro.png'; a.href = tempCanvas.toDataURL('image/png'); a.click();
-        }
-
-        const handlePointerDown = (e) => { e.preventDefault(); isLongPress = false; pressTimer = setTimeout(startRecording, 500); };
-        const handlePointerUp = (e) => { e.preventDefault(); clearTimeout(pressTimer); if (isLongPress) stopRecording(); else takePhoto(); };
-        
-        captureBtn.addEventListener('pointerdown', handlePointerDown);
-        captureBtn.addEventListener('pointerup', handlePointerUp);
-        captureBtn.addEventListener('pointerleave', handlePointerUp);
     </script>
 </body>
 </html>
