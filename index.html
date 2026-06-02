@@ -2,22 +2,28 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>منصة ماجد تك - Maged Tech</title>
+    <title>Maged Tech Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { background: #030712; color: #fff; font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; margin: 0; }
+        :root { --accent: #00ffff; --bg: #030712; --text: #ffffff; }
+        @media (prefers-color-scheme: light) { :root { --accent: #0284c7; --bg: #f8fafc; --text: #0f172a; } }
+        
+        body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; margin: 0; transition: 0.3s; }
+        
         .header { text-align: center; margin-bottom: 20px; }
-        .calendar-card { background: #1e293b; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; border: 1px solid #38bdf8; }
-        .clock { font-size: 2.2rem; font-weight: bold; color: #00ffff; margin: 5px 0; }
-        .dates { color: #94a3b8; font-size: 0.9rem; margin-bottom: 10px; }
-        .prayer-list { list-style: none; padding: 0; text-align: right; font-size: 0.9rem; }
-        .prayer-list li { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #334155; }
-        .menu-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 400px; padding: 18px; margin-bottom: 12px; background: #1e293b; color: white; border-radius: 15px; text-decoration: none; font-weight: bold; }
-        .menu-btn:hover { background: #334155; }
+        
+        /* تأثير النبض للأزرار */
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0); } }
+        
+        .menu-btn { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; padding: 15px; margin-bottom: 15px; background: #1e293b; border: 2px solid var(--accent); color: var(--text); border-radius: 15px; text-decoration: none; font-weight: bold; animation: pulse 2s infinite; }
+        
+        .info-text { font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; }
+        
+        .calendar-card { background: #1e293b; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; border: 1px solid var(--accent); }
+        .clock { font-size: 2rem; color: var(--accent); }
+        
         .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; }
         .btn-social { padding: 12px; border-radius: 12px; text-decoration: none; color: white; text-align: center; font-weight: bold; font-size: 0.9rem; }
-        #redirectModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); flex-direction: column; align-items: center; justify-content: center; z-index: 1000; text-align: center; }
-        #countdown { font-size: 5rem; color: #00ffff; }
     </style>
 </head>
 <body>
@@ -26,72 +32,42 @@
 
     <div class="calendar-card">
         <div id="live-clock" class="clock">00:00:00</div>
-        <div id="dates-display" class="dates">جاري تحميل التاريخ...</div>
-        <ul class="prayer-list" id="prayers-container"></ul>
+        <div id="dates-display" class="dates">...</div>
+        <div id="prayers-container" style="font-size: 0.8rem; margin-top: 10px;"></div>
     </div>
 
-    <!-- الأدوات -->
-    <a href="apps/fatora/index.html" class="menu-btn">نظام الفاتورة <i class="fa-solid fa-file-invoice-dollar" style="color: #00ff9d;"></i></a>
-    <a href="maged-magic-cam/index.html" class="menu-btn">استوديو الخيال (الكاميرا) <i class="fa-solid fa-camera"></i></a>
-    <a href="codes.html" class="menu-btn">أكواد فحص الأجهزة <i class="fa-solid fa-microchip"></i></a>
+    <div class="info-text">نظام إدارة الفواتير الرقمي المطور</div>
+    <a href="apps/fatora/index.html" class="menu-btn">Digital Invoicing System <i class="fa-solid fa-file-invoice"></i></a>
 
-    <!-- الحسابات -->
+    <a href="maged-magic-cam/index.html" class="menu-btn">Magic Cam Studio <i class="fa-solid fa-wand-magic-sparkles"></i></a>
+    
+    <a href="codes.html" class="menu-btn">Phone Diagnostic Codes <i class="fa-solid fa-microchip"></i></a>
+
     <div class="social-grid">
-        <a href="https://youtube.com/@maged115599" class="btn-social" style="background: #ff0000;">يوتيوب</a>
-        <a href="https://t.me/Maged_Tech" class="btn-social" style="background: #0088cc;">تيليجرام</a>
-        <a href="https://www.facebook.com/share/1J8HF8p72E/" class="btn-social" style="background: #1877f2;">فيسبوك</a>
-        <a href="https://www.instagram.com/magedtech.official" class="btn-social" style="background: #e1306c;">إنستغرام</a>
-        <a href="https://www.snapchat.com/add/maged-say" class="btn-social" style="background: #fffc00; color: #000;">سناب شات</a>
-    </div>
-
-    <div id="redirectModal">
-        <h2>جاري التحويل...</h2>
-        <div id="countdown">5</div>
+        <a href="https://youtube.com/@maged115599" class="btn-social" style="background: #ff0000;">YouTube</a>
+        <a href="https://t.me/Maged_Tech" class="btn-social" style="background: #0088cc;">Telegram</a>
+        <a href="https://www.facebook.com/share/1J8HF8p72E/" class="btn-social" style="background: #1877f2;">Facebook</a>
+        <a href="https://www.instagram.com/magedtech.official" class="btn-social" style="background: #e1306c;">Instagram</a>
     </div>
 
     <script>
-        function formatTime12(time24) {
-            let [h, m] = time24.split(':');
-            h = parseInt(h);
-            let suffix = h >= 12 ? 'م' : 'ص';
-            h = h % 12 || 12;
-            return `${h}:${m} ${suffix}`;
-        }
-
+        // التوقيت 12 ساعة
         setInterval(() => {
             const now = new Date();
             let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-            let suffix = h >= 12 ? 'م' : 'ص';
+            let suff = h >= 12 ? ' PM' : ' AM';
             h = h % 12 || 12;
-            document.getElementById('live-clock').innerText = `${h}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} ${suffix}`;
+            document.getElementById('live-clock').innerText = `${h}:${m.toString().padStart(2,'0')} ${suff}`;
         }, 1000);
-        
+
+        // جلب المواقيت
         fetch('https://api.aladhan.com/v1/timingsByCity?city=Damascus&country=Syria&method=8')
             .then(res => res.json())
             .then(data => {
-                const date = data.data.date;
-                document.getElementById('dates-display').innerText = `${date.gregorian.date} | ${date.hijri.date}`;
+                document.getElementById('dates-display').innerText = data.data.date.gregorian.date;
                 const p = data.data.timings;
-                const list = { 'Fajr': 'الفجر', 'Dhuhr': 'الظهر', 'Asr': 'العصر', 'Maghrib': 'المغرب', 'Isha': 'العشاء' };
-                const container = document.getElementById('prayers-container');
-                for (let k in list) container.innerHTML += `<li><span>${list[k]}</span> <span>${formatTime12(p[k])}</span></li>`;
+                document.getElementById('prayers-container').innerText = `الفجر: ${p.Fajr} | الظهر: ${p.Dhuhr} | المغرب: ${p.Maghrib}`;
             });
-
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const target = urlParams.get('to');
-            if (target) {
-                const modal = document.getElementById('redirectModal');
-                const counter = document.getElementById('countdown');
-                modal.style.display = 'flex';
-                let count = 5;
-                const timer = setInterval(() => {
-                    count--;
-                    counter.innerText = count;
-                    if (count <= 0) { clearInterval(timer); window.location.href = target; }
-                }, 1000);
-            }
-        }
     </script>
 </body>
 </html>
