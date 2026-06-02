@@ -41,7 +41,7 @@
 <body>
     <div class="app-container">
         <header>
-            <a href="/maged-tech-tools/index.html" class="icon-btn"><i class="fa-solid fa-xmark"></i></a>
+            <a href="https://maged690-ux.github.io/maged-tech-tools/index.html" class="icon-btn"><i class="fa-solid fa-xmark"></i></a>
             <h1>Maged Pro ✨</h1>
             <button id="flip-cam-btn" class="icon-btn"><i class="fa-solid fa-camera-rotate"></i></button>
         </header>
@@ -68,10 +68,10 @@
             
             <div class="bg-section" id="sec-bg" style="display: block;">
                 <div class="filter-carousel">
-                    <div class="filter-btn bg-btn active-btn" data-bg="starwars1" style="background-image: url('sw1.jpg');">💥</div>
-                    <div class="filter-btn bg-btn" data-bg="starwars2" style="background-image: url('sw2.jpg');">🛸</div>
-                    <div class="filter-btn bg-btn" data-bg="starwars3" style="background-image: url('sw3.jpg');">🚀</div>
-                    <div class="filter-btn bg-btn" data-bg="starwars4" style="background-image: url('sw4.jpg');">⚔️</div>
+                    <div class="filter-btn bg-btn active-btn" data-bg="starwars1" style="background-image: url('sw1.jpg?v=1');">💥</div>
+                    <div class="filter-btn bg-btn" data-bg="starwars2" style="background-image: url('sw2.jpg?v=1');">🛸</div>
+                    <div class="filter-btn bg-btn" data-bg="starwars3" style="background-image: url('sw3.jpg?v=1');">🚀</div>
+                    <div class="filter-btn bg-btn" data-bg="starwars4" style="background-image: url('sw4.jpg?v=1');">⚔️</div>
                     
                     <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                     <div class="filter-btn bg-btn" data-bg="moon" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
@@ -80,10 +80,10 @@
                     <div class="filter-btn bg-btn" data-bg="egypt" style="background-image: url('https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                     <div class="filter-btn bg-btn" data-bg="ny" style="background-image: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                     
-                    <div class="filter-btn bg-btn" data-bg="umayyad" style="background-image: url('umayyad.jpg');"></div>
-                    <div class="filter-btn bg-btn" data-bg="noria" style="background-image: url('noria.jpg');"></div>
-                    <div class="filter-btn bg-btn" data-bg="homs" style="background-image: url('homs.jpg');"></div>
-                    <div class="filter-btn bg-btn" data-bg="bridge" style="background-image: url('bridge.jpg');"></div>
+                    <div class="filter-btn bg-btn" data-bg="umayyad" style="background-image: url('umayyad.jpg?v=1');"></div>
+                    <div class="filter-btn bg-btn" data-bg="noria" style="background-image: url('noria.jpg?v=1');"></div>
+                    <div class="filter-btn bg-btn" data-bg="homs" style="background-image: url('homs.jpg?v=1');"></div>
+                    <div class="filter-btn bg-btn" data-bg="bridge" style="background-image: url('bridge.jpg?v=1');"></div>
                 </div>
             </div>
             
@@ -119,11 +119,11 @@
             imgObj.src = url;
         }
 
-        // تحميل الصور بأسمائها الأصلية كما كانت تعمل لديك
-        safeLoadImage(bgImages['starwars1'], 'sw1.jpg');
-        safeLoadImage(bgImages['starwars2'], 'sw2.jpg');
-        safeLoadImage(bgImages['starwars3'], 'sw3.jpg');
-        safeLoadImage(bgImages['starwars4'], 'sw4.jpg');
+        // تم إضافة ?v=1 لكسر الكاش
+        safeLoadImage(bgImages['starwars1'], 'sw1.jpg?v=1');
+        safeLoadImage(bgImages['starwars2'], 'sw2.jpg?v=1');
+        safeLoadImage(bgImages['starwars3'], 'sw3.jpg?v=1');
+        safeLoadImage(bgImages['starwars4'], 'sw4.jpg?v=1');
         
         safeLoadImage(bgImages['galaxy'], 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
         safeLoadImage(bgImages['moon'], 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
@@ -132,10 +132,10 @@
         safeLoadImage(bgImages['egypt'], 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
         safeLoadImage(bgImages['ny'], 'https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
         
-        safeLoadImage(bgImages['umayyad'], 'umayyad.jpg');
-        safeLoadImage(bgImages['noria'], 'noria.jpg');
-        safeLoadImage(bgImages['homs'], 'homs.jpg');
-        safeLoadImage(bgImages['bridge'], 'bridge.jpg');
+        safeLoadImage(bgImages['umayyad'], 'umayyad.jpg?v=1');
+        safeLoadImage(bgImages['noria'], 'noria.jpg?v=1');
+        safeLoadImage(bgImages['homs'], 'homs.jpg?v=1');
+        safeLoadImage(bgImages['bridge'], 'bridge.jpg?v=1');
 
         function switchTab(tabName) {
             document.getElementById('tab-filter').classList.remove('active-tab');
