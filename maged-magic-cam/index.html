@@ -91,14 +91,12 @@
         const canvasCtx = canvasElement.getContext('2d');
         const loadingMsg = document.getElementById('loading-msg');
         
-        // التعديل الثاني: غيرنا المتغير الأساسي ليشتغل التجميل فوراً
         let currentFilter = 'beauty'; 
         let currentBg = 'galaxy';
         let isFrontCam = true; 
         let camera; 
         let currentFaceLandmarks = null;
 
-        // تحميل جميع الصور بدقة عالية
         const bgImages = { 
             'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
             'paris': new Image(), 'egypt': new Image(), 'ny': new Image()
@@ -194,6 +192,7 @@
                 canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
             }
 
+            // === فلاتر الوجه الاحترافية ===
             canvasCtx.globalCompositeOperation = 'source-over';
             
             if (currentFaceLandmarks && currentFilter !== 'none') {
@@ -209,29 +208,29 @@
                 const cy = (y1 + y2) / 2;
                 const angle = Math.atan2(y2 - y1, x2 - x1);
                 
-                const faceWidth = Math.hypot(x2 - x1, y2 - y1) * 2.5; 
+                const eyeDist = Math.hypot(x2 - x1, y2 - y1); 
 
-                // فلتر الجمال 
+                // 1. فلتر الجمال (إضاءة وتصفية للبشرة بنظام Overlay)
                 if (currentFilter === 'beauty') {
                     canvasCtx.save();
-                    canvasCtx.globalCompositeOperation = 'soft-light'; 
+                    canvasCtx.globalCompositeOperation = 'overlay'; 
                     
-                    let beautyGrad = canvasCtx.createRadialGradient(cx, cy, faceWidth * 0.1, cx, cy, faceWidth * 0.6);
-                    beautyGrad.addColorStop(0, 'rgba(255, 240, 225, 0.4)'); 
-                    beautyGrad.addColorStop(0.5, 'rgba(255, 230, 210, 0.15)'); 
+                    let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.1, cx, cy, eyeDist * 1.5);
+                    beautyGrad.addColorStop(0, 'rgba(255, 225, 205, 0.35)'); 
+                    beautyGrad.addColorStop(0.6, 'rgba(255, 210, 190, 0.15)'); 
                     beautyGrad.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
                     
                     canvasCtx.fillStyle = beautyGrad;
                     canvasCtx.beginPath();
-                    canvasCtx.arc(cx, cy, faceWidth * 0.6, 0, Math.PI * 2);
+                    canvasCtx.arc(cx, cy, eyeDist * 1.6, 0, Math.PI * 2);
                     canvasCtx.fill();
                     canvasCtx.restore();
                 }
                 
-                // فلتر النظارة
+                // 2. فلتر نظارة السايبربانك (مقاس واقعي وأنيق)
                 else if (currentFilter === 'cyber') {
-                    const visorWidth = faceWidth * 1.1;
-                    const visorHeight = visorWidth * 0.35;
+                    const visorWidth = eyeDist * 2.3; 
+                    const visorHeight = visorWidth * 0.28; 
                     
                     canvasCtx.save();
                     canvasCtx.translate(cx, cy);
@@ -243,37 +242,37 @@
                     canvasCtx.lineTo(visorWidth/2.2, visorHeight/2);
                     
                     canvasCtx.lineTo(visorWidth*0.12, visorHeight/2);
-                    canvasCtx.lineTo(0, visorHeight*0.25); 
+                    canvasCtx.lineTo(0, visorHeight*0.1); 
                     canvasCtx.lineTo(-visorWidth*0.12, visorHeight/2);
                     
                     canvasCtx.lineTo(-visorWidth/2.2, visorHeight/2); 
                     canvasCtx.closePath();
                     
                     let glassGrad = canvasCtx.createLinearGradient(0, -visorHeight/2, 0, visorHeight/2);
-                    glassGrad.addColorStop(0, 'rgba(15, 20, 35, 0.85)');
-                    glassGrad.addColorStop(1, 'rgba(0, 200, 255, 0.4)');
+                    glassGrad.addColorStop(0, 'rgba(15, 20, 35, 0.9)');
+                    glassGrad.addColorStop(1, 'rgba(0, 220, 255, 0.5)');
                     
                     canvasCtx.fillStyle = glassGrad;
                     canvasCtx.fill();
                     
-                    canvasCtx.lineWidth = 3;
+                    canvasCtx.lineWidth = 2.5;
                     canvasCtx.strokeStyle = '#00ffff';
                     canvasCtx.shadowColor = '#00ffff';
-                    canvasCtx.shadowBlur = 20;
+                    canvasCtx.shadowBlur = 15;
                     canvasCtx.stroke();
                     
                     canvasCtx.beginPath();
                     canvasCtx.moveTo(-visorWidth/2.1, -visorHeight/3);
                     canvasCtx.lineTo(visorWidth/2.1, -visorHeight/3);
-                    canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
-                    canvasCtx.lineWidth = 2;
-                    canvasCtx.shadowBlur = 5;
+                    canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                    canvasCtx.lineWidth = 1.5;
+                    canvasCtx.shadowBlur = 3;
                     canvasCtx.stroke();
                     
                     canvasCtx.restore();
                 }
                 
-                // فلتر الفضاء
+                // 3. فلتر وشم الفضاء النبضي
                 else if (currentFilter === 'paint') {
                     const pulse = Math.abs(Math.sin(Date.now() * 0.005)); 
                     const colorAlpha = 0.5 + pulse * 0.5;
