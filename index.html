@@ -2,90 +2,96 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Maged Tech Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maged Tech | Professional Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root { --accent: #00ffff; --bg: #030712; --text: #ffffff; }
-        @media (prefers-color-scheme: light) { :root { --accent: #0284c7; --bg: #f8fafc; --text: #0f172a; } }
+        :root { 
+            --neon: #00f2ff; 
+            --bg: #050505; 
+            --glass: rgba(255, 255, 255, 0.05); 
+        }
+        body { 
+            background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; 
+            display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; margin: 0;
+        }
         
-        body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; margin: 0; transition: 0.3s; }
-        
-        /* تأثير النيون للاسم */
-        .neon-title { 
-            font-size: 3rem; 
-            font-weight: 900; 
-            text-transform: uppercase;
-            color: #fff;
-            text-shadow: 0 0 10px #fff, 0 0 20px var(--accent), 0 0 40px var(--accent);
-            margin-bottom: 20px;
-            letter-spacing: 5px;
+        /* الشعار الفخم */
+        .brand-box { text-align: center; margin: 30px 0; }
+        .brand-box h1 { 
+            font-size: 2.5rem; letter-spacing: 2px; color: #fff;
+            text-shadow: 0 0 20px var(--neon); margin: 0;
         }
 
-        /* تأثير النبض للأزرار */
-        @keyframes pulse { 
-            0% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.4); } 
-            70% { box-shadow: 0 0 0 15px rgba(0, 255, 255, 0); } 
-            100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0); } 
+        /* العداد */
+        .clock-card { 
+            background: var(--glass); backdrop-filter: blur(10px);
+            padding: 20px; border-radius: 25px; width: 90%; max-width: 400px;
+            text-align: center; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 30px;
         }
-        
+
+        /* الأزرار الاحترافية */
         .menu-btn { 
-            display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; 
-            padding: 15px; margin-bottom: 15px; background: #1e293b; border: 1px solid var(--accent); 
-            color: var(--text); border-radius: 15px; text-decoration: none; font-weight: bold; 
-            animation: pulse 2s infinite; transition: 0.3s;
+            width: 90%; max-width: 400px; padding: 20px; margin-bottom: 15px;
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            border: 1px solid #333; color: white; border-radius: 20px;
+            text-decoration: none; font-weight: 600; display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.4s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-        .menu-btn:hover { transform: scale(1.05); background: #2d3748; }
-        
-        .info-text { font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; text-align: center; }
-        
-        .calendar-card { background: #1e293b; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; border: 1px solid var(--accent); }
-        .clock { font-size: 2rem; color: var(--accent); font-weight: bold; }
-        
-        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; }
-        .btn-social { padding: 12px; border-radius: 12px; text-decoration: none; color: white; text-align: center; font-weight: bold; font-size: 0.9rem; }
+        .menu-btn:hover { 
+            border-color: var(--neon); transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); 
+        }
+
+        /* شبكة السوشيال */
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 95%; max-width: 420px; margin-top: 20px; }
+        .social-btn { 
+            padding: 15px; border-radius: 15px; text-decoration: none; text-align: center;
+            background: #111; border: 1px solid #222; color: #ccc; transition: 0.3s;
+        }
+        .social-btn:hover { color: var(--neon); border-color: var(--neon); }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1 class="neon-title"><i class="fa-solid fa-bolt-lightning"></i> MAGED</h1>
+    <div class="brand-box">
+        <h1>MAGED <span style="color:var(--neon)">TECH</span></h1>
+        <p style="color:#666; font-size: 0.9rem;">Advanced Digital Solutions</p>
     </div>
 
-    <div class="calendar-card">
-        <div id="live-clock" class="clock">00:00:00</div>
-        <div id="dates-display" style="font-size: 0.9rem; color: #94a3b8;">...</div>
+    <div class="clock-card">
+        <div id="live-clock" style="font-size: 1.8rem; font-weight: bold; color: var(--neon);">00:00</div>
+        <div id="date-text" style="font-size: 0.8rem; color: #888; margin-top: 5px;"></div>
     </div>
 
-    <div class="info-text">Digital Invoicing Management System</div>
-    <a href="apps/fatora/index.html" class="menu-btn">Invoicing System <i class="fa-solid fa-file-invoice"></i></a>
+    <a href="apps/fatora/index.html" class="menu-btn">
+        <span>نظام الفواتير | Invoicing System</span>
+        <i class="fa-solid fa-file-invoice-dollar" style="color:var(--neon)"></i>
+    </a>
 
-    <a href="maged-magic-cam/index.html" class="menu-btn">Magic Cam Studio <i class="fa-solid fa-wand-magic-sparkles"></i></a>
-    
-    <a href="codes.html" class="menu-btn">Phone Diagnostic Codes <i class="fa-solid fa-microchip"></i></a>
+    <a href="maged-magic-cam/index.html" class="menu-btn">
+        <span>استوديو الخيال | Magic Cam Studio</span>
+        <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--neon)"></i>
+    </a>
+
+    <a href="codes.html" class="menu-btn">
+        <span>أكواد الأجهزة | Diagnostic Codes</span>
+        <i class="fa-solid fa-microchip" style="color:var(--neon)"></i>
+    </a>
 
     <div class="social-grid">
-        <a href="https://youtube.com/@maged115599" class="btn-social" style="background: #ff0000;">YouTube</a>
-        <a href="https://t.me/Maged_Tech" class="btn-social" style="background: #0088cc;">Telegram</a>
-        <a href="https://www.facebook.com/share/1J8HF8p72E/" class="btn-social" style="background: #1877f2;">Facebook</a>
-        <a href="https://www.instagram.com/magedtech.official" class="btn-social" style="background: #e1306c;">Instagram</a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-telegram"></i></a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-youtube"></i></a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-facebook"></i></a>
     </div>
 
     <script>
-        // التوقيت 12 ساعة
+        // ساعة محدثة
         setInterval(() => {
-            const now = new Date();
-            let h = now.getHours(), m = now.getMinutes();
-            let suff = h >= 12 ? ' PM' : ' AM';
-            h = h % 12 || 12;
-            document.getElementById('live-clock').innerText = `${h}:${m.toString().padStart(2,'0')} ${suff}`;
+            document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+            document.getElementById('date-text').innerText = new Date().toLocaleDateString('ar-SY');
         }, 1000);
-
-        // جلب التاريخ
-        fetch('https://api.aladhan.com/v1/timingsByCity?city=Damascus&country=Syria&method=8')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('dates-display').innerText = data.data.date.gregorian.date;
-            });
     </script>
 </body>
 </html>
