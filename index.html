@@ -30,7 +30,7 @@
             overflow-x: hidden;
         }
 
-        /* ---------------- قسم اللوغو والهوية ---------------- */
+        /* ---------------- قسم اللوغو ---------------- */
         .brand-container {
             display: flex;
             flex-direction: column;
@@ -39,7 +39,6 @@
             animation: float 4s ease-in-out infinite;
         }
 
-        /* حلقة النيون حول اللوغو */
         .logo-ring {
             width: 130px;
             height: 130px;
@@ -55,7 +54,7 @@
             height: 100%;
             border-radius: 50%;
             background-color: #111;
-            /* يمكنك تغيير هذا الرابط لصورة اللوغو تبعك أو الـ Avatar 3D */
+            /* رابط اللوغو، فيك تغيره متل ما بدك */
             background-image: url('https://cdn-icons-png.flaticon.com/512/3062/3062325.png'); 
             background-size: cover;
             background-position: center;
@@ -103,7 +102,7 @@
         #live-clock { font-size: 2.8rem; font-weight: 900; color: var(--neon); letter-spacing: 2px; text-shadow: 0 0 20px rgba(0, 242, 255, 0.5); margin-bottom: 5px; }
         #date-text { color: #a0a0b0; font-size: 1rem; font-weight: 500; }
 
-        /* ---------------- الأزرار (تأثيرات 3D) ---------------- */
+        /* ---------------- الأزرار (3D) ---------------- */
         .btn-3d {
             width: 100%;
             max-width: 420px;
@@ -135,15 +134,13 @@
         }
         
         .btn-3d:hover i { transform: scale(1.2) rotate(5deg); text-shadow: 0 0 15px var(--neon); }
-
         .btn-3d:active { transform: translateY(2px); box-shadow: 0 5px 10px rgba(0,0,0,0.5); }
 
-        /* مواقيت الصلاة المنسدلة */
         #prayer-content { display: none; padding: 20px; background: rgba(0,0,0,0.4); border-radius: 18px; width: 100%; max-width: 420px; margin-top: -10px; margin-bottom: 20px; border: 1px solid rgba(0,242,255,0.2); font-size: 1.1rem; font-weight: bold; }
         .prayer-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); }
         .prayer-row:last-child { border-bottom: none; }
 
-        /* ---------------- شبكة السوشيال ميديا ---------------- */
+        /* ---------------- السوشيال ميديا ---------------- */
         .social-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -179,12 +176,38 @@
         .sc { background: linear-gradient(135deg, #FFFC00, #d4d100); color: #000 !important; aspect-ratio: 1 / 1; }
         .tg { background: linear-gradient(135deg, #0088CC, #005f8f); aspect-ratio: 1 / 1; }
 
+        /* ---------------- نافذة التحويل الذكي (الجديدة) ---------------- */
+        #redirectModal { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(5, 5, 10, 0.95); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 9999; 
+            text-align: center; 
+        }
+        #redirectModal h2 { font-size: 2.2rem; color: #fff; margin-bottom: 20px; text-shadow: 0 0 15px var(--neon); }
+        #countdown { font-size: 6rem; font-weight: 900; color: var(--neon); text-shadow: 0 0 30px var(--neon); animation: pulseCount 1s infinite; }
+        #redirectModal p { color: #a0a0b0; font-size: 1.2rem; margin-top: 15px; }
+
         /* ---------------- انيميشن ---------------- */
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
         @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+        @keyframes pulseCount { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
+
+    <div id="redirectModal">
+        <h2>جاري التحويل للرابط المطلوب...</h2>
+        <div id="countdown">5</div>
+        <p>يرجى الانتظار قليلاً 🚀</p>
+    </div>
 
     <div class="brand-container">
         <div class="logo-ring">
@@ -233,6 +256,26 @@
     </div>
 
     <script>
+        // نظام التحويل الذكي (يعمل عند وجود ?to= في الرابط)
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const target = urlParams.get('to');
+            if (target) {
+                const modal = document.getElementById('redirectModal');
+                const counter = document.getElementById('countdown');
+                modal.style.display = 'flex'; // إظهار شاشة الانتظار
+                let count = 5;
+                const timer = setInterval(() => {
+                    count--;
+                    counter.innerText = count;
+                    if (count <= 0) { 
+                        clearInterval(timer); 
+                        window.location.href = target; 
+                    }
+                }, 1000);
+            }
+        };
+
         // سكربت الساعة
         function formatTime12(time24) {
             let [h, m] = time24.split(':');
