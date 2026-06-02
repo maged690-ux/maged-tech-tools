@@ -10,17 +10,36 @@
         
         body { background: var(--bg); color: var(--text); font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; margin: 0; transition: 0.3s; }
         
-        .header { text-align: center; margin-bottom: 20px; }
-        
+        /* تأثير النيون للاسم */
+        .neon-title { 
+            font-size: 3rem; 
+            font-weight: 900; 
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 0 0 10px #fff, 0 0 20px var(--accent), 0 0 40px var(--accent);
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+        }
+
         /* تأثير النبض للأزرار */
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 255, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0); } }
+        @keyframes pulse { 
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.4); } 
+            70% { box-shadow: 0 0 0 15px rgba(0, 255, 255, 0); } 
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0); } 
+        }
         
-        .menu-btn { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; padding: 15px; margin-bottom: 15px; background: #1e293b; border: 2px solid var(--accent); color: var(--text); border-radius: 15px; text-decoration: none; font-weight: bold; animation: pulse 2s infinite; }
+        .menu-btn { 
+            display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 400px; 
+            padding: 15px; margin-bottom: 15px; background: #1e293b; border: 1px solid var(--accent); 
+            color: var(--text); border-radius: 15px; text-decoration: none; font-weight: bold; 
+            animation: pulse 2s infinite; transition: 0.3s;
+        }
+        .menu-btn:hover { transform: scale(1.05); background: #2d3748; }
         
-        .info-text { font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; }
+        .info-text { font-size: 0.8rem; color: #94a3b8; margin-bottom: 5px; text-align: center; }
         
         .calendar-card { background: #1e293b; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; border: 1px solid var(--accent); }
-        .clock { font-size: 2rem; color: var(--accent); }
+        .clock { font-size: 2rem; color: var(--accent); font-weight: bold; }
         
         .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; }
         .btn-social { padding: 12px; border-radius: 12px; text-decoration: none; color: white; text-align: center; font-weight: bold; font-size: 0.9rem; }
@@ -28,16 +47,17 @@
 </head>
 <body>
 
-    <div class="header"><h1>Maged Tech ⚡</h1></div>
+    <div class="header">
+        <h1 class="neon-title"><i class="fa-solid fa-bolt-lightning"></i> MAGED</h1>
+    </div>
 
     <div class="calendar-card">
         <div id="live-clock" class="clock">00:00:00</div>
-        <div id="dates-display" class="dates">...</div>
-        <div id="prayers-container" style="font-size: 0.8rem; margin-top: 10px;"></div>
+        <div id="dates-display" style="font-size: 0.9rem; color: #94a3b8;">...</div>
     </div>
 
-    <div class="info-text">نظام إدارة الفواتير الرقمي المطور</div>
-    <a href="apps/fatora/index.html" class="menu-btn">Digital Invoicing System <i class="fa-solid fa-file-invoice"></i></a>
+    <div class="info-text">Digital Invoicing Management System</div>
+    <a href="apps/fatora/index.html" class="menu-btn">Invoicing System <i class="fa-solid fa-file-invoice"></i></a>
 
     <a href="maged-magic-cam/index.html" class="menu-btn">Magic Cam Studio <i class="fa-solid fa-wand-magic-sparkles"></i></a>
     
@@ -54,19 +74,17 @@
         // التوقيت 12 ساعة
         setInterval(() => {
             const now = new Date();
-            let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            let h = now.getHours(), m = now.getMinutes();
             let suff = h >= 12 ? ' PM' : ' AM';
             h = h % 12 || 12;
             document.getElementById('live-clock').innerText = `${h}:${m.toString().padStart(2,'0')} ${suff}`;
         }, 1000);
 
-        // جلب المواقيت
+        // جلب التاريخ
         fetch('https://api.aladhan.com/v1/timingsByCity?city=Damascus&country=Syria&method=8')
             .then(res => res.json())
             .then(data => {
                 document.getElementById('dates-display').innerText = data.data.date.gregorian.date;
-                const p = data.data.timings;
-                document.getElementById('prayers-container').innerText = `الفجر: ${p.Fajr} | الظهر: ${p.Dhuhr} | المغرب: ${p.Maghrib}`;
             });
     </script>
 </body>
