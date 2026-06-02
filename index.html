@@ -16,7 +16,7 @@
         
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(0, 242, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); } }
         
-        .menu-btn { width: 90%; max-width: 400px; padding: 20px; margin-bottom: 15px; background: linear-gradient(135deg, #1a1a1a, #0f0f0f); border: 1px solid #333; color: white; border-radius: 20px; text-decoration: none; font-weight: 600; display: flex; align-items: center; justify-content: space-between; transition: 0.4s; animation: pulse 3s infinite; }
+        .menu-btn { width: 90%; max-width: 400px; padding: 18px; margin-bottom: 15px; background: linear-gradient(135deg, #1a1a1a, #0f0f0f); border: 1px solid #333; color: white; border-radius: 20px; text-decoration: none; font-weight: 600; display: flex; align-items: center; justify-content: space-between; transition: 0.4s; animation: pulse 3s infinite; }
         .menu-btn:hover { border-color: var(--neon); transform: translateY(-3px); }
         
         #prayer-content { display: none; padding: 15px; background: #111; border-radius: 15px; width: 90%; max-width: 400px; margin-top: -10px; margin-bottom: 15px; border: 1px solid #333; font-size: 0.9rem; }
@@ -25,11 +25,12 @@
         .social-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 90%; max-width: 400px; margin-top: 20px; }
         .btn-social { padding: 15px; border-radius: 12px; text-decoration: none; text-align: center; color: white; font-weight: bold; transition: 0.3s; border: 1px solid #333; }
         .btn-social:hover { transform: translateY(-3px); filter: brightness(1.2); }
+        
+        .fb { background: #1877F2; grid-column: span 3; }
+        .ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); grid-column: span 3; }
         .yt { background: #FF0000; }
-        .tg { background: #0088CC; }
         .sc { background: #FFFC00; color: #000 !important; }
-        .fb { background: #1877F2; grid-column: span 2; }
-        .ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); grid-column: span 2; }
+        .tg { background: #0088CC; }
     </style>
 </head>
 <body>
@@ -65,11 +66,11 @@
     </a>
 
     <div class="social-grid">
-        <a href="https://youtube.com/@maged115599" class="btn-social yt"><i class="fa-brands fa-youtube"></i></a>
-        <a href="https://t.me/Maged_Tech" class="btn-social tg"><i class="fa-brands fa-telegram"></i></a>
-        <a href="https://www.snapchat.com/add/maged-say" class="btn-social sc"><i class="fa-brands fa-snapchat"></i></a>
         <a href="https://www.facebook.com/share/1J8HF8p72E/" class="btn-social fb">Facebook</a>
         <a href="https://www.instagram.com/magedtech.official" class="btn-social ig">Instagram</a>
+        <a href="https://youtube.com/@maged115599" class="btn-social yt"><i class="fa-brands fa-youtube"></i></a>
+        <a href="https://www.snapchat.com/add/maged-say" class="btn-social sc"><i class="fa-brands fa-snapchat"></i></a>
+        <a href="https://t.me/Maged_Tech" class="btn-social tg"><i class="fa-brands fa-telegram"></i></a>
     </div>
 
     <script>
@@ -80,7 +81,6 @@
             h = h % 12 || 12;
             return `${h}:${m}${suff}`;
         }
-
         setInterval(() => {
             const now = new Date();
             let h = now.getHours(), m = now.getMinutes();
@@ -89,7 +89,6 @@
             document.getElementById('live-clock').innerText = `${h}:${m.toString().padStart(2,'0')} ${suff}`;
             document.getElementById('date-text').innerText = new Date().toLocaleDateString('ar-SY');
         }, 1000);
-
         fetch('https://api.aladhan.com/v1/timingsByCity?city=Damascus&country=Syria&method=8')
             .then(res => res.json())
             .then(data => {
