@@ -1,64 +1,58 @@
---text-muted: #94a3b8;
-            --eid-gold: #ffd700;
-            --eid-gold-glow: rgba(255, 215, 0, 0.3);
-            --fb-blue: #1877F2;
-            --ig-pink: #E1306C;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>منصة ماجد تك - Maged Tech</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { background: #030712; color: #fff; font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; margin: 0; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .menu-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 400px; padding: 18px; margin-bottom: 12px; background: #1e293b; color: white; border-radius: 15px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .menu-btn:hover { background: #334155; transform: translateY(-2px); }
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; }
+        .btn-social { padding: 15px; border-radius: 12px; text-decoration: none; color: white; text-align: center; font-weight: bold; }
+        #redirectModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); flex-direction: column; align-items: center; justify-content: center; z-index: 1000; text-align: center; }
+        #countdown { font-size: 5rem; color: #00ffff; }
+    </style>
+</head>
+<body>
+    <div class="header"><h1>Maged Tech ⚡</h1></div>
+
+    <a href="maged-magic-cam/index.html" class="menu-btn">استوديو الخيال <i class="fa-solid fa-camera"></i></a>
+    <a href="codes.html" class="menu-btn">أكواد الفحص <i class="fa-solid fa-microchip"></i></a>
+    <a href="ar-scanner.html" class="menu-btn">ماسح الـ AR <i class="fa-solid fa-qrcode"></i></a>
+    <a href="lab.html" class="menu-btn">المختبر التقني <i class="fa-solid fa-flask"></i></a>
+
+    <div class="social-grid">
+        <a href="javascript:void(0)" onclick="startRedirect('https://youtube.com/@maged115599')" class="btn-social" style="background: #ff0000;">يوتيوب</a>
+        <a href="javascript:void(0)" onclick="startRedirect('https://t.me/Maged_Tech')" class="btn-social" style="background: #0088cc;">تيليجرام</a>
+        <a href="javascript:void(0)" onclick="startRedirect('https://www.facebook.com/share/1J8HF8p72E/')" class="btn-social" style="background: #1877f2;">فيسبوك</a>
+        <a href="javascript:void(0)" onclick="startRedirect('https://www.instagram.com/magedtech.official')" class="btn-social" style="background: #e1306c;">إنستغرام</a>
+        <a href="javascript:void(0)" onclick="startRedirect('https://www.snapchat.com/add/maged-say')" class="btn-social" style="background: #fffc00; color: #000;">سناب شات</a>
+    </div>
+
+    <div id="redirectModal">
+        <h2>جاري التحويل...</h2>
+        <div id="countdown">5</div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('to')) startRedirect(urlParams.get('to'));
         }
-
-        body { 
-@@ -84,7 +86,37 @@
-        .btn-teaser { border: 1px dashed rgba(56, 189, 248, 0.4); color: var(--text-muted); background: transparent; border-radius: 18px; width: 100%; box-sizing: border-box; }
-        .btn-teaser:hover { border-color: var(--primary); color: var(--text-main); box-shadow: 0 0 15px var(--primary-glow); }
-
-        .social { margin-top: 45px; font-size: 14px; color: #4b5563; z-index: 10; }
-        /* قسم أزرار السوشيال ميديا الجديد المطور */
-        .meta-links-section {
-            width: 100%;
-            max-width: 550px;
-            margin-top: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-sizing: border-box;
-            z-index: 10;
+        function startRedirect(url) {
+            const modal = document.getElementById('redirectModal');
+            const counter = document.getElementById('countdown');
+            modal.style.display = 'flex';
+            let count = 5;
+            counter.innerText = count;
+            const timer = setInterval(() => {
+                count--;
+                counter.innerText = count;
+                if (count <= 0) { clearInterval(timer); window.location.href = url; }
+            }, 1000);
         }
-        .btn-meta {
-            padding: 16px 15px;
-            border-radius: 14px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 15px;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .btn-facebook { background: var(--fb-blue); }
-        .btn-facebook:hover { background: #145dbf; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(24, 119, 242, 0.4); }
-        .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
-        .btn-instagram:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(225, 48, 108, 0.4); }
-
-        .social { margin-top: 35px; font-size: 14px; color: #4b5563; z-index: 10; text-align: center; }
-        .social a { color: var(--primary); text-decoration: none; margin: 0 12px; font-weight: 700; transition: 0.3s; }
-        .social a:hover { color: #ffffff; text-shadow: 0 0 10px var(--primary); }
-
-@@ -155,6 +187,16 @@ <h3><i class="fa-solid fa-mosque"></i> مواقيت الصلاة</h3>
-            <div class="btn btn-teaser" onclick="showTeaser()">خدمات (قريباً)</div>
-        </div>
-
-        <!-- قسم روابط السوشيال ميديا المطور الجديد -->
-        <div class="meta-links-section">
-            <a href="https://www.facebook.com/share/1J8HF8p72E/" target="_blank" class="btn-meta btn-facebook">
-                <i class="fa-brands fa-facebook-f"></i> تابعنا على صفحة الفيسبوك الرسمية
-            </a>
-            <a href="رابط_حسابك_هنا" target="_blank" class="btn-meta btn-instagram">
-                <i class="fa-brands fa-instagram"></i> تابعنا على إنستغرام Maged Tech
-            </a>
-        </div>
-
-        <div class="social">
-            <a href="https://www.youtube.com/@maged115599" target="_blank"><i class="fa-brands fa-youtube"></i> يوتيوب</a> | 
-            <a href="https://t.me/Maged_Tech" target="_blank"><i class="fa-solid fa-paper-plane"></i> تيليجرام</a> |
+    </script>
+</body>
+</html>
