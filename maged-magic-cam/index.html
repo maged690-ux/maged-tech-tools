@@ -97,7 +97,6 @@
         let camera; 
         let currentFaceLandmarks = null;
 
-        // تحميل الصور مع حماية ضد أخطاء السيرفر (CORS)
         const bgImages = { 
             'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
             'paris': new Image(), 'egypt': new Image(), 'ny': new Image()
@@ -178,7 +177,6 @@
             try {
                 loadingMsg.style.display = 'none';
                 
-                // تحديد أبعاد متناسقة ومستقرة للكانفاس
                 if (canvasElement.width !== results.image.width || canvasElement.height !== results.image.height) {
                     canvasElement.width = results.image.width;
                     canvasElement.height = results.image.height;
@@ -188,7 +186,7 @@
                 canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
                 canvasCtx.globalCompositeOperation = 'source-over';
-                canvasCtx.filter = 'contrast(200%) brightness(95%)'; // تخفيف الكونترست شوي لعدم التقطيع
+                canvasCtx.filter = 'contrast(200%) brightness(95%)';
                 canvasCtx.drawImage(results.segmentationMask, 0, 0, canvasElement.width, canvasElement.height);
                 canvasCtx.filter = 'none';
 
@@ -203,7 +201,6 @@
                     canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
                 }
 
-                // === فلاتر الوجه الاحترافية ===
                 canvasCtx.globalCompositeOperation = 'source-over';
                 
                 if (currentFaceLandmarks && currentFilter !== 'none') {
@@ -315,11 +312,11 @@
                 canvasCtx.restore();
             } catch (err) {
                 console.error("Rendering Error:", err);
-                // استعادة إعدادات الكانفاس لتجنب تجميد الشاشة في حال حدوث خطأ
                 canvasCtx.restore(); 
             }
         });
 
+        // هون الدالة اللي عملت المشكلة وتم التعديل عليها لإلغاء إجبار الدقة
         function startCamera() {
             if(camera) { camera.stop(); }
             loadingMsg.style.display = 'block';
@@ -332,10 +329,8 @@
                         console.error("MediaPipe Error:", e); 
                     }
                 },
-                facingMode: isFrontCam ? 'user' : 'environment',
-                // التعديل الأهم لحل خطأ 13: تحديد دقة معقولة تمنع تجاوز الذاكرة
-                width: 1280,
-                height: 720
+                facingMode: isFrontCam ? 'user' : 'environment'
+                // تم إزالة أسطر الـ width و height للسماح للكاميرا باختيار الدقة المناسبة تلقائياً
             });
             camera.start();
             canvasElement.style.transform = isFrontCam ? 'scaleX(-1)' : 'scaleX(1)';
