@@ -8,16 +8,20 @@
         body { background: #030712; color: #fff; font-family: 'Cairo', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; margin: 0; }
         .header { text-align: center; margin-bottom: 20px; }
         
-        /* قسم مواقيت الصلاة */
-        .prayer-card { background: #1e293b; padding: 15px; border-radius: 15px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; }
-        
+        /* تصميم الروزنامة الذكية */
+        .calendar-card { background: #1e293b; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; margin-bottom: 20px; border: 1px solid #38bdf8; }
+        .clock { font-size: 2.5rem; font-weight: bold; color: #00ffff; margin: 10px 0; }
+        .dates { color: #94a3b8; margin-bottom: 15px; font-size: 0.9rem; }
+        .prayer-list { list-style: none; padding: 0; text-align: right; }
+        .prayer-list li { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #334155; }
+
         .menu-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 400px; padding: 18px; margin-bottom: 12px; background: #1e293b; color: white; border-radius: 15px; text-decoration: none; font-weight: bold; }
         .menu-btn:hover { background: #334155; }
         
         .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; }
         .btn-social { padding: 12px; border-radius: 12px; text-decoration: none; color: white; text-align: center; font-weight: bold; font-size: 0.9rem; }
         
-        #redirectModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+        #redirectModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); flex-direction: column; align-items: center; justify-content: center; z-index: 1000; text-align: center; }
         #countdown { font-size: 5rem; color: #00ffff; }
     </style>
 </head>
@@ -25,18 +29,16 @@
 
     <div class="header"><h1>Maged Tech ⚡</h1></div>
 
-    <!-- مواقيت الصلاة -->
-    <div class="prayer-card">
-        <h3 id="date-display">جاري تحديث التاريخ...</h3>
-        <div id="live-clock" style="font-size: 2rem; font-weight: bold;">00:00:00</div>
+    <div class="calendar-card">
+        <div id="live-clock" class="clock">00:00:00</div>
+        <div id="dates-display" class="dates">جاري تحميل التاريخ...</div>
+        <ul class="prayer-list" id="prayers-container"></ul>
     </div>
 
-    <!-- الأدوات -->
     <a href="apps/fatora/index.html" class="menu-btn">نظام الفاتورة <i class="fa-solid fa-file-invoice"></i></a>
     <a href="maged-magic-cam/index.html" class="menu-btn">استوديو الخيال (الكاميرا) <i class="fa-solid fa-camera"></i></a>
     <a href="codes.html" class="menu-btn">أكواد فحص الأجهزة <i class="fa-solid fa-microchip"></i></a>
 
-    <!-- الحسابات -->
     <div class="social-grid">
         <a href="https://youtube.com/@maged115599" class="btn-social" style="background: #ff0000;">يوتيوب</a>
         <a href="https://t.me/Maged_Tech" class="btn-social" style="background: #0088cc;">تيليجرام</a>
@@ -51,9 +53,23 @@
     </div>
 
     <script>
-        // ساعة ومواقيت الصلاة
+        // الساعة الرقمية
         setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleTimeString('ar-SY'); }, 1000);
         
+        // جلب التاريخ ومواقيت الصلاة من API
+        fetch('https://api.aladhan.com/v1/timingsByCity?city=Damascus&country=Syria&method=8')
+            .then(res => res.json())
+            .then(data => {
+                const date = data.data.date;
+                document.getElementById('dates-display').innerText = `${date.gregorian.date} | ${date.hijri.date}`;
+                const prayers = data.data.timings;
+                const container = document.getElementById('prayers-container');
+                const list = { 'Fajr': 'الفجر', 'Dhuhr': 'الظهر', 'Asr': 'العصر', 'Maghrib': 'المغرب', 'Isha': 'العشاء' };
+                for (let key in list) {
+                    container.innerHTML += `<li><span>${list[key]}</span> <span>${prayers[key]}</span></li>`;
+                }
+            });
+
         // نظام التحويل الذكي
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
