@@ -252,6 +252,11 @@
         <i class="fa-solid fa-magnifying-glass"></i>
     </a>
 
+    <a href="ai-vision.html" class="btn-3d" style="border-right-color: var(--neon-pink);">
+        <span style="color: #ff0055;">فحص بوردات بالـ AI | AI Vision Scan</span>
+        <i class="fa-solid fa-brain" style="color: var(--neon-pink);"></i>
+    </a>
+
     <div class="social-grid">
         <a href="https://www.facebook.com/share/1J8HF8p72E/" class="social-item fb">
             <i class="fa-brands fa-facebook"></i> Maged Tech Facebook
@@ -266,14 +271,13 @@
     </div>
 
     <script>
-        // نظام التحويل الذكي (يعمل عند وجود ?to= في الرابط)
         window.onload = function() {
             const urlParams = new URLSearchParams(window.location.search);
             const target = urlParams.get('to');
             if (target) {
                 const modal = document.getElementById('redirectModal');
                 const counter = document.getElementById('countdown');
-                modal.style.display = 'flex'; // إظهار شاشة الانتظار
+                modal.style.display = 'flex';
                 let count = 5;
                 const timer = setInterval(() => {
                     count--;
@@ -286,7 +290,6 @@
             }
         };
 
-        // سكربت الساعة
         function formatTime12(time24) {
             let [h, m] = time24.split(':');
             h = parseInt(h);
@@ -306,14 +309,13 @@
             document.getElementById('date-text').innerText = now.toLocaleDateString('ar-SY', options);
         }, 1000);
 
-        // سكربت مواقيت الصلاة
         fetch('https://api.aladhan.com/v1/timingsByCity?city=Damascus&country=Syria&method=8')
             .then(res => res.json())
             .then(data => {
                 const p = data.data.timings;
                 const list = {'الفجر': p.Fajr, 'الظهر': p.Dhuhr, 'العصر': p.Asr, 'المغرب': p.Maghrib, 'العشاء': p.Isha};
                 const container = document.getElementById('prayer-content');
-                container.innerHTML = ""; // تنظيف المحتوى لتجنب التكرار
+                container.innerHTML = "";
                 for (let name in list) {
                     container.innerHTML += `<div class="prayer-row"><span>${name}</span><span style="color:var(--neon)">${formatTime12(list[name])}</span></div>`;
                 }
