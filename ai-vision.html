@@ -101,7 +101,7 @@
         <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="loadPreview(event)">
     </div>
 
-    <button id="scanBtn" onclick="startRealAIScan()" style="display: none;">تحليل بوردة الميكرو بالـ AI الحقيقي 🚀</button>
+    <button id="scanBtn" onclick="startRealAIScan()" style="display: none;">بدء الفحص البصري الذكي للبوردة 🧠🚀</button>
 
     <div class="ai-result-box" id="aiResult">
         <div class="result-status" id="resultStatusIcon"><i class="fa-solid fa-microchip"></i> التقرير الهندسي الفعلي:</div>
@@ -159,7 +159,7 @@
             
             laser.style.display = "none";
             btn.disabled = false;
-            btn.innerText = "إعادة تحليل بوردة الميكرو بالـ AI 🚀";
+           btn.innerText = "إعادة فحص اللوحة الإلكترونية بالـ AI 🔄";
 
             if (data.error) {
                 if (data.status === 429 || JSON.stringify(data).toLowerCase().includes("quota") || JSON.stringify(data).toLowerCase().includes("limit")) {
@@ -185,7 +185,7 @@
         } catch (error) {
             laser.style.display = "none";
             btn.disabled = false;
-            btn.innerText = "إعادة تحليل بوردة الميكرو بالـ AI 🚀";
+            btn.innerText = "إعادة فحص اللوحة الإلكترونية بالـ AI 🔄";
             
             statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> خطأ في الاتصال:`;
             details.innerHTML = `لم يتمكن المتصفح من الاتصال بالسيرفر. يرجى المحاولة مرة أخرى أو التأكد من اتصال الإنترنت.`;
