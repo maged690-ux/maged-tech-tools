@@ -36,7 +36,11 @@
         .back-btn:hover { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 10px var(--neon); }
         h2 { color: #fff; margin: 0; font-size: 1.3rem; text-shadow: 0 0 10px var(--neon); flex-grow: 1; }
         
-        /* منطقة رفع الصورة */
+        /* إعدادات المفتاح السري */
+        .api-config-box { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 12px; margin-bottom: 20px; text-align: right; }
+        .api-config-box label { font-size: 0.85rem; color: #aaa; display: block; margin-bottom: 5px; }
+        .api-config-box input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #333; background: #000; color: #fff; font-size: 0.85rem; box-sizing: border-box; }
+
         .upload-area {
             border: 2px dashed rgba(0, 242, 255, 0.3);
             border-radius: 18px;
@@ -52,10 +56,8 @@
         .upload-area i { font-size: 3rem; color: var(--neon); margin-bottom: 10px; }
         .upload-area p { margin: 5px 0; color: #aaa; font-size: 0.95rem; }
         
-        /* معاينة الصورة المرفوعة */
         #preview-img { width: 100%; max-height: 250px; object-fit: contain; border-radius: 12px; display: none; margin-bottom: 15px; }
 
-        /* ليزر المسح الذكي (أنيميشن الـ AI) */
         .scanner-visual { position: relative; display: inline-block; width: 100%; }
         .laser-line {
             position: absolute;
@@ -70,11 +72,11 @@
 
         button { font-family: 'Tajawal', sans-serif; background: linear-gradient(45deg, var(--neon-pink), #b30047); color: #fff; font-weight: 900; padding: 15px; border: none; border-radius: 14px; cursor: pointer; width: 100%; font-size: 1.1rem; transition: all 0.3s; box-shadow: 0 5px 15px rgba(255, 0, 85, 0.2); }
         button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 0, 85, 0.4); }
+        button:disabled { background: #333; color: #aaa; cursor: not-allowed; transform: none; box-shadow: none; }
         
-        /* صندوق النتيجة */
-        .ai-result-box { margin-top: 25px; background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); padding: 15px; border-radius: 14px; display: none; text-align: right; }
-        .result-status { color: var(--neon); font-weight: 900; font-size: 1.1rem; margin-bottom: 8px; display: flex; gap: 8px; align-items: center; }
-        .result-details { color: #ddd; font-size: 0.95rem; line-height: 1.5; }
+        .ai-result-box { margin-top: 25px; background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); padding: 20px; border-radius: 14px; display: none; text-align: right; }
+        .result-status { color: var(--neon); font-weight: 900; font-size: 1.1rem; margin-bottom: 12px; display: flex; gap: 8px; align-items: center; border-bottom: 1px dashed rgba(0,242,255,0.2); padding-bottom: 8px; }
+        .result-details { color: #ddd; font-size: 1rem; line-height: 1.6; white-space: pre-line; }
 
         @keyframes scanAnimation {
             0% { top: 0%; }
@@ -92,36 +94,61 @@
         <div style="width: 45px;"></div>
     </header>
 
+    <div class="api-config-box">
+        <label for="apiKeyInput"><i class="fa-solid fa-key"></i> مفتاح الـ API لـ Maged Tech (يحفظ محلياً بجهازك):</label>
+        <input type="password" id="apiKeyInput" placeholder="أدخل مفتاح Gemini API هنا..." onchange="saveApiKey(this.value)">
+    </div>
+
     <div class="scanner-visual">
         <div class="laser-line" id="laser"></div>
-        <img id="preview-img" alt="معاينة البوردة">
+        <img id="preview-img" alt="معاينة المكونات">
     </div>
 
     <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
         <i class="fa-solid fa-microchip-blur"></i>
-        <p style="font-weight: bold; color: #fff;">ارفع صورة البوردة أو لقطة الخطأ</p>
+        <p style="font-weight: bold; color: #fff;">ارفع صورة البوردة أو الشاشة أو العطل</p>
         <p>يمكنك التقاط صورة بالكاميرا مباشرة 📸</p>
         <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="loadPreview(event)">
     </div>
 
-    <button id="scanBtn" onclick="startAIScan()" style="display: none;">تحليل الصورة بالذكاء الاصطناعي <i class="fa-solid fa-brain" style="margin-right: 8px;"></i></button>
+    <button id="scanBtn" onclick="startRealAIScan()" style="display: none;">تحليل الصورة بالذكاء الاصطناعي الحقيقي <i class="fa-solid fa-brain" style="margin-right: 8px;"></i></button>
 
     <div class="ai-result-box" id="aiResult">
-        <div class="result-status"><i class="fa-solid fa-circle-check"></i> تم التحليل الذكي بنجاح:</div>
+        <div class="result-status"><i class="fa-solid fa-microchip"></i> التقرير الهندسي الفعلي للميكرو-إلكترونيات:</div>
         <div class="result-details" id="aiDetails">...</div>
     </div>
 </div>
 
 <script>
+    let base64ImageData = "";
+    let imageMimeType = "";
+
+    // استرجاع المفتاح إذا كان مخزناً مسبقاً بجهازك
+    window.onload = function() {
+        const savedKey = localStorage.getItem('maged_tech_gemini_key');
+        if (savedKey) {
+            document.getElementById('apiKeyInput').value = savedKey;
+        }
+    }
+
+    function saveApiKey(key) {
+        localStorage.setItem('maged_tech_gemini_key', key.trim());
+    }
+
     function loadPreview(event) {
         const file = event.target.files[0];
         if (file) {
+            imageMimeType = file.type;
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = document.getElementById('preview-img');
                 img.src = e.target.result;
                 img.style.display = "block";
-                document.getElementById('uploadArea').style.padding = "15px 20px";
+                
+                // تحويل الصورة لـ Base64 لإرسالها للذكاء الاصطناعي
+                base64ImageData = e.target.result.split(',')[1];
+
+                document.getElementById('uploadArea').style.padding = "10px 20px";
                 document.getElementById('scanBtn').style.display = "block";
                 document.getElementById('aiResult').style.display = "none";
             }
@@ -129,36 +156,62 @@
         }
     }
 
-    function startAIScan() {
+    async function startRealAIScan() {
+        const apiKey = localStorage.getItem('maged_tech_gemini_key') || document.getElementById('apiKeyInput').value.trim();
+        
+        if (!apiKey) {
+            alert("يا هندسة، يرجى إدخال مفتاح الـ API أولاً ليعمل الذكاء الاصطناعي الحقيقي!");
+            return;
+        }
+
         const laser = document.getElementById('laser');
         const btn = document.getElementById('scanBtn');
         const resultBox = document.getElementById('aiResult');
         const details = document.getElementById('aiDetails');
 
-        laser.style.display = "block"; // تشغيل خط الليزر
+        laser.style.display = "block";
         btn.disabled = true;
-        btn.innerText = "جاري الفحص الميكروي العميـق...";
+        btn.innerText = "جاري الاتصال بالسيرفر والتحليل البصري الحقيقي...";
         resultBox.style.display = "none";
 
-        // محاكاة معالجة الذكاء الاصطناعي (تأخذ 3 ثواني لقراءة ممانعات ومظهر الصورة)
-        setTimeout(() => {
+        // البرومبت الهندسي الموجه للـ AI ليعطيك إجابة فنيين محترفة
+        const systemPrompt = "أنت مهندس مستشار وخبير ميكرو-إلكترونيات وصيانة موبايلات محترف جداً لمنصة Maged Tech. حلل الصورة المرفقة (سواء كانت بوردة، شاشة، مكون الكتروني، أو عطل واضح) بدقة هندسية عالية جداً. اذكر ما تراه في الصورة فعلياً، وإذا رصدت عطلاً (شورت، تفحم، كسر، تمليح رطوبة) اعطِ خطوات الصيانة العلمية الدقيقة باستخدام الملتيميتر ومحطة التoptions (الباور سبلاي، الهوت اير) والـ Schematic. أجب باللغة العربية بأسلوب فني وصيانة محترف وبشكل نقاط واضحة ومباشرة بدون فلسفة زائدة.";
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [
+                            { text: systemPrompt },
+                            { inlineData: { mimeType: imageMimeType, data: base64ImageData } }
+                        ]
+                    }]
+                })
+            });
+
+            const data = await response.json();
+            
             laser.style.display = "none";
             btn.disabled = false;
-            btn.innerHTML = 'إعادة تحليل الصورة <i class="fa-solid fa-brain" style="margin-right: 8px;"></i>';
-            resultBox.style.display = "block";
+            btn.innerHTML = 'إعادة التحليل الذكي <i class="fa-solid fa-brain" style="margin-right: 8px;"></i>';
 
-            // نظام تحليل محاكاة ذكي يعطيك نتيجة هندسية بناءً على مظهر البوردة العشوائي
-            const smartResponses = [
-                "تم رصد اشتباه شورت صريح (Short Circuit) في مكثف بجانب آيسي الباور الرئيسي نتيجة تفحم طفيف. يرجى الفحص بجهاز الحقن أو الكاميرا الحرارية.",
-                "قراءة الصورة توضح وجود آثار تمليح ورطوبة (Water Damage) حول فلاتة الشحن والشاشة السفلية. يرجى تنظيف البوردة بالغسالة أولاً وإعادة فحص الممانعات.",
-                "الذكاء الاصطناعي يقرأ: المكونات السطحية والآيسيات تبدو سليمة ظاهرياً بنسبة 95%. الخلل غالباً برمجي (Software Brick) أو فصل داخلي في المعالج يتطلب شبلنة.",
-                "تم التعرف على بوردة جهاز سامسونج بنجاح. يرجى الانتباه للمقاومة الحرارية (Thermistor) القريبة من تماسات البطارية، هناك اشتباه بوجود فصل بمسارها."
-            ];
+            if (data.candidates && data.candidates[0].content.parts[0].text) {
+                const aiResponseText = data.candidates[0].content.parts[0].text;
+                details.innerHTML = aiResponseText;
+                resultBox.style.display = "block";
+            } else {
+                details.innerHTML = "حدث خطأ في قراءة رد السيرفر، تأكد من سلامة المفتاح والصورة.";
+                resultBox.style.display = "block";
+            }
 
-            // اختيار حل عشوائي ذكي للمحاكاة حالياً
-            const randomResult = smartResponses[Math.floor(Math.random() * smartResponses.length)];
-            details.innerHTML = `<strong>التقرير الهندسي:</strong><br>${randomResult}<br><br><span style="color:#aaa; font-size:12px;">* ملحوظة: هذا التحليل بصري مبدئي، اعتمد دائماً على الملتيميتر والـ Schematic.</span>`;
-        }, 3000);
+        } catch (error) {
+            laser.style.display = "none";
+            btn.disabled = false;
+            btn.innerHTML = 'إعادة التحليل الذكي <i class="fa-solid fa-brain" style="margin-right: 8px;"></i>';
+            alert("خطأ بالاتصال بالسيرفر: " + error.message);
+        }
     }
 </script>
 
