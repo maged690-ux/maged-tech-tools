@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة Maged Tech الهندسية</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a1a1a; color: #f0f0f0; text-align: center; padding: 20px; }
+        .calculator-container { max-width: 400px; margin: 0 auto; background: #2b2b2b; padding: 25px; border-radius: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.6); border: 1px solid #444; }
+        h2 { color: #00bcd4; margin-bottom: 5px; }
+        p { color: #aaa; font-size: 14px; margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; text-align: right; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #ddd; }
+        input { width: 100%; padding: 12px; border: 1px solid #555; border-radius: 6px; background: #1f1f1f; color: #fff; box-sizing: border-box; font-size: 16px; }
+        input:focus { outline: none; border-color: #00bcd4; }
+        button { background-color: #00bcd4; color: #111; font-weight: bold; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px; transition: background 0.3s; }
+        button:hover { background-color: #008ba3; color: white; }
+        .btn-clear { background-color: #f44336; color: white; margin-top: 10px; }
+        .btn-clear:hover { background-color: #d32f2f; }
+        .result { margin-top: 20px; padding: 15px; background: #383838; border-radius: 6px; display: none; border-right: 4px solid #00bcd4; }
+        .result h3 { margin: 10px 0; color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="calculator-container">
+    <h2>حاسبة الفولت والأوم السريعة</h2>
+    <p>أدخل قيمتين فقط ليتم حساب القيمة الثالثة تلقائياً:</p>
+    
+    <div class="input-group">
+        <label for="voltage">الفولت (V):</label>
+        <input type="number" id="voltage" placeholder="مثال: 4.2">
+    </div>
+    <div class="input-group">
+        <label for="current">الأمبير (I):</label>
+        <input type="number" id="current" placeholder="مثال: 2">
+    </div>
+    <div class="input-group">
+        <label for="resistance">المقاومة (R - أوم):</label>
+        <input type="number" id="resistance" placeholder="مثال: 100">
+    </div>
+
+    <button onclick="calculateOhm()">احسب الآن</button>
+    <button onclick="clearFields()" class="btn-clear">مسح الحقول</button>
+
+    <div class="result" id="result-box">
+        <h3 id="res-v"></h3>
+        <h3 id="res-i"></h3>
+        <h3 id="res-r"></h3>
+    </div>
+</div>
+
+<script>
+    function calculateOhm() {
+        let v = parseFloat(document.getElementById('voltage').value);
+        let i = parseFloat(document.getElementById('current').value);
+        let r = parseFloat(document.getElementById('resistance').value);
+        let resultBox = document.getElementById('result-box');
+
+        // الحسابات
+        if (!isNaN(v) && !isNaN(i)) {
+            r = v / i;
+            document.getElementById('resistance').value = r.toFixed(2);
+        } else if (!isNaN(v) && !isNaN(r)) {
+            i = v / r;
+            document.getElementById('current').value = i.toFixed(2);
+        } else if (!isNaN(i) && !isNaN(r)) {
+            v = i * r;
+            document.getElementById('voltage').value = v.toFixed(2);
+        } else {
+            alert("يا هندسة، الرجاء إدخال قيمتين على الأقل!");
+            return;
+        }
+
+        // عرض النتائج
+        document.getElementById('res-v').innerText = "الفولت = " + document.getElementById('voltage').value + " V";
+        document.getElementById('res-i').innerText = "الأمبير = " + document.getElementById('current').value + " A";
+        document.getElementById('res-r').innerText = "المقاومة = " + document.getElementById('resistance').value + " Ω";
+        resultBox.style.display = "block";
+    }
+
+    function clearFields() {
+        document.getElementById('voltage').value = "";
+        document.getElementById('current').value = "";
+        document.getElementById('resistance').value = "";
+        document.getElementById('result-box').style.display = "none";
+    }
+</script>
+
+</body>
+</html>
