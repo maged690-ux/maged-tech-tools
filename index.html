@@ -176,7 +176,7 @@
         .sc { background: linear-gradient(135deg, #FFFC00, #d4d100); color: #000 !important; aspect-ratio: 1 / 1; }
         .tg { background: linear-gradient(135deg, #0088CC, #005f8f); aspect-ratio: 1 / 1; }
 
-        /* ---------------- نافذة التحويل الذكي (الجديدة) ---------------- */
+        /* ---------------- نافذة التحويل الذكي ---------------- */
         #redirectModal { 
             display: none; 
             position: fixed; 
@@ -247,6 +247,11 @@
         <i class="fa-solid fa-bolt"></i>
     </a>
 
+    <a href="faults.html" class="btn-3d">
+        <span>محرك بحث الأعطال | Faults Search</span>
+        <i class="fa-solid fa-magnifying-glass"></i>
+    </a>
+
     <div class="social-grid">
         <a href="https://www.facebook.com/share/1J8HF8p72E/" class="social-item fb">
             <i class="fa-brands fa-facebook"></i> Maged Tech Facebook
@@ -308,6 +313,7 @@
                 const p = data.data.timings;
                 const list = {'الفجر': p.Fajr, 'الظهر': p.Dhuhr, 'العصر': p.Asr, 'المغرب': p.Maghrib, 'العشاء': p.Isha};
                 const container = document.getElementById('prayer-content');
+                container.innerHTML = ""; // تنظيف المحتوى لتجنب التكرار
                 for (let name in list) {
                     container.innerHTML += `<div class="prayer-row"><span>${name}</span><span style="color:var(--neon)">${formatTime12(list[name])}</span></div>`;
                 }
