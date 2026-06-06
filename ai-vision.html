@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maged Tech | الفحص الذكي بالـ AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --neon: #00f2ff; --neon-pink: #ff0055; --bg: #05050a; }
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background-color: var(--bg); 
+            color: #f0f0f0; 
+            padding: 20px; 
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .ai-container { 
+            width: 100%;
+            max-width: 450px; 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 25px; 
+            border-radius: 24px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6); 
+            border: 1px solid rgba(255,255,255,0.08); 
+            text-align: center;
+        }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .back-btn { color: #fff; text-decoration: none; font-size: 1.5rem; background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 10px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+        .back-btn:hover { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 10px var(--neon); }
+        h2 { color: #fff; margin: 0; font-size: 1.3rem; text-shadow: 0 0 10px var(--neon); flex-grow: 1; }
+        
+        /* منطقة رفع الصورة */
+        .upload-area {
+            border: 2px dashed rgba(0, 242, 255, 0.3);
+            border-radius: 18px;
+            padding: 30px 20px;
+            background: rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .upload-area:hover { border-color: var(--neon); background: rgba(0, 242, 255, 0.02); }
+        .upload-area i { font-size: 3rem; color: var(--neon); margin-bottom: 10px; }
+        .upload-area p { margin: 5px 0; color: #aaa; font-size: 0.95rem; }
+        
+        /* معاينة الصورة المرفوعة */
+        #preview-img { width: 100%; max-height: 250px; object-fit: contain; border-radius: 12px; display: none; margin-bottom: 15px; }
+
+        /* ليزر المسح الذكي (أنيميشن الـ AI) */
+        .scanner-visual { position: relative; display: inline-block; width: 100%; }
+        .laser-line {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: var(--neon);
+            box-shadow: 0 0 15px var(--neon), 0 0 30px var(--neon);
+            z-index: 10;
+            display: none;
+            animation: scanAnimation 2s linear infinite;
+        }
+
+        button { font-family: 'Tajawal', sans-serif; background: linear-gradient(45deg, var(--neon-pink), #b30047); color: #fff; font-weight: 900; padding: 15px; border: none; border-radius: 14px; cursor: pointer; width: 100%; font-size: 1.1rem; transition: all 0.3s; box-shadow: 0 5px 15px rgba(255, 0, 85, 0.2); }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 0, 85, 0.4); }
+        
+        /* صندوق النتيجة */
+        .ai-result-box { margin-top: 25px; background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); padding: 15px; border-radius: 14px; display: none; text-align: right; }
+        .result-status { color: var(--neon); font-weight: 900; font-size: 1.1rem; margin-bottom: 8px; display: flex; gap: 8px; align-items: center; }
+        .result-details { color: #ddd; font-size: 0.95rem; line-height: 1.5; }
+
+        @keyframes scanAnimation {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="ai-container">
+    <header>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i></a>
+        <h2>الفحص البصري بالذكاء الاصطناعي</h2>
+        <div style="width: 45px;"></div>
+    </header>
+
+    <div class="scanner-visual">
+        <div class="laser-line" id="laser"></div>
+        <img id="preview-img" alt="معاينة البوردة">
+    </div>
+
+    <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+        <i class="fa-solid fa-microchip-blur"></i>
+        <p style="font-weight: bold; color: #fff;">ارفع صورة البوردة أو لقطة الخطأ</p>
+        <p>يمكنك التقاط صورة بالكاميرا مباشرة 📸</p>
+        <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="loadPreview(event)">
+    </div>
+
+    <button id="scanBtn" onclick="startAIScan()" style="display: none;">تحليل الصورة بالذكاء الاصطناعي <i class="fa-solid fa-brain" style="margin-right: 8px;"></i></button>
+
+    <div class="ai-result-box" id="aiResult">
+        <div class="result-status"><i class="fa-solid fa-circle-check"></i> تم التحليل الذكي بنجاح:</div>
+        <div class="result-details" id="aiDetails">...</div>
+    </div>
+</div>
+
+<script>
+    function loadPreview(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('preview-img');
+                img.src = e.target.result;
+                img.style.display = "block";
+                document.getElementById('uploadArea').style.padding = "15px 20px";
+                document.getElementById('scanBtn').style.display = "block";
+                document.getElementById('aiResult').style.display = "none";
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function startAIScan() {
+        const laser = document.getElementById('laser');
+        const btn = document.getElementById('scanBtn');
+        const resultBox = document.getElementById('aiResult');
+        const details = document.getElementById('aiDetails');
+
+        laser.style.display = "block"; // تشغيل خط الليزر
+        btn.disabled = true;
+        btn.innerText = "جاري الفحص الميكروي العميـق...";
+        resultBox.style.display = "none";
+
+        // محاكاة معالجة الذكاء الاصطناعي (تأخذ 3 ثواني لقراءة ممانعات ومظهر الصورة)
+        setTimeout(() => {
+            laser.style.display = "none";
+            btn.disabled = false;
+            btn.innerHTML = 'إعادة تحليل الصورة <i class="fa-solid fa-brain" style="margin-right: 8px;"></i>';
+            resultBox.style.display = "block";
+
+            // نظام تحليل محاكاة ذكي يعطيك نتيجة هندسية بناءً على مظهر البوردة العشوائي
+            const smartResponses = [
+                "تم رصد اشتباه شورت صريح (Short Circuit) في مكثف بجانب آيسي الباور الرئيسي نتيجة تفحم طفيف. يرجى الفحص بجهاز الحقن أو الكاميرا الحرارية.",
+                "قراءة الصورة توضح وجود آثار تمليح ورطوبة (Water Damage) حول فلاتة الشحن والشاشة السفلية. يرجى تنظيف البوردة بالغسالة أولاً وإعادة فحص الممانعات.",
+                "الذكاء الاصطناعي يقرأ: المكونات السطحية والآيسيات تبدو سليمة ظاهرياً بنسبة 95%. الخلل غالباً برمجي (Software Brick) أو فصل داخلي في المعالج يتطلب شبلنة.",
+                "تم التعرف على بوردة جهاز سامسونج بنجاح. يرجى الانتباه للمقاومة الحرارية (Thermistor) القريبة من تماسات البطارية، هناك اشتباه بوجود فصل بمسارها."
+            ];
+
+            // اختيار حل عشوائي ذكي للمحاكاة حالياً
+            const randomResult = smartResponses[Math.floor(Math.random() * smartResponses.length)];
+            details.innerHTML = `<strong>التقرير الهندسي:</strong><br>${randomResult}<br><br><span style="color:#aaa; font-size:12px;">* ملحوظة: هذا التحليل بصري مبدئي، اعتمد دائماً على الملتيميتر والـ Schematic.</span>`;
+        }, 3000);
+    }
+</script>
+
+</body>
+</html>
