@@ -35,16 +35,11 @@
         .back-btn { color: #fff; text-decoration: none; font-size: 1.5rem; background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 10px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
         .back-btn:hover { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 10px var(--neon); }
         h2 { color: #fff; margin: 0; font-size: 1.3rem; text-shadow: 0 0 10px var(--neon); flex-grow: 1; }
-        
-        /* إعدادات المفتاح السري */
-        .api-config-box { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 12px; margin-bottom: 20px; text-align: right; }
-        .api-config-box label { font-size: 0.85rem; color: #aaa; display: block; margin-bottom: 5px; }
-        .api-config-box input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #333; background: #000; color: #fff; font-size: 0.85rem; box-sizing: border-box; }
 
         .upload-area {
             border: 2px dashed rgba(0, 242, 255, 0.3);
             border-radius: 18px;
-            padding: 30px 20px;
+            padding: 40px 20px;
             background: rgba(0,0,0,0.4);
             cursor: pointer;
             transition: 0.3s;
@@ -53,8 +48,8 @@
             margin-bottom: 20px;
         }
         .upload-area:hover { border-color: var(--neon); background: rgba(0, 242, 255, 0.02); }
-        .upload-area i { font-size: 3rem; color: var(--neon); margin-bottom: 10px; }
-        .upload-area p { margin: 5px 0; color: #aaa; font-size: 0.95rem; }
+        .upload-area i { font-size: 3.5rem; color: var(--neon); margin-bottom: 15px; }
+        .upload-area p { margin: 5px 0; color: #aaa; font-size: 1rem; }
         
         #preview-img { width: 100%; max-height: 250px; object-fit: contain; border-radius: 12px; display: none; margin-bottom: 15px; }
 
@@ -94,27 +89,22 @@
         <div style="width: 45px;"></div>
     </header>
 
-    <div class="api-config-box">
-        <label for="apiKeyInput"><i class="fa-solid fa-key"></i> مفتاح الـ API لـ Maged Tech (يحفظ محلياً بجهازك):</label>
-        <input type="password" id="apiKeyInput" placeholder="أدخل مفتاح Gemini API هنا..." onchange="saveApiKey(this.value)">
-    </div>
-
     <div class="scanner-visual">
         <div class="laser-line" id="laser"></div>
         <img id="preview-img" alt="معاينة المكونات">
     </div>
 
     <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-        <i class="fa-solid fa-microchip-blur"></i>
-        <p style="font-weight: bold; color: #fff;">ارفع صورة البوردة أو الشاشة أو العطل</p>
-        <p>يمكنك التقاط صورة بالكاميرا مباشرة 📸</p>
+        <i class="fa-solid fa-brain" style="text-shadow: 0 0 15px var(--neon);"></i>
+        <p style="font-weight: bold; color: #fff; font-size: 1.15rem;">ارفع صورة البوردة أو العطل فوراً</p>
+        <p>اضغط لالتقاط صورة حية من كاميرا الورشة 📸</p>
         <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="loadPreview(event)">
     </div>
 
-    <button id="scanBtn" onclick="startRealAIScan()" style="display: none;">تحليل الصورة بالذكاء الاصطناعي الحقيقي <i class="fa-solid fa-brain" style="margin-right: 8px;"></i></button>
+    <button id="scanBtn" onclick="startRealAIScan()" style="display: none;">تحليل بوردة الميكرو بالـ AI الحقيقي 🚀</button>
 
     <div class="ai-result-box" id="aiResult">
-        <div class="result-status"><i class="fa-solid fa-microchip"></i> التقرير الهندسي الفعلي للميكرو-إلكترونيات:</div>
+        <div class="result-status" id="resultStatusIcon"><i class="fa-solid fa-microchip"></i> التقرير الهندسي الفعلي:</div>
         <div class="result-details" id="aiDetails">...</div>
     </div>
 </div>
@@ -122,18 +112,6 @@
 <script>
     let base64ImageData = "";
     let imageMimeType = "";
-
-    // استرجاع المفتاح إذا كان مخزناً مسبقاً بجهازك
-    window.onload = function() {
-        const savedKey = localStorage.getItem('maged_tech_gemini_key');
-        if (savedKey) {
-            document.getElementById('apiKeyInput').value = savedKey;
-        }
-    }
-
-    function saveApiKey(key) {
-        localStorage.setItem('maged_tech_gemini_key', key.trim());
-    }
 
     function loadPreview(event) {
         const file = event.target.files[0];
@@ -144,8 +122,6 @@
                 const img = document.getElementById('preview-img');
                 img.src = e.target.result;
                 img.style.display = "block";
-                
-                // تحويل الصورة لـ Base64 لإرسالها للذكاء الاصطناعي
                 base64ImageData = e.target.result.split(',')[1];
 
                 document.getElementById('uploadArea').style.padding = "10px 20px";
@@ -157,37 +133,25 @@
     }
 
     async function startRealAIScan() {
-        const apiKey = localStorage.getItem('maged_tech_gemini_key') || document.getElementById('apiKeyInput').value.trim();
-        
-        if (!apiKey) {
-            alert("يا هندسة، يرجى إدخال مفتاح الـ API أولاً ليعمل الذكاء الاصطناعي الحقيقي!");
-            return;
-        }
-
         const laser = document.getElementById('laser');
         const btn = document.getElementById('scanBtn');
         const resultBox = document.getElementById('aiResult');
         const details = document.getElementById('aiDetails');
+        const statusIcon = document.getElementById('resultStatusIcon');
 
         laser.style.display = "block";
         btn.disabled = true;
-        btn.innerText = "جاري الاتصال بالسيرفر والتحليل البصري الحقيقي...";
+        btn.innerText = "جاري التحليل الميكروي عبر الـ AI الحقيقي...";
         resultBox.style.display = "none";
 
-        // البرومبت الهندسي الموجه للـ AI ليعطيك إجابة فنيين محترفة
-        const systemPrompt = "أنت مهندس مستشار وخبير ميكرو-إلكترونيات وصيانة موبايلات محترف جداً لمنصة Maged Tech. حلل الصورة المرفقة (سواء كانت بوردة، شاشة، مكون الكتروني، أو عطل واضح) بدقة هندسية عالية جداً. اذكر ما تراه في الصورة فعلياً، وإذا رصدت عطلاً (شورت، تفحم، كسر، تمليح رطوبة) اعطِ خطوات الصيانة العلمية الدقيقة باستخدام الملتيميتر ومحطة التoptions (الباور سبلاي، الهوت اير) والـ Schematic. أجب باللغة العربية بأسلوب فني وصيانة محترف وبشكل نقاط واضحة ومباشرة بدون فلسفة زائدة.";
-
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+            // الطلب يذهب الآن للسيرفر المخفي الخاص بنا في Vercel وليس لجوجل مباشرة
+            const response = await fetch(`/api/scan`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    contents: [{
-                        parts: [
-                            { text: systemPrompt },
-                            { inlineData: { mimeType: imageMimeType, data: base64ImageData } }
-                        ]
-                    }]
+                    mimeType: imageMimeType,
+                    data: base64ImageData
                 })
             });
 
@@ -195,22 +159,39 @@
             
             laser.style.display = "none";
             btn.disabled = false;
-            btn.innerHTML = 'إعادة التحليل الذكي <i class="fa-solid fa-brain" style="margin-right: 8px;"></i>';
+            btn.innerText = "إعادة تحليل بوردة الميكرو بالـ AI 🚀";
+
+            // فحص كثرة الضغط على السيرفر لعرض رسالتك المخصصة للمتابعين
+            if (data.error) {
+                if (data.status === 429 || JSON.stringify(data).toLowerCase().includes("quota") || JSON.stringify(data).toLowerCase().includes("limit")) {
+                    statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> تنبيه الضغط العالي والجهد الميكروي:`;
+                    details.innerHTML = `<span style="color:var(--neon-pink); font-weight:900;">يا هندسة، هذه الميزة مجانية بالكامل ومفتوحة لكل المتابعين لدعم فنيي الصيانة!</span>\n\nبسبب كثرة الاستخدام الآن والضغط الهائل على السيرفر، تقفل الميزة تلقائياً بشكل مؤقت لحماية النظام وتخفيف الجهد البصري.\n\n<strong>يرجى الانتظار دقيقة واحدة فقط ⏳ وأعد التقاط الصورة أو تحليلها وستعمل معك فوراً بكفاءة 100%!</strong> 🛠️`;
+                    resultBox.style.display = "block";
+                    return;
+                }
+                details.innerHTML = "تنبيه من السيرفر: " + (data.error.message || data.error);
+                resultBox.style.display = "block";
+                return;
+            }
 
             if (data.candidates && data.candidates[0].content.parts[0].text) {
-                const aiResponseText = data.candidates[0].content.parts[0].text;
-                details.innerHTML = aiResponseText;
+                statusIcon.innerHTML = `<i class="fa-solid fa-microchip"></i> التقرير الهندسي الفعلي لـ Maged Tech:`;
+                details.innerHTML = data.candidates[0].content.parts[0].text;
                 resultBox.style.display = "block";
             } else {
-                details.innerHTML = "حدث خطأ في قراءة رد السيرفر، تأكد من سلامة المفتاح والصورة.";
+                details.innerHTML = "لم ينجح الذكاء الاصطناعي بقراءة التفاصيل. يرجى التقاط صورة أقرب وأوضح للبوردة.";
                 resultBox.style.display = "block";
             }
 
         } catch (error) {
             laser.style.display = "none";
             btn.disabled = false;
-            btn.innerHTML = 'إعادة التحليل الذكي <i class="fa-solid fa-brain" style="margin-right: 8px;"></i>';
-            alert("خطأ بالاتصال بالسيرفر: " + error.message);
+            btn.innerText = "إعادة تحليل بوردة الميكرو بالـ AI 🚀";
+            
+            // في الغالب إذا لم تضع المفتاح في لوحة تحكم Vercel سيعطي خطأ اتصال
+            statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> خطأ نظام السيرفر:`;
+            details.innerHTML = `تأكد من دمج كود الـ API الخاص بك في لوحة تحكم إعدادات موقعك على موقع Vercel باسم GEMINI_API_KEY لتفعيل الاتصال السري.`;
+            resultBox.style.display = "block";
         }
     }
 </script>
