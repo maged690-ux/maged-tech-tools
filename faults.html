@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maged Tech | محرك بحث الأعطال</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --neon: #00f2ff; --neon-pink: #ff0055; --bg: #05050a; }
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background-color: var(--bg); 
+            color: #f0f0f0; 
+            padding: 20px; 
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .search-container { 
+            width: 100%;
+            max-width: 450px; 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 25px; 
+            border-radius: 24px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6); 
+            border: 1px solid rgba(255,255,255,0.08); 
+        }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .back-btn { color: #fff; text-decoration: none; font-size: 1.5rem; background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 10px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+        .back-btn:hover { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 10px var(--neon); }
+        h2 { color: #fff; margin: 0; font-size: 1.3rem; text-shadow: 0 0 10px var(--neon); text-align: center; flex-grow: 1; }
+        
+        .search-box { position: relative; margin-bottom: 20px; }
+        input { width: 100%; padding: 15px 15px 15px 50px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(0,0,0,0.4); color: #fff; box-sizing: border-box; font-size: 16px; font-family: 'Tajawal', sans-serif; transition: 0.3s; text-align: right; }
+        input:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 15px rgba(0, 242, 255, 0.3); }
+        
+        button { font-family: 'Tajawal', sans-serif; background: linear-gradient(45deg, var(--neon), #00a8ff); color: #111; font-weight: 900; padding: 15px; border: none; border-radius: 14px; cursor: pointer; width: 100%; font-size: 1.1rem; transition: all 0.3s; box-shadow: 0 5px 15px rgba(0, 242, 255, 0.3); }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 242, 255, 0.5); }
+        
+        .results-section { margin-top: 25px; max-height: 350px; overflow-y: auto; padding-left: 5px; }
+        .fault-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-right: 4px solid var(--neon-pink); padding: 15px; border-radius: 12px; margin-bottom: 15px; animation: fadeIn 0.3s ease-in-out; }
+        .fault-device { font-weight: 900; color: var(--neon); font-size: 1.1rem; margin-bottom: 5px; }
+        .fault-title { font-weight: 700; color: #fff; font-size: 1rem; margin-bottom: 8px; display: flex; gap: 8px; align-items: center; }
+        .fault-solution { color: #ccc; font-size: 0.95rem; line-height: 1.5; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.05); }
+        
+        .no-result { text-align: center; color: #aaa; padding: 20px; font-size: 1rem; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* تخصيص السكرول بار */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon); }
+    </style>
+</head>
+<body>
+
+<div class="search-container">
+    <header>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i></a>
+        <h2>محرك بحث الأعطال الذكي</h2>
+        <div style="width: 45px;"></div>
+    </header>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="اكتب اسم الجهاز أو العطل (مثال: آيفون، شحن)..." onkeyup="if(event.key === 'Enter') searchFaults()">
+    </div>
+
+    <button onclick="searchFaults()">بحث بنقرة زر <i class="fa-solid fa-magnifying-glass" style="margin-right: 8px;"></i></button>
+
+    <div class="results-section" id="resultsBox">
+        <div class="no-result">ابحث الآن لمعرفة العطل والحل المقترح ميكروياً.. 🛠️</div>
+    </div>
+</div>
+
+<script>
+    // قاعدة بيانات الأعطال (تستطيع زيادة الأعطال هنا بسهولة جداً يا هندسة)
+    const faultsDatabase = [
+        { device: "سامسونج S22 Ultra", fault: "شحن وهمي / لا يشحن", solution: "افحص فلاتة الشحن الفلكس الأساسية، نظف المنفذ، أو استبدل آيسي الشحن الرئيسي (IF-PMIC). الممانعة النظامية على خط VBUS هي 450-500mv." },
+        { device: "آيفون 11", fault: "موت مفاجئ / شاشة سوداء مع سحب 0.02 أمبير", solution: "مشكلة شائعة نتيجة شورت صريح في خط VDD_MAIN أو خلل في خطوط الـ NAND. افحص المكثفات المحيطة بآيسي الباور." },
+        { device: "شاومي Redmi Note 10", fault: "فصل الصوت والميكروفون فجأة", solution: "خلل مصنعي في جودة لحام المعالج (CPU). الحل هو فك المعالج وإعادة الشبلنة والتركيب (CPU Reballing)." },
+        { device: "آيفون X", fault: "فصل اللمس (Touch) بعد السقوط", solution: "غالباً فصل في نقاط الالتقاء بين البوردتين (بوردة الطبقتين). يتطلب فصل البوردة الساندويش وإعادة لحام الإطار الوسطي." },
+        { device: "سامسونج A51", fault: "شاشة سوداء وفصل طاقة كامل", solution: "تأكد من فلاتة الربط الطويلة الواصلة بين البوردة السفلية والعلوية، أو مشكلة لحام في الـ RAM الملتصقة فوق المعالج." },
+        { device: "آيفون 12", fault: "فصل شبكة (لا توجد خدمة / No Service)", solution: "افحص ممانعات مغذيات آيسي البيس باند (BB PMU). إذا كانت سليمة، المشكلة غالباً تحتاج شبلنة لآيسي البيس باند نفسه." }
+    ];
+
+    function searchFaults() {
+        const query = document.getElementById('searchInput').value.trim().toLowerCase();
+        const resultsBox = document.getElementById('resultsBox');
+        resultsBox.innerHTML = "";
+
+        if (query === "") {
+            resultsBox.innerHTML = '<div class="no-result">يرجى كتابة كلمة للبحث عنها! 🎯</div>';
+            return;
+        }
+
+        // تصفية النتائج بناء على نص البحث
+        const filtered = faultsDatabase.filter(item => 
+            item.device.toLowerCase().includes(query) || 
+            item.fault.toLowerCase().includes(query) || 
+            item.solution.toLowerCase().includes(query)
+        );
+
+        if (filtered.length === 0) {
+            resultsBox.innerHTML = '<div class="no-result">لم يتم العثور على هذا العطل. جرب كلمات أخرى أو أضف العطل للكود 📝</div>';
+            return;
+        }
+
+        // عرض الكروت المتطابقة
+        filtered.forEach(item => {
+            resultsBox.innerHTML += `
+                <div class="fault-card">
+                    <div class="fault-device"><i class="fa-solid fa-mobile-screen-button"></i> ${item.device}</div>
+                    <div class="fault-title"><i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> العطل: ${item.fault}</div>
+                    <div class="fault-solution"><strong><i class="fa-solid fa-wrench" style="color:var(--neon)"></i> الحل الهيدروليكي / الميكروي:</strong><br>${item.solution}</div>
+                </div>
+            `;
+        });
+    }
+</script>
+
+</body>
+</html>
