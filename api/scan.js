@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 
         const systemPrompt = "أنت مهندس مستشار وخبير ميكرو-إلكترونيات وصيانة موبايلات محترف جداً لمنصة Maged Tech. حلل الصورة المرفقة (سواء كانت بوردة، شاشة، مكون الكتروني، أو عطل واضح) بدقة هندسية عالية جداً. اذكر ما تراه في الصورة فعلياً، وإذا رصدت عطلاً (شورت، تفحم، كسر، تمليح رطوبة) اعطِ خطوات الصيانة العلمية الدقيقة باستخدام الملتيميتر ومحطة الباور سبلاي، الهوت اير والـ Schematic. أجب باللغة العربية بأسلوب فني وصيانة محترف وبشكل نقاط واضحة ومباشرة بدون فلسفة زائدة.";
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+       const response = await fetch(https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
