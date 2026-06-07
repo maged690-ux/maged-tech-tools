@@ -3,31 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maged Tech | الفحص الذكي بالـ AI</title>
+    <title>Maged Tech | المساعد الذكي للصيانة</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root { --neon: #00f2ff; --neon-pink: #ff0055; --bg: #05050a; }
         body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: #f0f0f0; padding: 20px; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .ai-container { width: 100%; max-width: 450px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); padding: 25px; border-radius: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08); text-align: center; }
+        .ai-container { width: 100%; max-width: 500px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); padding: 25px; border-radius: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08); text-align: center; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
         .back-btn { color: #fff; text-decoration: none; font-size: 1.5rem; background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 10px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
-        .back-btn:hover { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 10px var(--neon); }
+        .back-btn:hover { border-color: var(--neon); color: var(--neon); }
         h2 { color: #fff; margin: 0; font-size: 1.3rem; text-shadow: 0 0 10px var(--neon); flex-grow: 1; }
-        .upload-area { border: 2px dashed rgba(0, 242, 255, 0.3); border-radius: 18px; padding: 40px 20px; background: rgba(0,0,0,0.4); cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; margin-bottom: 20px; }
-        .upload-area:hover { border-color: var(--neon); background: rgba(0, 242, 255, 0.02); }
-        .upload-area i { font-size: 3.5rem; color: var(--neon); margin-bottom: 15px; }
-        .upload-area p { margin: 5px 0; color: #aaa; font-size: 1rem; }
+        
+        /* قسم البحث النصي */
+        .search-box { position: relative; margin-bottom: 20px; }
+        .search-box input { width: 100%; padding: 15px 45px 15px 15px; background: rgba(0,0,0,0.5); border: 1px solid rgba(0, 242, 255, 0.3); border-radius: 14px; color: #fff; font-family: 'Tajawal', sans-serif; font-size: 1rem; box-sizing: border-box; outline: none; transition: 0.3s; }
+        .search-box input:focus { border-color: var(--neon); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
+        .search-box i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--neon); }
+        .search-btn { background: rgba(0, 242, 255, 0.1); color: var(--neon); border: 1px solid var(--neon); margin-top: 10px; }
+        .search-btn:hover { background: var(--neon); color: #000; }
+
+        .divider { display: flex; align-items: center; text-align: center; color: #888; margin: 20px 0; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .divider:not(:empty)::before { margin-left: .25em; }
+        .divider:not(:empty)::after { margin-right: .25em; }
+
+        /* قسم رفع الصور */
+        .upload-area { border: 2px dashed rgba(255, 0, 85, 0.3); border-radius: 18px; padding: 30px 20px; background: rgba(0,0,0,0.4); cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; margin-bottom: 15px; }
+        .upload-area:hover { border-color: var(--neon-pink); background: rgba(255, 0, 85, 0.02); }
+        .upload-area i { font-size: 3rem; color: var(--neon-pink); margin-bottom: 10px; }
+        .upload-area p { margin: 5px 0; color: #ccc; font-size: 1rem; }
         #preview-img { width: 100%; max-height: 250px; object-fit: contain; border-radius: 12px; display: none; margin-bottom: 15px; }
-        .scanner-visual { position: relative; display: inline-block; width: 100%; }
-        .laser-line { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--neon); box-shadow: 0 0 15px var(--neon), 0 0 30px var(--neon); z-index: 10; display: none; animation: scanAnimation 2s linear infinite; }
-        button { font-family: 'Tajawal', sans-serif; background: linear-gradient(45deg, var(--neon-pink), #b30047); color: #fff; font-weight: 900; padding: 15px; border: none; border-radius: 14px; cursor: pointer; width: 100%; font-size: 1.1rem; transition: all 0.3s; box-shadow: 0 5px 15px rgba(255, 0, 85, 0.2); }
-        button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 0, 85, 0.4); }
-        button:disabled { background: #333; color: #aaa; cursor: not-allowed; }
+        
+        button { font-family: 'Tajawal', sans-serif; font-weight: 900; padding: 15px; border: none; border-radius: 14px; cursor: pointer; width: 100%; font-size: 1.1rem; transition: all 0.3s; }
+        .scan-btn { background: linear-gradient(45deg, var(--neon-pink), #b30047); color: #fff; box-shadow: 0 5px 15px rgba(255, 0, 85, 0.2); }
+        .scan-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 0, 85, 0.4); }
+        button:disabled { background: #333 !important; color: #aaa !important; cursor: not-allowed; border: none; box-shadow: none; }
+        
         .ai-result-box { margin-top: 25px; background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); padding: 20px; border-radius: 14px; display: none; text-align: right; }
         .result-status { color: var(--neon); font-weight: 900; font-size: 1.1rem; margin-bottom: 12px; display: flex; gap: 8px; align-items: center; border-bottom: 1px dashed rgba(0,242,255,0.2); padding-bottom: 8px; }
-        .result-details { color: #ddd; font-size: 1rem; line-height: 1.6; white-space: pre-line; }
-        @keyframes scanAnimation { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
+        .result-details { color: #ddd; font-size: 1rem; line-height: 1.7; white-space: pre-line; }
+        
+        .loader { display: none; margin: 15px auto; width: 40px; height: 40px; border: 4px solid rgba(0, 242, 255, 0.2); border-top: 4px solid var(--neon); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -35,23 +53,29 @@
 <div class="ai-container">
     <header>
         <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i></a>
-        <h2>الفحص البصري بالذكاء الاصطناعي</h2>
+        <h2>المساعد الذكي للصيانة</h2>
         <div style="width: 45px;"></div>
     </header>
 
-    <div class="scanner-visual">
-        <div class="laser-line" id="laser"></div>
-        <img id="preview-img" alt="معاينة المكونات">
+    <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="textPrompt" placeholder="ابحث عن عطل (مثال: مسار شحن نوت 9، شورت صريح)...">
+        <button class="search-btn" id="textSearchBtn" onclick="searchTextAI()">بحث في قاعدة بيانات الذكاء الاصطناعي 🔎</button>
     </div>
 
+    <div class="divider">أو الفحص البصري بالصور</div>
+
+    <img id="preview-img" alt="معاينة القطعة">
     <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
-        <i class="fa-solid fa-brain" style="text-shadow: 0 0 15px var(--neon);"></i>
-        <p style="font-weight: bold; color: #fff; font-size: 1.15rem;">ارفع صورة البوردة أو العطل فوراً</p>
-        <p>اضغط لالتقاط صورة حية من الكاميرا 📸</p>
+        <i class="fa-solid fa-camera" style="text-shadow: 0 0 15px var(--neon-pink);"></i>
+        <p style="font-weight: bold; color: #fff; font-size: 1.15rem;">ارفع صورة البوردة، الشاشة، أو أي قطعة 📸</p>
+        <p style="font-size: 0.9rem;">سيتم تحديد العطل وخطوات الصيانة فوراً</p>
         <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="loadPreview(event)">
     </div>
 
-    <button id="scanBtn" onclick="startRealAIScan()" style="display: none;">بدء الفحص البصري الذكي للبوردة 🧠🚀</button>
+    <button class="scan-btn" id="scanBtn" onclick="startImageAIScan()" style="display: none;">بدء الفحص الذكي الشامل للقطعة 🧠🚀</button>
+
+    <div class="loader" id="loadingSpinner"></div>
 
     <div class="ai-result-box" id="aiResult">
         <div class="result-status" id="resultStatusIcon"><i class="fa-solid fa-microchip"></i> التقرير الهندسي الفعلي:</div>
@@ -62,10 +86,9 @@
 <script>
     let base64ImageData = "";
     let imageMimeType = "";
+    const API_KEY = "AIzaSy..."; // ⚠️ ضع مفتاحك السري الصحيح الذي يبدأ بـ AIzaSy هنا ⚠️
 
-    // مفتاحك السري مدمج هنا مباشرة
-    const API_KEY = "AQ.Ab8RN6JXsA5DkzX4t19dofvxQHwZF6Lcln3Nr3T2k-y-ZLOaNQ"; 
-
+    // دالة عرض الصورة عند اختيارها
     function loadPreview(event) {
         const file = event.target.files[0];
         if (file) {
@@ -76,7 +99,7 @@
                 img.src = e.target.result;
                 img.style.display = "block";
                 base64ImageData = e.target.result.split(',')[1];
-                document.getElementById('uploadArea').style.padding = "10px 20px";
+                document.getElementById('uploadArea').style.padding = "15px 20px";
                 document.getElementById('scanBtn').style.display = "block";
                 document.getElementById('aiResult').style.display = "none";
             }
@@ -84,61 +107,78 @@
         }
     }
 
-    async function startRealAIScan() {
-        const laser = document.getElementById('laser');
-        const btn = document.getElementById('scanBtn');
+    // دالة البحث النصي عن الأعطال
+    async function searchTextAI() {
+        const prompt = document.getElementById('textPrompt').value;
+        if (!prompt) { alert("اكتب العطل أولاً يا هندسة!"); return; }
+        
+        prepareUIForLoading("textSearchBtn");
+
+        const requestBody = {
+            contents: [{ parts: [{ text: `أنت مهندس خبير في صيانة الهواتف والإلكترونيات في منصة Maged Tech. أجب على هذا الاستفسار بدقة واحترافية وقدم مسارات أو حلول عملية: ${prompt}` }] }]
+        };
+        await fetchFromGemini(requestBody, "textSearchBtn", "بحث في قاعدة بيانات الذكاء الاصطناعي 🔎");
+    }
+
+    // دالة فحص الصور
+    async function startImageAIScan() {
+        prepareUIForLoading("scanBtn");
+
+        const requestBody = {
+            contents: [{
+                parts: [
+                    { text: "أنت خبير صيانة إلكترونيات محترف في منصة Maged Tech. حلل الصورة المرفقة (بوردة، شاشة، مكون) تقنياً، حدد العطل (شورت، رطوبة، كسر، تفحم)، وقدم خطوات صيانة دقيقة بأسلوب مهني ومباشر." },
+                    { inlineData: { mimeType: imageMimeType, data: base64ImageData } }
+                ]
+            }]
+        };
+        await fetchFromGemini(requestBody, "scanBtn", "إعادة الفحص لقطعة إلكترونية جديدة 🔄");
+    }
+
+    // تجهيز الواجهة أثناء التحميل
+    function prepareUIForLoading(buttonId) {
+        document.getElementById('aiResult').style.display = "none";
+        document.getElementById('loadingSpinner').style.display = "block";
+        const btn = document.getElementById(buttonId);
+        btn.disabled = true;
+        btn.innerText = "جاري التحليل الهندسي...";
+    }
+
+    // دالة الاتصال المشتركة بـ Gemini
+    async function fetchFromGemini(bodyData, buttonId, originalBtnText) {
+        const btn = document.getElementById(buttonId);
         const resultBox = document.getElementById('aiResult');
         const details = document.getElementById('aiDetails');
         const statusIcon = document.getElementById('resultStatusIcon');
 
-        laser.style.display = "block";
-        btn.disabled = true;
-        btn.innerText = "جاري التحليل الميكروي عبر الـ AI...";
-        resultBox.style.display = "none";
-
         try {
-            // الاتصال المباشر بجوجل مع المفتاح المدمج في الرابط
-          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [
-                            { text: "أنت خبير صيانة إلكترونيات محترف في منصة Maged Tech. حلل الصورة المرفقة (بوردة، شاشة، مكون) تقنياً، حدد العطل (شورت، رطوبة، كسر، تفحم)، وقدم خطوات صيانة دقيقة بأسلوب مهني ومباشر." },
-                            { inlineData: { mimeType: imageMimeType, data: base64ImageData } }
-                        ]
-                    }]
-                })
+                body: JSON.stringify(bodyData)
             });
 
             const data = await response.json();
             
-            laser.style.display = "none";
+            document.getElementById('loadingSpinner').style.display = "none";
             btn.disabled = false;
-            btn.innerText = "إعادة فحص اللوحة الإلكترونية بالـ AI 🔄";
+            btn.innerText = originalBtnText;
 
             if (data.error) {
-                statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> رسالة من جوجل:`;
+                statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> رسالة من النظام:`;
                 details.innerHTML = data.error.message;
-                resultBox.style.display = "block";
-                return;
-            }
-
-            if (data.candidates && data.candidates[0].content.parts[0].text) {
-                statusIcon.innerHTML = `<i class="fa-solid fa-microchip"></i> التقرير الهندسي الفعلي لـ Maged Tech:`;
+            } else if (data.candidates && data.candidates[0].content.parts[0].text) {
+                statusIcon.innerHTML = `<i class="fa-solid fa-microchip"></i> التقرير الهندسي من Maged Tech:`;
                 details.innerHTML = data.candidates[0].content.parts[0].text;
-                resultBox.style.display = "block";
-            } else {
-                details.innerHTML = "لم ينجح الذكاء الاصطناعي بقراءة التفاصيل. يرجى التقاط صورة أقرب.";
-                resultBox.style.display = "block";
             }
+            resultBox.style.display = "block";
 
         } catch (error) {
-            laser.style.display = "none";
+            document.getElementById('loadingSpinner').style.display = "none";
             btn.disabled = false;
-            btn.innerText = "إعادة فحص اللوحة الإلكترونية بالـ AI 🔄";
-            statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> خطأ في الاتصال:`;
-            details.innerHTML = `حدث خطأ تقني: ${error.message}`;
+            btn.innerText = originalBtnText;
+            statusIcon.innerHTML = `<i class="fa-solid fa-wifi" style="color:var(--neon-pink)"></i> خطأ في الاتصال:`;
+            details.innerHTML = `تأكد من الإنترنت. التفاصيل: ${error.message}`;
             resultBox.style.display = "block";
         }
     }
