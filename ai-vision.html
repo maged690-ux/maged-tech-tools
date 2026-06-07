@@ -64,7 +64,7 @@
     let imageMimeType = "";
 
     // 🔑 ضع مفتاحك السري هنا مباشرة بين علامتي التنصيص
-    const API_KEY = "AQ.Ab8RN6LhkGnvVR3Ze0G3vYVnIBo1T611iHr0wRL03xlCwr8RqA"; 
+    const API_KEY = "AQ.Ab8RN6KpPyS-xhuRrswYk4-aIIrPLwDbl7JT-5g0MMmNsUY3zg"; 
 
     function loadPreview(event) {
         const file = event.target.files[0];
@@ -91,7 +91,7 @@
         const details = document.getElementById('aiDetails');
         const statusIcon = document.getElementById('resultStatusIcon');
 
-        if (API_KEY === "AQ.Ab8RN6LhkGnvVR3Ze0G3vYVnIBo1T611iHr0wRL03xlCwr8RqA" || !API_KEY) {
+        if (API_KEY === "YOUR_GEMINI_API_KEY_HERE" || !API_KEY) {
             alert("يا هندسة، نسيت تحط المفتاح السري جوا الكود!");
             return;
         }
