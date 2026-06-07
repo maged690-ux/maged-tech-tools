@@ -2,21 +2,112 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>الفحص الذكي بالـ AI</title>
-    </head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maged Tech | الفحص الذكي بالـ AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --neon: #00f2ff; --neon-pink: #ff0055; --bg: #05050a; }
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background-color: var(--bg); 
+            color: #f0f0f0; 
+            padding: 20px; 
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .ai-container { 
+            width: 100%;
+            max-width: 450px; 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 25px; 
+            border-radius: 24px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6); 
+            border: 1px solid rgba(255,255,255,0.08); 
+            text-align: center;
+        }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .back-btn { color: #fff; text-decoration: none; font-size: 1.5rem; background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 10px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
+        .back-btn:hover { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 10px var(--neon); }
+        h2 { color: #fff; margin: 0; font-size: 1.3rem; text-shadow: 0 0 10px var(--neon); flex-grow: 1; }
+
+        .upload-area {
+            border: 2px dashed rgba(0, 242, 255, 0.3);
+            border-radius: 18px;
+            padding: 40px 20px;
+            background: rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .upload-area:hover { border-color: var(--neon); background: rgba(0, 242, 255, 0.02); }
+        .upload-area i { font-size: 3.5rem; color: var(--neon); margin-bottom: 15px; }
+        .upload-area p { margin: 5px 0; color: #aaa; font-size: 1rem; }
+        
+        #preview-img { width: 100%; max-height: 250px; object-fit: contain; border-radius: 12px; display: none; margin-bottom: 15px; }
+
+        .scanner-visual { position: relative; display: inline-block; width: 100%; }
+        .laser-line {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 4px;
+            background: var(--neon);
+            box-shadow: 0 0 15px var(--neon), 0 0 30px var(--neon);
+            z-index: 10;
+            display: none;
+            animation: scanAnimation 2s linear infinite;
+        }
+
+        button { font-family: 'Tajawal', sans-serif; background: linear-gradient(45deg, var(--neon-pink), #b30047); color: #fff; font-weight: 900; padding: 15px; border: none; border-radius: 14px; cursor: pointer; width: 100%; font-size: 1.1rem; transition: all 0.3s; box-shadow: 0 5px 15px rgba(255, 0, 85, 0.2); }
+        button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255, 0, 85, 0.4); }
+        button:disabled { background: #333; color: #aaa; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        .ai-result-box { margin-top: 25px; background: rgba(0, 242, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.2); padding: 20px; border-radius: 14px; display: none; text-align: right; }
+        .result-status { color: var(--neon); font-weight: 900; font-size: 1.1rem; margin-bottom: 12px; display: flex; gap: 8px; align-items: center; border-bottom: 1px dashed rgba(0,242,255,0.2); padding-bottom: 8px; }
+        .result-details { color: #ddd; font-size: 1rem; line-height: 1.6; white-space: pre-line; }
+
+        @keyframes scanAnimation {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+    </style>
+</head>
 <body>
-    <div class="ai-container">
-        <div class="scanner-visual"><div class="laser-line" id="laser"></div><img id="preview-img"></div>
-        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-            <p>ارفع صورة البوردة</p>
-            <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="loadPreview(event)">
-        </div>
-        <button id="scanBtn" onclick="startRealAIScan()" style="display: none;">بدء الفحص</button>
-        <div class="ai-result-box" id="aiResult">
-            <div class="result-status" id="resultStatusIcon"></div>
-            <div class="result-details" id="aiDetails"></div>
-        </div>
+
+<div class="ai-container">
+    <header>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i></a>
+        <h2>الفحص البصري بالذكاء الاصطناعي</h2>
+        <div style="width: 45px;"></div>
+    </header>
+
+    <div class="scanner-visual">
+        <div class="laser-line" id="laser"></div>
+        <img id="preview-img" alt="معاينة المكونات">
     </div>
+
+    <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+        <i class="fa-solid fa-brain" style="text-shadow: 0 0 15px var(--neon);"></i>
+        <p style="font-weight: bold; color: #fff; font-size: 1.15rem;">ارفع صورة البوردة أو العطل فوراً</p>
+        <p>اضغط لالتقاط صورة حية من الكاميرا 📸</p>
+        <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="loadPreview(event)">
+    </div>
+
+    <button id="scanBtn" onclick="startRealAIScan()" style="display: none;">تحليل بوردة الميكرو بالـ AI الحقيقي 🚀</button>
+
+    <div class="ai-result-box" id="aiResult">
+        <div class="result-status" id="resultStatusIcon"><i class="fa-solid fa-microchip"></i> التقرير الهندسي الفعلي:</div>
+        <div class="result-details" id="aiDetails">...</div>
+    </div>
+</div>
 
 <script>
     let base64ImageData = "";
@@ -27,45 +118,81 @@
         if (file) {
             imageMimeType = file.type;
             const reader = new FileReader();
-            reader.onload = (e) => {
-                document.getElementById('preview-img').src = e.target.result;
-                document.getElementById('preview-img').style.display = "block";
+            reader.onload = function(e) {
+                const img = document.getElementById('preview-img');
+                img.src = e.target.result;
+                img.style.display = "block";
                 base64ImageData = e.target.result.split(',')[1];
+
+                document.getElementById('uploadArea').style.padding = "10px 20px";
                 document.getElementById('scanBtn').style.display = "block";
-            };
+                document.getElementById('aiResult').style.display = "none";
+            }
             reader.readAsDataURL(file);
         }
     }
 
     async function startRealAIScan() {
+        const laser = document.getElementById('laser');
         const btn = document.getElementById('scanBtn');
+        const resultBox = document.getElementById('aiResult');
         const details = document.getElementById('aiDetails');
-        
+        const statusIcon = document.getElementById('resultStatusIcon');
+
+        laser.style.display = "block";
         btn.disabled = true;
-        btn.innerText = "جاري التحليل...";
-        
+        btn.innerText = "جاري التحليل الميكروي عبر الـ AI الحقيقي...";
+        resultBox.style.display = "none";
+
         try {
+            // 🌐 الربط المباشر مع سيرفر Vercel الخاص بك
             const response = await fetch(`https://maged-tech-tools.vercel.app/api/scan`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ mimeType: imageMimeType, data: base64ImageData })
+                body: JSON.stringify({
+                    mimeType: imageMimeType,
+                    data: base64ImageData
+                })
             });
 
             const data = await response.json();
             
-            if (response.ok) {
-                details.innerText = data.candidates[0].content.parts[0].text;
-            } else {
-                details.innerText = "خطأ: " + (data.error || "فشل الاتصال");
-            }
-        } catch (e) {
-            details.innerText = "حدث خطأ أثناء الاتصال بالسيرفر";
-        } finally {
+            laser.style.display = "none";
             btn.disabled = false;
-            btn.innerText = "بدء الفحص";
-            document.getElementById('aiResult').style.display = "block";
+            btn.innerText = "إعادة تحليل بوردة الميكرو بالـ AI 🚀";
+
+            if (data.error) {
+                if (data.status === 429 || JSON.stringify(data).toLowerCase().includes("quota") || JSON.stringify(data).toLowerCase().includes("limit")) {
+                    statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> تنبيه الضغط العالي والجهد الميكروي:`;
+                    details.innerHTML = `<span style="color:var(--neon-pink); font-weight:900;">يا هندسة، هذه الميزة مجانية بالكامل ومفتوحة لكل المتابعين لدعم فنيي الصيانة!</span>\n\nبسبب كثرة الاستخدام الآن والضغط الهائل على السيرفر، تقفل الميزة تلقائياً بشكل مؤقت لحماية النظام وتخفيف الجهد البصري.\n\n<strong>يرجى الانتظار دقيقة واحدة فقط ⏳ وأعد التقاط الصورة أو تحليلها وستعمل معك فوراً بكفاءة 100%!</strong> 🛠️`;
+                    resultBox.style.display = "block";
+                    return;
+                }
+                details.innerHTML = "تنبيه من السيرفر: " + (data.error.message || data.error);
+                resultBox.style.display = "block";
+                return;
+            }
+
+            if (data.candidates && data.candidates[0].content.parts[0].text) {
+                statusIcon.innerHTML = `<i class="fa-solid fa-microchip"></i> التقرير الهندسي الفعلي لـ Maged Tech:`;
+                details.innerHTML = data.candidates[0].content.parts[0].text;
+                resultBox.style.display = "block";
+            } else {
+                details.innerHTML = "لم ينجح الذكاء الاصطناعي بقراءة التفاصيل. يرجى التقاط صورة أقرب وأوضح للبوردة.";
+                resultBox.style.display = "block";
+            }
+
+        } catch (error) {
+            laser.style.display = "none";
+            btn.disabled = false;
+            btn.innerText = "إعادة تحليل بوردة الميكرو بالـ AI 🚀";
+            
+            statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> خطأ في الاتصال:`;
+            details.innerHTML = `لم يتمكن المتصفح من الاتصال بالسيرفر. يرجى المحاولة مرة أخرى أو التأكد من اتصال الإنترنت.`;
+            resultBox.style.display = "block";
         }
     }
 </script>
+
 </body>
 </html>
