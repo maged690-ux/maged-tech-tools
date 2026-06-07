@@ -3,125 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maged Tech | محرك بحث الأعطال</title>
+    <title>Maged Tech | الأرشيف الذكي الشامل</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root { --neon: #00f2ff; --neon-pink: #ff0055; --bg: #05050a; }
-        body { 
-            font-family: 'Tajawal', sans-serif; 
-            background-color: var(--bg); 
-            color: #f0f0f0; 
-            padding: 20px; 
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .search-container { 
-            width: 100%;
-            max-width: 450px; 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 25px; 
-            border-radius: 24px; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6); 
-            border: 1px solid rgba(255,255,255,0.08); 
-        }
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-        .back-btn { color: #fff; text-decoration: none; font-size: 1.5rem; background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 10px; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); }
-        .back-btn:hover { border-color: var(--neon); color: var(--neon); box-shadow: 0 0 10px var(--neon); }
-        h2 { color: #fff; margin: 0; font-size: 1.3rem; text-shadow: 0 0 10px var(--neon); text-align: center; flex-grow: 1; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: #f0f0f0; padding: 20px; margin: 0; }
+        .container { max-width: 800px; margin: 0 auto; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); padding: 25px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); }
         
-        .search-box { position: relative; margin-bottom: 20px; }
-        input { width: 100%; padding: 15px 15px 15px 50px; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(0,0,0,0.4); color: #fff; box-sizing: border-box; font-size: 16px; font-family: 'Tajawal', sans-serif; transition: 0.3s; text-align: right; }
-        input:focus { outline: none; border-color: var(--neon); box-shadow: 0 0 15px rgba(0, 242, 255, 0.3); }
-        
-        button { font-family: 'Tajawal', sans-serif; background: linear-gradient(45deg, var(--neon), #00a8ff); color: #111; font-weight: 900; padding: 15px; border: none; border-radius: 14px; cursor: pointer; width: 100%; font-size: 1.1rem; transition: all 0.3s; box-shadow: 0 5px 15px rgba(0, 242, 255, 0.3); }
-        button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 242, 255, 0.5); }
-        
-        .results-section { margin-top: 25px; max-height: 350px; overflow-y: auto; padding-left: 5px; }
-        .fault-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-right: 4px solid var(--neon-pink); padding: 15px; border-radius: 12px; margin-bottom: 15px; animation: fadeIn 0.3s ease-in-out; }
-        .fault-device { font-weight: 900; color: var(--neon); font-size: 1.1rem; margin-bottom: 5px; }
-        .fault-title { font-weight: 700; color: #fff; font-size: 1rem; margin-bottom: 8px; display: flex; gap: 8px; align-items: center; }
-        .fault-solution { color: #ccc; font-size: 0.95rem; line-height: 1.5; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.05); }
-        
-        .no-result { text-align: center; color: #aaa; padding: 20px; font-size: 1rem; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .back-btn { color: #fff; text-decoration: none; font-size: 1.5rem; background: rgba(255,255,255,0.05); padding: 8px 15px; border-radius: 10px; transition: 0.3s; }
+        .back-btn:hover { color: var(--neon); }
+        h2 { margin: 0; text-shadow: 0 0 10px var(--neon); font-size: 1.4rem; flex-grow: 1; text-align: center; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        /* تخصيص السكرول بار */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--neon); }
+        /* أزرار النسخ الاحتياطي */
+        .backup-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .backup-btn { background: rgba(0, 242, 255, 0.1); color: var(--neon); border: 1px solid var(--neon); }
+        .backup-btn:hover { background: var(--neon); color: #000; }
+        .restore-btn { background: rgba(255, 0, 85, 0.1); color: var(--neon-pink); border: 1px solid var(--neon-pink); }
+        .restore-btn:hover { background: var(--neon-pink); color: #fff; }
+
+        /* أدوات الإضافة */
+        .tools-box { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px dashed rgba(0, 242, 255, 0.3); display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+        .tools-box input[type="file"] { grid-column: span 2; }
+        .tools-box button { grid-column: span 2; }
+        
+        input, select { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: #fff; font-family: 'Tajawal'; box-sizing: border-box; }
+        input:focus, select:focus { outline: none; border-color: var(--neon); }
+        select option { background: #111; color: #fff; }
+        
+        button { padding: 12px; font-family: 'Tajawal'; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; transition: 0.3s; width: 100%; }
+        .add-btn { background: var(--neon); color: #000; }
+        .add-btn:hover { background: #00c4cc; }
+
+        /* شريط البحث والفلترة */
+        .filter-bar { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .search-input-wrapper { position: relative; }
+        .search-input-wrapper i { position: absolute; right: 15px; top: 15px; color: var(--neon-pink); }
+        .search-input-wrapper input { padding-right: 40px; border-color: var(--neon-pink); }
+
+        /* شبكة الصور */
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        .item { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px; text-align: right; position: relative; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
+        .item:hover { border-color: var(--neon); transform: scale(1.02); }
+        .item img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        .item .title { font-weight: bold; color: #fff; margin: 0 0 5px 0; font-size: 1rem; }
+        .item .meta { font-size: 0.75rem; color: #aaa; margin: 2px 0; display: flex; justify-content: space-between; }
+        .item .badge { background: rgba(0, 242, 255, 0.2); color: var(--neon); padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; }
+        .delete-btn { position: absolute; top: 5px; left: 5px; background: rgba(255,0,85,0.8); color: #fff; border: none; border-radius: 50%; width: 25px; height: 25px; font-size: 12px; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 10; }
+
+        @media (max-width: 600px) {
+            .filter-bar { grid-template-columns: 1fr; }
+            .tools-box { grid-template-columns: 1fr; }
+            .tools-box input[type="file"], .tools-box button { grid-column: span 1; }
+            .backup-bar { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
 
-<div class="search-container">
+<div class="container">
     <header>
         <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i></a>
-        <h2>محرك بحث الأعطال الذكي</h2>
+        <h2>استوديو الورشة الذكي 📁</h2>
         <div style="width: 45px;"></div>
     </header>
 
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="اكتب اسم الجهاز أو العطل (مثال: آيفون، شحن)..." onkeyup="if(event.key === 'Enter') searchFaults()">
+    <div class="backup-bar">
+        <button class="backup-btn" onclick="exportBackup()"><i class="fa-solid fa-download"></i> تصدير نسخة احتياطية</button>
+        <button class="restore-btn" onclick="document.getElementById('importInput').click()"><i class="fa-solid fa-upload"></i> استعادة من ملف</button>
+        <input type="file" id="importInput" accept=".json" style="display: none;" onchange="importBackup(event)">
     </div>
 
-    <button onclick="searchFaults()">بحث بنقرة زر <i class="fa-solid fa-magnifying-glass" style="margin-right: 8px;"></i></button>
-
-    <div class="results-section" id="resultsBox">
-        <div class="no-result">ابحث الآن لمعرفة العطل والحل المقترح ميكروياً.. 🛠️</div>
+    <div class="filter-bar">
+        <div class="search-input-wrapper">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="searchInput" placeholder="ابحث بالاسم..." onkeyup="updateGallery()">
+        </div>
+        <select id="sortSelect" onchange="updateGallery()">
+            <option value="newest">ترتيب: الأحدث</option>
+            <option value="oldest">ترتيب: الأقدم</option>
+            <option value="name">ترتيب: أبجدي</option>
+            <option value="size">ترتيب: الأكبر حجماً</option>
+        </select>
+        <select id="tagFilter" onchange="updateGallery()">
+            <option value="all">كل الصفات</option>
+            <option value="هاردوير">هاردوير 🔧</option>
+            <option value="سوفت وير">سوفت وير 💻</option>
+            <option value="مخططات">مخططات 🗺️</option>
+            <option value="شخصي">شخصي 📸</option>
+        </select>
     </div>
+
+    <div class="tools-box">
+        <input type="file" id="imageInput" accept="image/*">
+        <input type="text" id="imageName" placeholder="اسم الملف (مثال: مسار إضاءة)">
+        <select id="imageTag">
+            <option value="هاردوير">صفة: هاردوير</option>
+            <option value="سوفت وير">صفة: سوفت وير</option>
+            <option value="مخططات">صفة: مخططات</option>
+            <option value="شخصي">صفة: شخصي</option>
+        </select>
+        <button class="add-btn" onclick="addImage()"><i class="fa-solid fa-cloud-arrow-up"></i> حفظ في القاعدة</button>
+    </div>
+
+    <div class="gallery" id="galleryContainer"></div>
 </div>
 
 <script>
-    // قاعدة بيانات الأعطال (تستطيع زيادة الأعطال هنا بسهولة جداً يا هندسة)
-    const faultsDatabase = [
-        { device: "سامسونج S22 Ultra", fault: "شحن وهمي / لا يشحن", solution: "افحص فلاتة الشحن الفلكس الأساسية، نظف المنفذ، أو استبدل آيسي الشحن الرئيسي (IF-PMIC). الممانعة النظامية على خط VBUS هي 450-500mv." },
-        { device: "آيفون 11", fault: "موت مفاجئ / شاشة سوداء مع سحب 0.02 أمبير", solution: "مشكلة شائعة نتيجة شورت صريح في خط VDD_MAIN أو خلل في خطوط الـ NAND. افحص المكثفات المحيطة بآيسي الباور." },
-        { device: "شاومي Redmi Note 10", fault: "فصل الصوت والميكروفون فجأة", solution: "خلل مصنعي في جودة لحام المعالج (CPU). الحل هو فك المعالج وإعادة الشبلنة والتركيب (CPU Reballing)." },
-        { device: "آيفون X", fault: "فصل اللمس (Touch) بعد السقوط", solution: "غالباً فصل في نقاط الالتقاء بين البوردتين (بوردة الطبقتين). يتطلب فصل البوردة الساندويش وإعادة لحام الإطار الوسطي." },
-        { device: "سامسونج A51", fault: "شاشة سوداء وفصل طاقة كامل", solution: "تأكد من فلاتة الربط الطويلة الواصلة بين البوردة السفلية والعلوية، أو مشكلة لحام في الـ RAM الملتصقة فوق المعالج." },
-        { device: "آيفون 12", fault: "فصل شبكة (لا توجد خدمة / No Service)", solution: "افحص ممانعات مغذيات آيسي البيس باند (BB PMU). إذا كانت سليمة، المشكلة غالباً تحتاج شبلنة لآيسي البيس باند نفسه." }
-    ];
+    let archive = JSON.parse(localStorage.getItem('magedArchiveData')) || [];
 
-    function searchFaults() {
-        const query = document.getElementById('searchInput').value.trim().toLowerCase();
-        const resultsBox = document.getElementById('resultsBox');
-        resultsBox.innerHTML = "";
+    function formatSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
 
-        if (query === "") {
-            resultsBox.innerHTML = '<div class="no-result">يرجى كتابة كلمة للبحث عنها! 🎯</div>';
-            return;
-        }
+    function updateGallery() {
+        const searchText = document.getElementById('searchInput').value.toLowerCase();
+        const sortType = document.getElementById('sortSelect').value;
+        const tagFilter = document.getElementById('tagFilter').value;
+        
+        const gallery = document.getElementById('galleryContainer');
+        gallery.innerHTML = "";
 
-        // تصفية النتائج بناء على نص البحث
-        const filtered = faultsDatabase.filter(item => 
-            item.device.toLowerCase().includes(query) || 
-            item.fault.toLowerCase().includes(query) || 
-            item.solution.toLowerCase().includes(query)
-        );
+        let filteredData = archive.filter(item => {
+            const matchName = item.name.toLowerCase().includes(searchText);
+            const matchTag = (tagFilter === 'all') || (item.tag === tagFilter);
+            return matchName && matchTag;
+        });
 
-        if (filtered.length === 0) {
-            resultsBox.innerHTML = '<div class="no-result">لم يتم العثور على هذا العطل. جرب كلمات أخرى أو أضف العطل للكود 📝</div>';
-            return;
-        }
+        filteredData.sort((a, b) => {
+            if (sortType === 'newest') return b.timestamp - a.timestamp;
+            if (sortType === 'oldest') return a.timestamp - b.timestamp;
+            if (sortType === 'size') return b.rawSize - a.rawSize;
+            if (sortType === 'name') return a.name.localeCompare(b.name, 'ar');
+        });
 
-        // عرض الكروت المتطابقة
-        filtered.forEach(item => {
-            resultsBox.innerHTML += `
-                <div class="fault-card">
-                    <div class="fault-device"><i class="fa-solid fa-mobile-screen-button"></i> ${item.device}</div>
-                    <div class="fault-title"><i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> العطل: ${item.fault}</div>
-                    <div class="fault-solution"><strong><i class="fa-solid fa-wrench" style="color:var(--neon)"></i> الحل الهيدروليكي / الميكروي:</strong><br>${item.solution}</div>
+        filteredData.forEach((item) => {
+            const realIndex = archive.findIndex(x => x.id === item.id);
+            const dateStr = new Date(item.timestamp).toLocaleDateString('en-GB');
+
+            gallery.innerHTML += `
+                <div class="item">
+                    <button class="delete-btn" onclick="deleteItem(${realIndex})"><i class="fa-solid fa-trash"></i></button>
+                    <img src="${item.imgData}" alt="${item.name}">
+                    <p class="title">${item.name}</p>
+                    <div class="meta">
+                        <span><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+                        <span class="badge">${item.tag}</span>
+                    </div>
+                    <div class="meta">
+                        <span><i class="fa-solid fa-weight-scale"></i> ${formatSize(item.rawSize)}</span>
+                        <span style="text-transform: uppercase;">${item.type}</span>
+                    </div>
                 </div>
             `;
         });
     }
+
+    function addImage() {
+        const fileInput = document.getElementById('imageInput');
+        const nameInput = document.getElementById('imageName').value;
+        const tagInput = document.getElementById('imageTag').value;
+
+        if (!fileInput.files[0] || !nameInput) {
+            alert("يا هندسة، لازم تختار صورة وتكتب اسمها!");
+            return;
+        }
+
+        const file = fileInput.files[0];
+        const rawSize = file.size; 
+        const fileExt = file.name.split('.').pop().substring(0, 4); 
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 600;
+                let scaleSize = 1;
+                if(img.width > MAX_WIDTH) { scaleSize = MAX_WIDTH / img.width; }
+                canvas.width = img.width * scaleSize;
+                canvas.height = img.height * scaleSize;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                const compressedData = canvas.toDataURL('image/jpeg', 0.7);
+
+                const newItem = {
+                    id: Date.now(),
+                    name: nameInput,
+                    tag: tagInput,
+                    timestamp: Date.now(),
+                    rawSize: rawSize,
+                    type: fileExt,
+                    imgData: compressedData
+                };
+
+                archive.push(newItem);
+                localStorage.setItem('magedArchiveData', JSON.stringify(archive));
+                
+                fileInput.value = "";
+                document.getElementById('imageName').value = "";
+                updateGallery();
+            }
+            img.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+
+    function deleteItem(index) {
+        if(confirm("متأكد بدك تحذف هالملف من القاعدة؟")) {
+            archive.splice(index, 1);
+            localStorage.setItem('magedArchiveData', JSON.stringify(archive));
+            updateGallery();
+        }
+    }
+
+    // دالة تصدير النسخة الاحتياطية
+    function exportBackup() {
+        if (archive.length === 0) {
+            alert("الأرشيف فارغ، ما في شي لتصديره!");
+            return;
+        }
+        const dataStr = JSON.stringify(archive);
+        const blob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        
+        // تسمية الملف بالتاريخ
+        const date = new Date().toISOString().slice(0, 10);
+        a.download = `Maged_Archive_Backup_${date}.json`;
+        
+        a.href = url;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // دالة استعادة النسخة الاحتياطية
+    function importBackup(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                if (Array.isArray(importedData)) {
+                    archive = importedData;
+                    localStorage.setItem('magedArchiveData', JSON.stringify(archive));
+                    updateGallery();
+                    alert("تمت استعادة الأرشيف بنجاح يا بطل! 🚀");
+                } else {
+                    alert("ملف النسخة الاحتياطية غير صالح!");
+                }
+            } catch (err) {
+                alert("حدث خطأ أثناء قراءة الملف.");
+            }
+        };
+        reader.readAsText(file);
+        // تصفير حقل الإدخال ليسمح برفع نفس الملف مرة تانية إذا لزم الأمر
+        event.target.value = "";
+    }
+
+    updateGallery();
 </script>
 
 </body>
