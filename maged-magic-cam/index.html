@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Maged Filter Cam Pro</title>
+    <title>Maged Filter Cam Pro | AI Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/selfie_segmentation.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
@@ -17,20 +17,36 @@
         header { position: absolute; top: 0; left: 0; width: 100%; padding: 25px 20px; z-index: 10; display: flex; justify-content: space-between; align-items: center; background: transparent; }
         .icon-btn { color: #fff; text-decoration: none; font-size: 1.5rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); background: none; border: none; cursor: pointer; }
         header h1 { font-size: 1.3rem; color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); margin: 0; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,255,200,0.8); }
-        #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.8); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        
+        #loading-msg { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 1.1rem; z-index: 5; text-align: center; background: rgba(0,0,0,0.8); padding: 15px 25px; border-radius: 30px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
+        
+        /* تصميم نتيجة الذكاء الاصطناعي العائمة */
+        #ai-result-overlay { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); width: 85%; text-align: center; z-index: 30; display: none; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(12px); border: 2px solid rgba(0, 242, 255, 0.5); border-radius: 20px; padding: 20px; color: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.8); animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #ai-result-overlay i { font-size: 2rem; color: #00f2ff; margin-bottom: 10px; }
+        #ai-result-text { font-size: 1.1rem; font-weight: bold; line-height: 1.5; text-shadow: 0 2px 4px rgba(0,0,0,1); }
+        @keyframes popIn { 0% { transform: translate(-50%, 20px) scale(0.8); opacity: 0; } 100% { transform: translate(-50%, 0) scale(1); opacity: 1; } }
+
         #flash-effect { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0; pointer-events: none; z-index: 20; transition: opacity 0.15s ease-out; }
+        
         .controls { position: absolute; bottom: 40px; left: 0; width: 100%; z-index: 10; display: flex; flex-direction: column; align-items: center; background: transparent; pointer-events: none; }
         .controls > * { pointer-events: auto; }
         .tabs { display: flex; gap: 30px; margin-bottom: 15px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
         .tab { font-size: 1rem; color: rgba(255,255,255,0.6); font-weight: bold; cursor: pointer; padding-bottom: 5px; transition: 0.3s; text-shadow: 0 2px 4px rgba(0,0,0,1); }
         .tab.active-tab { color: #fff; border-bottom: 2px solid #fff; }
+        
         .filter-section, .bg-section { width: 100%; }
         .filter-section { display: none; }
-        .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 15px; width: 100%; scroll-snap-type: x mandatory; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
+        .filter-carousel { display: flex; overflow-x: auto; gap: 15px; padding: 10px 15px; width: 100%; scroll-snap-type: x mandatory; margin-bottom: 10px; -webkit-overflow-scrolling: touch; }
         .filter-carousel::-webkit-scrollbar { display: none; }
         .filter-btn { flex: 0 0 auto; width: 65px; height: 65px; border-radius: 50%; border: 3px solid rgba(255,255,255,0.6); background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 1.6rem; cursor: pointer; transition: all 0.2s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); background-size: cover; background-position: center; line-height: 1; scroll-snap-align: center; }
         .filter-btn.active-btn { border-color: #fff; transform: scale(1.15); border-width: 4px; box-shadow: 0 0 20px rgba(0,255,200,0.6); }
-        .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s, border-color 0.3s; margin-top: 5px; touch-action: none; }
+        
+        /* زر الذكاء الاصطناعي المميز */
+        .ai-magic-container { margin-bottom: 15px; }
+        .ai-magic-btn { background: linear-gradient(45deg, #ff0055, #00f2ff); border: 2px solid #fff; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; color: #fff; box-shadow: 0 0 15px rgba(0, 242, 255, 0.6); cursor: pointer; transition: 0.3s; }
+        .ai-magic-btn:hover { transform: scale(1.1); box-shadow: 0 0 25px rgba(255, 0, 85, 0.8); }
+
+        .capture-ring { width: 85px; height: 85px; border-radius: 50%; border: 5px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(0,0,0,0.6); transition: transform 0.1s, border-color 0.3s; touch-action: none; }
         .capture-inner { width: 65px; height: 65px; border-radius: 50%; background: #fff; transition: all 0.2s; }
         .capture-ring:active .capture-inner:not(.recording) { transform: scale(0.85); background: #e0e0e0; }
         .capture-ring.recording { border-color: #ff3b30; animation: pulse-ring 1.5s infinite; }
@@ -45,12 +61,20 @@
             <h1>Maged Pro ✨</h1>
             <button id="flip-cam-btn" class="icon-btn"><i class="fa-solid fa-camera-rotate"></i></button>
         </header>
+        
         <div class="camera-stage">
             <div id="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> تشغيل الكاميرا...</div>
+            
+            <div id="ai-result-overlay">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <div id="ai-result-text">...</div>
+            </div>
+
             <video id="input_video" autoplay playsinline style="display: none;"></video>
             <canvas id="output_canvas"></canvas>
             <div id="flash-effect"></div>
         </div>
+        
         <div class="controls">
             <div class="tabs">
                 <div class="tab active-tab" id="tab-bg" onclick="switchTab('bg')">الخلفيات</div>
@@ -72,21 +96,18 @@
                     <div class="filter-btn bg-btn" data-bg="starwars2" style="background-image: url('sw2.jpg?v=1');">🛸</div>
                     <div class="filter-btn bg-btn" data-bg="starwars3" style="background-image: url('sw3.jpg?v=1');">🚀</div>
                     <div class="filter-btn bg-btn" data-bg="starwars4" style="background-image: url('sw4.jpg?v=1');">⚔️</div>
-                    
                     <div class="filter-btn bg-btn" data-bg="galaxy" style="background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                     <div class="filter-btn bg-btn" data-bg="moon" style="background-image: url('https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="ship" style="background-image: url('https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="paris" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
                     <div class="filter-btn bg-btn" data-bg="egypt" style="background-image: url('https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    <div class="filter-btn bg-btn" data-bg="ny" style="background-image: url('https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80');"></div>
-                    
-                    <div class="filter-btn bg-btn" data-bg="umayyad" style="background-image: url('umayyad.jpg?v=1');"></div>
-                    <div class="filter-btn bg-btn" data-bg="noria" style="background-image: url('noria.jpg?v=1');"></div>
-                    <div class="filter-btn bg-btn" data-bg="homs" style="background-image: url('homs.jpg?v=1');"></div>
-                    <div class="filter-btn bg-btn" data-bg="bridge" style="background-image: url('bridge.jpg?v=1');"></div>
                 </div>
             </div>
             
+            <div class="ai-magic-container">
+                <button class="ai-magic-btn" onclick="enhanceMood()" title="قارئ المزاج الذكي">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+            </div>
+
             <div class="capture-ring" id="capture-btn">
                 <div class="capture-inner"></div>
             </div>
@@ -107,10 +128,7 @@
 
         const bgImages = { 
             'starwars1': new Image(), 'starwars2': new Image(), 'starwars3': new Image(), 'starwars4': new Image(),
-            'galaxy': new Image(), 'moon': new Image(), 'ship': new Image(), 
-            'paris': new Image(), 'egypt': new Image(), 'ny': new Image(),
-            'umayyad': new Image(), 'noria': new Image(), 
-            'homs': new Image(), 'bridge': new Image()
+            'galaxy': new Image(), 'moon': new Image(), 'egypt': new Image()
         };
         
         function safeLoadImage(imgObj, url) {
@@ -119,23 +137,13 @@
             imgObj.src = url;
         }
 
-        // تم إضافة ?v=1 لكسر الكاش
         safeLoadImage(bgImages['starwars1'], 'sw1.jpg?v=1');
         safeLoadImage(bgImages['starwars2'], 'sw2.jpg?v=1');
         safeLoadImage(bgImages['starwars3'], 'sw3.jpg?v=1');
         safeLoadImage(bgImages['starwars4'], 'sw4.jpg?v=1');
-        
         safeLoadImage(bgImages['galaxy'], 'https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
         safeLoadImage(bgImages['moon'], 'https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['ship'], 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['paris'], 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
         safeLoadImage(bgImages['egypt'], 'https://images.unsplash.com/photo-1539667468225-eebb663053e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        safeLoadImage(bgImages['ny'], 'https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-4.0.3&auto=format&fit=crop&w=1080&q=85');
-        
-        safeLoadImage(bgImages['umayyad'], 'umayyad.jpg?v=1');
-        safeLoadImage(bgImages['noria'], 'noria.jpg?v=1');
-        safeLoadImage(bgImages['homs'], 'homs.jpg?v=1');
-        safeLoadImage(bgImages['bridge'], 'bridge.jpg?v=1');
 
         function switchTab(tabName) {
             document.getElementById('tab-filter').classList.remove('active-tab');
@@ -215,54 +223,28 @@
                         const angle = Math.atan2(y2 - y1, x2 - x1);
                         const eyeDist = Math.hypot(x2 - x1, y2 - y1); 
 
-                        // فلتر التجميل الأساسي
-                        canvasCtx.save();
-                        canvasCtx.globalCompositeOperation = 'overlay'; 
-                        let beautyGrad = canvasCtx.createRadialGradient(cx, cy, eyeDist * 0.2, cx, cy, eyeDist * 1.8);
-                        beautyGrad.addColorStop(0, 'rgba(255, 235, 215, 0.45)'); 
-                        beautyGrad.addColorStop(0.5, 'rgba(255, 220, 200, 0.25)'); 
-                        beautyGrad.addColorStop(1, 'rgba(255, 255, 255, 0)'); 
-                        canvasCtx.fillStyle = beautyGrad;
-                        canvasCtx.beginPath(); canvasCtx.arc(cx, cy, eyeDist * 1.8, 0, Math.PI * 2); canvasCtx.fill();
-                        
-                        canvasCtx.globalCompositeOperation = 'soft-light';
-                        canvasCtx.fillStyle = 'rgba(255, 240, 230, 0.15)';
-                        canvasCtx.fill(); 
-                        canvasCtx.restore();
-                        
-                        // الفلاتر المتغيرة
+                        // الفلاتر
                         if (currentFilter === 'cute') {
-                            canvasCtx.save();
-                            canvasCtx.globalCompositeOperation = 'soft-light'; 
+                            canvasCtx.save(); canvasCtx.globalCompositeOperation = 'soft-light'; 
                             const blushRadius = eyeDist * 0.45;
                             [[x1, y1], [x2, y2]].forEach(([x, y]) => {
                                 let blush = canvasCtx.createRadialGradient(x, y + (eyeDist * 0.45), 0, x, y + (eyeDist * 0.45), blushRadius);
                                 blush.addColorStop(0, 'rgba(255, 105, 180, 0.55)'); blush.addColorStop(1, 'rgba(255, 105, 180, 0)');
-                                canvasCtx.fillStyle = blush;
-                                canvasCtx.beginPath(); canvasCtx.arc(x, y + (eyeDist * 0.45), blushRadius, 0, Math.PI * 2); canvasCtx.fill();
+                                canvasCtx.fillStyle = blush; canvasCtx.beginPath(); canvasCtx.arc(x, y + (eyeDist * 0.45), blushRadius, 0, Math.PI * 2); canvasCtx.fill();
                             });
                             canvasCtx.restore();
                         } else if (currentFilter === 'cyber') {
                             const visorWidth = eyeDist * 1.8, visorHeight = visorWidth * 0.35; 
-                            canvasCtx.save();
-                            canvasCtx.translate(nx, ny + (visorHeight * 0.15));
-                            canvasCtx.rotate(angle);
-                            canvasCtx.beginPath();
-                            canvasCtx.moveTo(-visorWidth/2, -visorHeight/2);
-                            canvasCtx.lineTo(visorWidth/2, -visorHeight/2); 
-                            canvasCtx.lineTo(visorWidth/2.2, visorHeight/2);
-                            canvasCtx.lineTo(visorWidth*0.15, visorHeight/2);
-                            canvasCtx.lineTo(0, visorHeight*0.1); 
-                            canvasCtx.lineTo(-visorWidth*0.15, visorHeight/2);
-                            canvasCtx.lineTo(-visorWidth/2.2, visorHeight/2); 
-                            canvasCtx.closePath();
+                            canvasCtx.save(); canvasCtx.translate(nx, ny + (visorHeight * 0.15)); canvasCtx.rotate(angle);
+                            canvasCtx.beginPath(); canvasCtx.moveTo(-visorWidth/2, -visorHeight/2); canvasCtx.lineTo(visorWidth/2, -visorHeight/2); 
+                            canvasCtx.lineTo(visorWidth/2.2, visorHeight/2); canvasCtx.lineTo(visorWidth*0.15, visorHeight/2);
+                            canvasCtx.lineTo(0, visorHeight*0.1); canvasCtx.lineTo(-visorWidth*0.15, visorHeight/2);
+                            canvasCtx.lineTo(-visorWidth/2.2, visorHeight/2); canvasCtx.closePath();
                             let glassGrad = canvasCtx.createLinearGradient(0, -visorHeight/2, 0, visorHeight/2);
                             glassGrad.addColorStop(0, 'rgba(10, 15, 30, 0.95)'); glassGrad.addColorStop(1, 'rgba(0, 255, 255, 0.6)');
-                            canvasCtx.fillStyle = glassGrad; canvasCtx.fill();
-                            canvasCtx.lineWidth = 2.5; canvasCtx.strokeStyle = '#00ffff'; canvasCtx.shadowColor = '#00ffff'; canvasCtx.shadowBlur = 15; canvasCtx.stroke();
+                            canvasCtx.fillStyle = glassGrad; canvasCtx.fill(); canvasCtx.lineWidth = 2.5; canvasCtx.strokeStyle = '#00ffff'; canvasCtx.shadowColor = '#00ffff'; canvasCtx.shadowBlur = 15; canvasCtx.stroke();
                             canvasCtx.beginPath(); canvasCtx.moveTo(-visorWidth/2.1, -visorHeight/3); canvasCtx.lineTo(visorWidth/2.1, -visorHeight/3);
-                            canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; canvasCtx.lineWidth = 1.5; canvasCtx.shadowBlur = 5; canvasCtx.stroke();
-                            canvasCtx.restore();
+                            canvasCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; canvasCtx.lineWidth = 1.5; canvasCtx.shadowBlur = 5; canvasCtx.stroke(); canvasCtx.restore();
                         } else if (currentFilter === 'paint') {
                             const pulse = Math.abs(Math.sin(Date.now() * 0.005)), cA = 0.5 + pulse * 0.5;
                             drawNeonLine(canvasCtx, currentFaceLandmarks, [103, 67, 10, 297, 332], `rgba(0, 255, 204, ${cA})`, '#00ffcc');
@@ -299,9 +281,60 @@
         }
 
         startCamera();
-
         document.getElementById('flip-cam-btn').addEventListener('click', () => { isFrontCam = !isFrontCam; startCamera(); });
 
+        // --- كود اتصال الذكاء الاصطناعي (تحسين المزاج) ---
+        async function enhanceMood() {
+            const overlay = document.getElementById('ai-result-overlay');
+            const textElement = document.getElementById('ai-result-text');
+            
+            // التقاط الصورة الحالية من الكانفاس للتحليل
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvasElement.width;
+            tempCanvas.height = canvasElement.height;
+            const tCtx = tempCanvas.getContext('2d');
+            tCtx.drawImage(canvasElement, 0, 0);
+            const base64Image = tempCanvas.toDataURL('image/jpeg', 0.5).split(',')[1];
+
+            // إظهار رسالة الانتظار
+            overlay.style.display = 'block';
+            textElement.innerHTML = "جاري قراءة طاقتك... ✨";
+
+            const requestBody = {
+                contents: [{
+                    parts: [
+                        { text: "أنت محلل شخصيات مرح وخبير طاقة في منصة Maged Tech. انظر لهذه الصورة، أعطِ تعليقاً كوميدياً أو مجاملة تناسب طاقة الشخص ومزاجه. إذا بدا متعباً انصحه بشرب كأس من المتة ليروق، وإذا بدا سعيداً قل له أن طاقته أقوى من أي بطارية. تحدث بلهجة قريبة للسورية ومختصرة جداً (سطر واحد فقط)." },
+                        { inlineData: { mimeType: "image/jpeg", data: base64Image } }
+                    ]
+                }]
+            };
+
+            try {
+                // الاتصال بسيرفر Vercel الخاص بمنصتك
+                const response = await fetch('https://maged-tech-tools.vercel.app/api/gemini', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    textElement.innerHTML = data.candidates[0].content.parts[0].text;
+                } else {
+                    textElement.innerHTML = "يبدو أن طاقتك اليوم محيرة للذكاء الاصطناعي! 😅";
+                }
+            } catch (error) {
+                textElement.innerHTML = "خطأ في الاتصال، يبدو أن السيرفر يحتاج لكاسة متة! 🧉";
+            }
+
+            // إخفاء النتيجة بعد 7 ثواني
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 7000);
+        }
+
+        // --- كود التصوير والتسجيل ---
         const captureBtn = document.getElementById('capture-btn');
         const captureInner = document.querySelector('.capture-inner');
         let mediaRecorder, recordedChunks = [], pressTimer, isLongPress = false;
