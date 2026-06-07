@@ -151,8 +151,8 @@
         const statusIcon = document.getElementById('resultStatusIcon');
 
         try {
-            // هنا نرسل الطلب للسيرفر الداخلي بدلاً من جوجل مباشرة
-            const response = await fetch('/api/gemini', {
+            // هنا نرسل الطلب لسيرفر Vercel الخاص بمنصتك مباشرة وبدون وسيط محلي
+            const response = await fetch('https://maged-tech-tools.vercel.app/api/gemini', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(bodyData)
