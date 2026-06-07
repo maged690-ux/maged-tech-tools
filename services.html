@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خدمات Maged Tech السحرية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background-color: #05050a; color: #fff; padding: 20px; text-align: center; }
+        .container { max-width: 600px; margin: auto; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; border: 1px solid rgba(0, 242, 255, 0.3); }
+        h1 { color: #00f2ff; text-shadow: 0 0 10px rgba(0, 242, 255, 0.5); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .btn-tool { background: rgba(0,0,0,0.5); border: 2px solid; padding: 15px; border-radius: 15px; cursor: pointer; color: #fff; font-weight: bold; font-family: 'Tajawal'; transition: 0.3s; }
+        .btn-tool:hover { transform: scale(1.05); }
+        .btn-1 { border-color: #ff0055; } .btn-1:hover { background: #ff0055; }
+        .btn-2 { border-color: #00f2ff; } .btn-2:hover { background: #00f2ff; color: #000; }
+        .btn-3 { border-color: #ffaa00; } .btn-3:hover { background: #ffaa00; color: #000; }
+        .btn-4 { border-color: #aa00ff; } .btn-4:hover { background: #aa00ff; }
+        
+        input { width: 100%; padding: 12px; margin-bottom: 15px; background: #111; border: 1px solid #333; color: #fff; border-radius: 10px; font-family: 'Tajawal'; box-sizing: border-box;}
+        #result-box { display: none; background: #1a1a24; padding: 20px; border-radius: 15px; text-align: right; margin-top: 20px; border: 1px dashed #00f2ff; }
+        .subscribe-btn { display: block; background: #ff0000; color: #fff; text-decoration: none; padding: 10px; border-radius: 10px; margin-top: 15px; font-weight: bold; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>أدوات Maged Tech السريعة 🚀</h1>
+    <p>أنجز أعمالك بكبسة زر عبر الذكاء الاصطناعي</p>
+
+    <input type="text" id="userInput" placeholder="اكتب طلبك هنا (مثال: اسم طفل، فكرة بوست، أو موضوع إيميل)...">
+
+    <div class="grid">
+        <button class="btn-tool btn-1" onclick="callAI('post')"><i class="fa-solid fa-pen"></i> كاتب البوستات</button>
+        <button class="btn-tool btn-2" onclick="callAI('email')"><i class="fa-solid fa-envelope"></i> رسالة رسمية</button>
+        <button class="btn-tool btn-3" onclick="callAI('moni')"><i class="fa-solid fa-book"></i> قصة من موني 🐒</button>
+        <button class="btn-tool btn-4" onclick="callAI('abboud')"><i class="fa-solid fa-face-laugh-squint"></i> نكت عبود 🎭</button>
+    </div>
+
+    <div id="loading" style="display:none; color: #00f2ff;">جاري التحضير... ⏳</div>
+
+    <div id="result-box">
+        <div id="ai-response" style="white-space: pre-line; line-height: 1.6;"></div>
+        <a href="https://youtube.com/@magedtech" target="_blank" class="subscribe-btn">
+            <i class="fa-brands fa-youtube"></i> ادعمنا باشتراك في اليوتيوب لتبقى الخدمة مجانية!
+        </a>
+    </div>
+</div>
+
+<script>
+async function callAI(type) {
+    const input = document.getElementById('userInput').value;
+    if (!input) { alert("اكتب طلبك في المربع أولاً!"); return; }
+
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('result-box').style.display = 'none';
+
+    let systemPrompt = "";
+    if (type === 'post') systemPrompt = "أنت مسوق إلكتروني محترف. اكتب بوست جذاب للسوشيال ميديا عن الموضوع التالي مع إيموجي وهاشتاجات: " + input;
+    if (type === 'email') systemPrompt = "أنت مساعد إداري. حول هذا الكلام العامي إلى رسالة رسمية أو إيميل احترافي منسق: " + input;
+    if (type === 'moni') systemPrompt = "أنت قرد شمبانزي مرح وذكي اسمك 'موني' وتعمل كمساعد تقني. اكتب قصة قصيرة طريفة قبل النوم للطفل المذكور اسمه، تتضمن نصيحة تكنولوجية مبسطة: " + input;
+    if (type === 'abboud') systemPrompt = "أنت شخصية خيالية كوميدية اسمك 'عبود'. أعطني نكتة مضحكة جداً أو فكرة مقلب طريف تتعلق بهذا الموضوع: " + input;
+
+    const requestBody = {
+        contents: [{ parts: [{ text: systemPrompt + "\n\n(في نهاية النص دائماً أضف هذه الجملة حرفياً: ✨ تم التوليد عبر منصة Maged Tech)" }] }]
+    };
+
+    try {
+        const response = await fetch('https://maged-tech-tools.vercel.app/api/gemini', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody)
+        });
+        const data = await response.json();
+        
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('ai-response').innerText = data.candidates[0].content.parts[0].text;
+        document.getElementById('result-box').style.display = 'block';
+    } catch (e) {
+        document.getElementById('loading').style.display = 'none';
+        alert("حدث خطأ في الاتصال، حاول مرة أخرى!");
+    }
+}
+</script>
+
+</body>
+</html>
