@@ -28,12 +28,23 @@
         .divider:not(:empty)::before { margin-left: .25em; }
         .divider:not(:empty)::after { margin-right: .25em; }
 
+        /* حاوية الصورة وتأثير السكنر */
+        .image-container { position: relative; width: 100%; max-height: 250px; display: none; margin-bottom: 15px; overflow: hidden; border-radius: 12px; }
+        #preview-img { width: 100%; max-height: 250px; object-fit: contain; border-radius: 12px; display: block; }
+        
+        /* خط الليزر الخاص بالماسح */
+        .scanner-line { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(to bottom, transparent, var(--neon-pink), transparent); box-shadow: 0 0 15px var(--neon-pink), 0 0 25px var(--neon-pink); animation: scanEffect 2s linear infinite; z-index: 5; }
+        @keyframes scanEffect {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+
         /* قسم رفع الصور */
         .upload-area { border: 2px dashed rgba(255, 0, 85, 0.3); border-radius: 18px; padding: 30px 20px; background: rgba(0,0,0,0.4); cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; margin-bottom: 15px; }
         .upload-area:hover { border-color: var(--neon-pink); background: rgba(255, 0, 85, 0.02); }
         .upload-area i { font-size: 3rem; color: var(--neon-pink); margin-bottom: 10px; }
         .upload-area p { margin: 5px 0; color: #ccc; font-size: 1rem; }
-        #preview-img { width: 100%; max-height: 250px; object-fit: contain; border-radius: 12px; display: none; margin-bottom: 15px; }
         
         button { font-family: 'Tajawal', sans-serif; font-weight: 900; padding: 15px; border: none; border-radius: 14px; cursor: pointer; width: 100%; font-size: 1.1rem; transition: all 0.3s; }
         .scan-btn { background: linear-gradient(45deg, var(--neon-pink), #b30047); color: #fff; box-shadow: 0 5px 15px rgba(255, 0, 85, 0.2); }
@@ -65,7 +76,11 @@
 
     <div class="divider">أو الفحص البصري بالصور</div>
 
-    <img id="preview-img" alt="معاينة القطعة">
+    <div class="image-container" id="imgContainer">
+        <div class="scanner-line" id="scannerLine"></div>
+        <img id="preview-img" alt="معاينة القطعة">
+    </div>
+
     <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
         <i class="fa-solid fa-camera" style="text-shadow: 0 0 15px var(--neon-pink);"></i>
         <p style="font-weight: bold; color: #fff; font-size: 1.15rem;">ارفع صورة البوردة، الشاشة، أو أي قطعة 📸</p>
@@ -91,7 +106,6 @@
     function translateError(errorObj) {
         if (!errorObj) return "حدث خطأ غير معروف في السيرفر.";
         
-        // تحويل الخطأ إلى نص أياً كان نوعه (String أو Object) واختبار الحروف الصغيرة
         let errorMessage = "";
         if (typeof errorObj === 'object') {
             errorMessage = JSON.stringify(errorObj).toLowerCase();
@@ -114,20 +128,57 @@
         return "تنبيه من السيرفر: " + (errorObj.message || JSON.stringify(errorObj));
     }
 
-    // دالة عرض الصورة عند اختيارها
+    // دالة عرض الصورة وضغطها تلقائياً لحل مشكلة الحجم الكبير
     function loadPreview(event) {
         const file = event.target.files[0];
         if (file) {
             imageMimeType = file.type;
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = document.getElementById('preview-img');
-                img.src = e.target.result;
-                img.style.display = "block";
-                base64ImageData = e.target.result.split(',')[1];
-                document.getElementById('uploadArea').style.padding = "15px 20px";
-                document.getElementById('scanBtn').style.display = "block";
-                document.getElementById('aiResult').style.display = "none";
+                const imgElement = document.createElement('img');
+                imgElement.src = e.target.result;
+
+                imgElement.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = imgElement.width;
+                    let height = imgElement.height;
+                    
+                    const MAX_WIDTH = 1200;
+                    const MAX_HEIGHT = 1200;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(imgElement, 0, 0, width, height);
+
+                    const compressedDataUrl = canvas.toDataURL(imageMimeType, 0.7);
+                    
+                    // إظهار حاوية المعاينة
+                    document.getElementById('imgContainer').style.display = "block";
+                    const img = document.getElementById('preview-img');
+                    img.src = compressedDataUrl;
+                    
+                    // إخفاء خط السكنر مؤقتاً لحين بدء الفحص
+                    document.getElementById('scannerLine').style.display = "none";
+                    
+                    base64ImageData = compressedDataUrl.split(',')[1];
+                    
+                    document.getElementById('uploadArea').style.padding = "15px 20px";
+                    document.getElementById('scanBtn').style.display = "block";
+                    document.getElementById('aiResult').style.display = "none";
+                };
             }
             reader.readAsDataURL(file);
         }
@@ -139,16 +190,17 @@
         if (!prompt) { alert("اكتب العطل أولاً يا هندسة!"); return; }
         
         prepareUIForLoading("textSearchBtn");
-
-        const requestBody = {
-            contents: [{ parts: [{ text: `أنت مهندس خبير في صيانة الهواتف والإلكترونيات في منصة Maged Tech. أجب على هذا الاستفسار بدقة وااحترافية وقدم مسارات أو حلول عملية: ${prompt}` }] }]
-        };
-        await fetchFromVercel(requestBody, "textSearchBtn", "بحث في قاعدة بيانات الذكاء الاصطناعي 🔎");
+        await fetchFromVercel({
+            contents: [{ parts: [{ text: `أنت مهندس خبير في صيانة الهواتف والإلكترونيات في منصة Maged Tech. أجب على هذا الاستفسار بدقة واحترافية وقدم مسارات أو حلول عملية: ${prompt}` }] }]
+        }, "textSearchBtn", "بحث في قاعدة بيانات الذكاء الاصطناعي 🔎");
     }
 
     // دالة فحص الصور
     async function startImageAIScan() {
         prepareUIForLoading("scanBtn");
+        
+        // تشغيل تأثير خط الليزر (السكنر) عند بدء الفحص الفعلي
+        document.getElementById('scannerLine').style.display = "block";
 
         const requestBody = {
             contents: [{
@@ -170,7 +222,7 @@
         btn.innerText = "جاري التحليل الهندسي...";
     }
 
-    // دالة الاتصال بسيرفر Vercel المخفي
+    // دالة الاتصال بسيرفر Vercel
     async function fetchFromVercel(bodyData, buttonId, originalBtnText) {
         const btn = document.getElementById(buttonId);
         const resultBox = document.getElementById('aiResult');
@@ -186,11 +238,12 @@
 
             const data = await response.json();
             
+            // إيقاف الإشعارات والماسح عند انتهاء الطلب
             document.getElementById('loadingSpinner').style.display = "none";
+            document.getElementById('scannerLine').style.display = "none";
             btn.disabled = false;
             btn.innerText = originalBtnText;
 
-            // التحقق الدقيق جداً من وجود أي خطأ راجع من محرك قوقل
             if (data.error) {
                 statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> رسالة من النظام:`;
                 details.innerHTML = translateError(data.error);
@@ -205,6 +258,7 @@
 
         } catch (error) {
             document.getElementById('loadingSpinner').style.display = "none";
+            document.getElementById('scannerLine').style.display = "none";
             btn.disabled = false;
             btn.innerText = originalBtnText;
             statusIcon.innerHTML = `<i class="fa-solid fa-wifi" style="color:var(--neon-pink)"></i> خطأ في الاتصال:`;
