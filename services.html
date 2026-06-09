@@ -72,9 +72,7 @@
         
         <button class="btn-tool btn-4" onclick="callAI('abboud')">
             <span class="info-icon" onclick="showInfo(event, 'يولد لك نكتة مضحكة جداً أو فكرة مقلب طريف من عالم شخصية عبود الكوميدية.')">
-                <i class="fa-solid fa-circle-info"></i>
-            </span>
-            <i class="fa-solid fa-face-laugh-squint" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <i class="fa-solid fa-face-laugh-squint" style="font-size: 2rem; margin-bottom: 10px;"></i>
             نكت عبود 🎭
         </button>
     </div>
@@ -83,7 +81,6 @@
         <i class="fa-solid fa-spinner fa-spin"></i> جاري التحضير...
     </div>
 
-    <!-- الفقاعة العائمة للشرح -->
     <div id="info-bubble"></div>
 
     <div id="result-box">
@@ -110,11 +107,31 @@ function showInfo(event, text) {
     }, 4500); // تختفي الفقاعة تلقائياً بعد 4.5 ثواني
 }
 
+// دالة تحويل أخطاء النظام إلى لغة عربية مفهومة وموحدة
+function translateError(errorKey) {
+    if (!errorKey) return "حدث تنبيه غير متوقع في معالجة طلبك.";
+    const errorMessage = errorKey.toString().toLowerCase();
+
+    if (errorMessage.includes("high demand") || errorMessage.includes("spikes in demand") || errorMessage.includes("resource_exhausted")) {
+        return "⚠️ ضغط كبير حالياً على سيرفر الذكاء الاصطناعي. يرجى الانتظار 30 ثانية فقط وإعادة الضغط على الزر.";
+    }
+    
+    if (errorMessage.includes("quota exceeded") || errorMessage.includes("limit") || errorMessage.includes("exceeded quota")) {
+        return "🛑 لقد تم الوصول للحد الأقصى للمحاولات المجانية السريعة في هذه اللحظة. انتظر 15 ثانية ثم جرب مجدداً.";
+    }
+    
+    if (errorMessage.includes("failed to fetch") || errorMessage.includes("network error") || errorMessage.includes("typerror")) {
+        return "🌐 فشل الاتصال بالسيرفر! تأكد من جودة الإنترنت أو قم بتشغيل الـ VPN الخاص بك ثم أعد المحاولة فوراً.";
+    }
+
+    return "تنبيه من النظام: " + errorKey;
+}
+
 // دالة الاتصال بالذكاء الاصطناعي
 async function callAI(type) {
     const input = document.getElementById('userInput').value;
     if (!input) { 
-        alert("يرجى كتابة طلبك في المربع أولاً!"); 
+        alert("يرجى كتابة طلبك في المربع أولاً يا هندسة!"); 
         return; 
     }
 
@@ -140,11 +157,23 @@ async function callAI(type) {
         const data = await response.json();
         
         document.getElementById('loading').style.display = 'none';
-        document.getElementById('ai-response').innerText = data.candidates[0].content.parts[0].text;
-        document.getElementById('result-box').style.display = 'block';
+        
+        // التحقق مما إذا كان السيرفر أرسل كود خطأ داخلي (مثل تجاوز الكوتا)
+        if (data.error) {
+            document.getElementById('ai-response').innerText = translateError(data.error.message || data.error);
+            document.getElementById('result-box').style.display = 'block';
+        } else if (data.candidates && data.candidates[0].content.parts[0].text) {
+            document.getElementById('ai-response').innerText = data.candidates[0].content.parts[0].text;
+            document.getElementById('result-box').style.display = 'block';
+        } else {
+            document.getElementById('ai-response').innerText = "حدث خطأ غير معروف أثناء استلام البيانات.";
+            document.getElementById('result-box').style.display = 'block';
+        }
     } catch (e) {
         document.getElementById('loading').style.display = 'none';
-        alert("حدث خطأ في الاتصال بالسيرفر، يرجى المحاولة مرة أخرى!");
+        // تصفية أخطاء الشبكة والاتصال عبر الدالة العربية
+        document.getElementById('ai-response').innerText = translateError(e.message);
+        document.getElementById('result-box').style.display = 'block';
     }
 }
 </script>
