@@ -87,6 +87,26 @@
     let base64ImageData = "";
     let imageMimeType = "";
 
+    // دالة ذكية لتحويل أخطاء النظام إلى لغة عربية مفهومة بالكامل
+    function translateError(errorKey) {
+        if (!errorKey) return "حدث خطأ غير معروف في السيرفر.";
+        const errorMessage = errorKey.toString().toLowerCase();
+
+        if (errorMessage.includes("high demand") || errorMessage.includes("spikes in demand") || errorMessage.includes("resource_exhausted")) {
+            return "الضغط حالياً مرتفع جداً على سيرفر الذكاء الاصطناعي العالمي. يرجى الانتظار نصف دقيقة فقط وإعادة المحاولة الفورية ⏳";
+        }
+        
+        if (errorMessage.includes("quota exceeded") || errorMessage.includes("limit") || errorMessage.includes("exceeded quota")) {
+            return "لقد تم تجاوز الحد المسموح به للمحاولات المجانية السريعة حالياً. يرجى الانتظار 15 ثانية ثم اضغط إعادة المحاولة مجدداً 🛑";
+        }
+        
+        if (errorMessage.includes("failed to fetch") || errorMessage.includes("network error") || errorMessage.includes("typerror")) {
+            return "فشل الاتصال بالسيرفر الرئيسي! يرجى التأكد من تشغيل الـ VPN أو بروكسي المتصفح لديك ثم أعد المحاولة الفورية 🌐";
+        }
+
+        return "تنبيه من السيرفر: " + errorKey;
+    }
+
     // دالة عرض الصورة عند اختيارها
     function loadPreview(event) {
         const file = event.target.files[0];
@@ -151,7 +171,6 @@
         const statusIcon = document.getElementById('resultStatusIcon');
 
         try {
-            // هنا نرسل الطلب لسيرفر Vercel الخاص بمنصتك مباشرة وبدون وسيط محلي
             const response = await fetch('https://maged-tech-tools.vercel.app/api/gemini', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -166,13 +185,13 @@
 
             if (data.error) {
                 statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> رسالة من النظام:`;
-                details.innerHTML = data.error.message || data.error;
+                details.innerHTML = translateError(data.error.message || data.error);
             } else if (data.candidates && data.candidates[0].content.parts[0].text) {
                 statusIcon.innerHTML = `<i class="fa-solid fa-microchip"></i> التقرير الهندسي من Maged Tech:`;
                 details.innerHTML = data.candidates[0].content.parts[0].text;
             } else {
                  statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> خطأ غير متوقع:`;
-                 details.innerHTML = "حدث خطأ في استلام الرد من السيرفر.";
+                 details.innerHTML = "حدث خطأ غير متوقع في استلام الرد من السيرفر الأوتوماتيكي.";
             }
             resultBox.style.display = "block";
 
@@ -181,7 +200,7 @@
             btn.disabled = false;
             btn.innerText = originalBtnText;
             statusIcon.innerHTML = `<i class="fa-solid fa-wifi" style="color:var(--neon-pink)"></i> خطأ في الاتصال:`;
-            details.innerHTML = `التفاصيل: ${error.message}`;
+            details.innerHTML = translateError(error.message);
             resultBox.style.display = "block";
         }
     }
