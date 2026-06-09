@@ -87,24 +87,31 @@
     let base64ImageData = "";
     let imageMimeType = "";
 
-    // دالة ذكية لتحويل أخطاء النظام إلى لغة عربية مفهومة بالكامل
-    function translateError(errorKey) {
-        if (!errorKey) return "حدث خطأ غير معروف في السيرفر.";
-        const errorMessage = errorKey.toString().toLowerCase();
+    // دالة فحص وتصفية وترجمة الأخطاء بشكل صارم
+    function translateError(errorObj) {
+        if (!errorObj) return "حدث خطأ غير معروف في السيرفر.";
+        
+        // تحويل الخطأ إلى نص أياً كان نوعه (String أو Object) واختبار الحروف الصغيرة
+        let errorMessage = "";
+        if (typeof errorObj === 'object') {
+            errorMessage = JSON.stringify(errorObj).toLowerCase();
+        } else {
+            errorMessage = errorObj.toString().toLowerCase();
+        }
 
         if (errorMessage.includes("high demand") || errorMessage.includes("spikes in demand") || errorMessage.includes("resource_exhausted")) {
-            return "الضغط حالياً مرتفع جداً على سيرفر الذكاء الاصطناعي العالمي. يرجى الانتظار نصف دقيقة فقط وإعادة المحاولة الفورية ⏳";
+            return "الضغط حالياً مرتفع جداً على سيرفر الذكاء الاصطناعي العالمي. يرجى الانتظار نصف دقيقة فقط وإعادة المحاولة ⏳";
         }
         
-        if (errorMessage.includes("quota exceeded") || errorMessage.includes("limit") || errorMessage.includes("exceeded quota")) {
-            return "لقد تم تجاوز الحد المسموح به للمحاولات المجانية السريعة حالياً. يرجى الانتظار 15 ثانية ثم اضغط إعادة المحاولة مجدداً 🛑";
+        if (errorMessage.includes("quota exceeded") || errorMessage.includes("limit") || errorMessage.includes("quota")) {
+            return "لقد تجاوزت الحد المسموح به للمحاولات المجانية (20 فحص). يرجى الانتظار 15 ثانية ثم اضغط إعادة المحاولة مجدداً 🛑";
         }
         
-        if (errorMessage.includes("failed to fetch") || errorMessage.includes("network error") || errorMessage.includes("typerror")) {
-            return "فشل الاتصال بالسيرفر الرئيسي! يرجى التأكد من تشغيل الـ VPN أو بروكسي المتصفح لديك ثم أعد المحاولة الفورية 🌐";
+        if (errorMessage.includes("failed to fetch") || errorMessage.includes("network error") || errorMessage.includes("failed") || errorMessage.includes("typerror")) {
+            return "فشل الاتصال بالسيرفر! يرجى التأكد من تشغيل الـ VPN أو بروكسي الإنترنت لديك وإعادة المحاولة 🌐";
         }
 
-        return "تنبيه من السيرفر: " + errorKey;
+        return "تنبيه من السيرفر: " + (errorObj.message || JSON.stringify(errorObj));
     }
 
     // دالة عرض الصورة عند اختيارها
@@ -134,7 +141,7 @@
         prepareUIForLoading("textSearchBtn");
 
         const requestBody = {
-            contents: [{ parts: [{ text: `أنت مهندس خبير في صيانة الهواتف والإلكترونيات في منصة Maged Tech. أجب على هذا الاستفسار بدقة واحترافية وقدم مسارات أو حلول عملية: ${prompt}` }] }]
+            contents: [{ parts: [{ text: `أنت مهندس خبير في صيانة الهواتف والإلكترونيات في منصة Maged Tech. أجب على هذا الاستفسار بدقة وااحترافية وقدم مسارات أو حلول عملية: ${prompt}` }] }]
         };
         await fetchFromVercel(requestBody, "textSearchBtn", "بحث في قاعدة بيانات الذكاء الاصطناعي 🔎");
     }
@@ -183,9 +190,10 @@
             btn.disabled = false;
             btn.innerText = originalBtnText;
 
+            // التحقق الدقيق جداً من وجود أي خطأ راجع من محرك قوقل
             if (data.error) {
                 statusIcon.innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color:var(--neon-pink)"></i> رسالة من النظام:`;
-                details.innerHTML = translateError(data.error.message || data.error);
+                details.innerHTML = translateError(data.error);
             } else if (data.candidates && data.candidates[0].content.parts[0].text) {
                 statusIcon.innerHTML = `<i class="fa-solid fa-microchip"></i> التقرير الهندسي من Maged Tech:`;
                 details.innerHTML = data.candidates[0].content.parts[0].text;
@@ -200,7 +208,7 @@
             btn.disabled = false;
             btn.innerText = originalBtnText;
             statusIcon.innerHTML = `<i class="fa-solid fa-wifi" style="color:var(--neon-pink)"></i> خطأ في الاتصال:`;
-            details.innerHTML = translateError(error.message);
+            details.innerHTML = translateError(error);
             resultBox.style.display = "block";
         }
     }
