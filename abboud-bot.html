@@ -18,18 +18,25 @@
         .header-title h2 { margin: 0; font-size: 1.2rem; color: var(--neon); }
         .header-title span { font-size: 0.8rem; color: #aaa; }
 
-        .chat-box { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .chat-box { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
         
         .message { max-width: 85%; padding: 12px 16px; border-radius: 15px; font-size: 1rem; line-height: 1.5; position: relative; }
         .msg-abboud { background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); align-self: flex-start; border-top-right-radius: 0; }
-        .msg-user { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); align-self: flex-end; border-top-left-radius: 0; }
+        .msg-user { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); align-self: flex-end; border-top-left-radius: 0; color: #00f2ff; font-weight: bold; }
         
         .options-container { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
         .btn-option { background: var(--chat-bg); border: 1px solid var(--neon); color: var(--neon); padding: 12px; border-radius: 10px; font-family: 'Tajawal'; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; text-align: right; }
         .btn-option:hover { background: var(--neon); color: #000; }
         
-        .ai-vision-btn { background: linear-gradient(45deg, #ff0055, #b30047); border: none; color: white; margin-top: 10px; }
+        .ai-vision-btn { background: linear-gradient(45deg, #ff0055, #b30047); border: none; color: white; margin-top: 10px; text-align: center; }
         .ai-vision-btn:hover { background: #ff0055; color: white; transform: scale(1.02); }
+        
+        /* مؤشر الكتابة */
+        .typing-indicator { display: none; padding: 10px 15px; background: rgba(0, 255, 136, 0.1); border-radius: 15px; align-self: flex-start; border-top-right-radius: 0; border: 1px solid rgba(0, 255, 136, 0.3); width: fit-content; }
+        .dot { display: inline-block; width: 6px; height: 6px; background-color: var(--neon); border-radius: 50%; margin: 0 2px; animation: bounce 1.3s linear infinite; }
+        .dot:nth-child(2) { animation-delay: -1.1s; }
+        .dot:nth-child(3) { animation-delay: -0.9s; }
+        @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }
     </style>
 </head>
 <body>
@@ -45,47 +52,56 @@
     </header>
 
     <div class="chat-box" id="chatBox">
-        <!-- الرسالة الترحيبية -->
-        <div class="message msg-abboud">
+        <div class="message msg-abboud" id="initial-msg">
             أهلين يا معلم! أنا عبود، مساعدك بالورشة. هات لشوف، شو الجهاز اللي مجننك اليوم؟ المشكلة بالهاردوير ولا بدك نشتغل سوفت وير وتخطي حمايات؟
-            
-            <div class="options-container" id="step1-options">
-                <button class="btn-option" onclick="selectOption('هاردوير (أعطال بورد، شاشة، شحن)', 'hardware')"><i class="fa-solid fa-microchip"></i> هاردوير وصيانة قطع</button>
-                <button class="btn-option" onclick="selectOption('سوفت وير (برمجة، تخطي FRP، تفليش)', 'software')"><i class="fa-solid fa-laptop-code"></i> سوفت وير وتخطي حمايات</button>
+            <div class="options-container">
+                <button class="btn-option" onclick="selectOption(this, 'هاردوير وصيانة قطع', 'hardware')"><i class="fa-solid fa-microchip"></i> هاردوير وصيانة قطع</button>
+                <button class="btn-option" onclick="selectOption(this, 'سوفت وير وتخطي حمايات', 'software')"><i class="fa-solid fa-laptop-code"></i> سوفت وير وتخطي حمايات</button>
             </div>
+        </div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
         </div>
     </div>
 </div>
 
 <script>
     const chatBox = document.getElementById('chatBox');
+    const typingIndicator = document.getElementById('typingIndicator');
 
-    function selectOption(userText, nextStep) {
-        // إخفاء الأزرار السابقة
-        const currentOptions = chatBox.querySelectorAll('.options-container');
-        currentOptions.forEach(opt => opt.style.display = 'none');
+    function selectOption(buttonElement, userText, nextStep) {
+        // إخفاء الأزرار من الرسالة الحالية
+        buttonElement.parentElement.style.display = 'none';
 
-        // إضافة رد المستخدم للشاشة
-        chatBox.innerHTML += `<div class="message msg-user">${userText}</div>`;
+        // إضافة رد الفني (المستخدم)
+        const userMsg = document.createElement('div');
+        userMsg.className = 'message msg-user';
+        userMsg.innerText = userText;
+        chatBox.insertBefore(userMsg, typingIndicator);
+        
         scrollToBottom();
 
-        // تأخير بسيط لمحاكاة كتابة عبود
+        // إظهار مؤشر الكتابة لمحاكاة تفكير عبود
+        typingIndicator.style.display = 'block';
+
         setTimeout(() => {
+            typingIndicator.style.display = 'none';
             loadNextStep(nextStep);
-        }, 600);
+        }, 1000);
     }
 
     function loadNextStep(step) {
         let abboudResponse = "";
         
+        // المسارات الرئيسية
         if (step === 'hardware') {
             abboudResponse = `
                 <div class="message msg-abboud">
-                    حلو كتير، شغل كاوية اللحام وركز معي. شو قطاع الهاردوير اللي فاصل بالجهاز؟
+                    حلو كتير، شغل كاوية اللحام وركز معي. شو العطل اللي فاصل بالجهاز؟
                     <div class="options-container">
-                        <button class="btn-option" onclick="selectOption('عطل إضاءة وبيانات', 'display_issue')">إضاءة وبيانات (LCD / OLED)</button>
-                        <button class="btn-option" onclick="selectOption('عطل شحن وهمي أو تسريب', 'charging_issue')">مشاكل الشحن والطاقة</button>
-                        <button class="btn-option btn-option ai-vision-btn" onclick="window.location.href='ai-vision.html'"><i class="fa-solid fa-camera"></i> العطل معقد؟ ارفع صورة البوردة للذكاء الاصطناعي</button>
+                        <button class="btn-option" onclick="selectOption(this, 'عطل إضاءة وبيانات', 'display_issue')">إضاءة وبيانات (LCD / OLED)</button>
+                        <button class="btn-option" onclick="selectOption(this, 'عطل شحن وهمي أو تسريب', 'charging_issue')">مشاكل الشحن والطاقة</button>
                     </div>
                 </div>
             `;
@@ -93,28 +109,96 @@
         else if (step === 'software') {
             abboudResponse = `
                 <div class="message msg-abboud">
-                    جهز الكيبل يا معلم. شو العملية المطلوبة؟
+                    جهز الكيبل يا معلم. بدك نتخطى FRP ولا نفلش؟ (قريباً رح أتدرب عليهم، خلّينا بالهاردوير هلا!)
                     <div class="options-container">
-                        <button class="btn-option" onclick="selectOption('تخطي حساب جوجل (FRP)', 'frp_bypass')">تخطي حماية FRP</button>
-                        <button class="btn-option" onclick="selectOption('تفليش روم وإصلاح بوت', 'flashing')">تفليش أو إصلاح البوت</button>
+                        <button class="btn-option" onclick="selectOption(this, 'نرجع للهاردوير', 'hardware')">رجوع للهاردوير</button>
                     </div>
                 </div>
             `;
         }
+        
+        // ------------------ شجرة قرارات الإضاءة والبيانات (مطابقة للفيديو) ------------------
         else if (step === 'display_issue') {
-            // هنا تبدأ شجرة القرارات اللي شفناها بالفيديو
             abboudResponse = `
                 <div class="message msg-abboud">
-                    تمام، متل ما حكى المهندس أمير بالفيديو.. قبل ما نفحص الممانعات، الشاشة اللي راكبة شو نوعها؟
+                    وصلت يا معلم! قبل ما نمسك الآفو ونقيس الممانعات.. الشاشة اللي راكبة شو نوعها؟
                     <div class="options-container">
-                        <button class="btn-option" onclick="selectOption('شاشة IPS', 'ips_screen')">IPS LCD</button>
-                        <button class="btn-option" onclick="selectOption('شاشة OLED / AMOLED', 'oled_screen')">OLED / AMOLED</button>
+                        <button class="btn-option" onclick="selectOption(this, 'شاشة IPS', 'ips_screen')">IPS (LCD)</button>
+                        <button class="btn-option" onclick="selectOption(this, 'شاشة OLED', 'oled_screen')">OLED / AMOLED</button>
+                    </div>
+                </div>
+            `;
+        }
+        else if (step === 'ips_screen') {
+            abboudResponse = `
+                <div class="message msg-abboud">
+                    تمام، الدايرة IPS. ركز منيح بالشاشة تحت الضو.. شايف أي بيانات (لوغو خفيف) ولا شاشة سودة تماماً متل حظي؟
+                    <div class="options-container">
+                        <button class="btn-option" onclick="selectOption(this, 'لا أرى بيانات (شاشة سوداء)', 'no_data')">لا أرى بيانات أبداً</button>
+                        <button class="btn-option" onclick="selectOption(this, 'أرى بيانات خفيفة', 'has_data')">شايف بيانات بس مافي إضاءة</button>
+                    </div>
+                </div>
+            `;
+        }
+        else if (step === 'no_data') {
+            abboudResponse = `
+                <div class="message msg-abboud">
+                    يا ساتر! معناها الدايرة قاطعة بيانات. روح قيس الممانعات على كونكتور الشاشة (VSN, VSP). إذا الممانعات سليمة لازم نعمل "عملية التفعيل" لآيسي الإضاءة. الآيسي اللي عندك كم إجر (طرف)؟
+                    <div class="options-container">
+                        <button class="btn-option" onclick="selectOption(this, 'الآيسي 6 أطراف', 'ic_activate')">6 أطراف</button>
+                        <button class="btn-option" onclick="selectOption(this, 'الآيسي 15 طرف', 'ic_activate')">15 طرف</button>
+                        <button class="btn-option" onclick="selectOption(this, 'الآيسي 25 طرف', 'ic_activate')">25 طرف (مثل الريدمي بالفيديو)</button>
+                    </div>
+                </div>
+            `;
+        }
+        else if (step === 'ic_activate') {
+            abboudResponse = `
+                <div class="message msg-abboud">
+                    وحش! روح على مخطط البورنيو وطلع نقاط التست بوينت (EN1 و EN2). أعطي نبضة تفعيل للآيسي.. طمني، الجهاز استجاب ونوّر معك؟
+                    <div class="options-container">
+                        <button class="btn-option" onclick="selectOption(this, 'إي نور معي واشتغل!', 'ic_responded')">استجاب ونور الإضاءة</button>
+                        <button class="btn-option" onclick="selectOption(this, 'لا، ما نور', 'ic_failed')">ما نور لسة معند</button>
+                    </div>
+                </div>
+            `;
+        }
+        else if (step === 'ic_responded') {
+            abboudResponse = `
+                <div class="message msg-abboud">
+                    عاش يا معلم! هيك خلصنا من الإضاءة وثبتنا إنها شغالة. بما إنو لسة البيانات قاطعة، روح شيك على فولت الـ 1.8V وإذا كان عليه بروتوكول I2C (مسارات SCL و SDA)، تأكد منهم وعوض المسار المقطوع. 
+                    <br><br>
+                    إذا حسيت البوردة معقدة وفيها قطع محروقة، صورلي إياها وخلي الذكاء الاصطناعي تبعنا يفصفصها!
+                    <div class="options-container">
+                        <button class="btn-option ai-vision-btn" onclick="window.location.href='ai-vision.html'"><i class="fa-solid fa-camera"></i> فحص البوردة بالذكاء الاصطناعي (AI Vision)</button>
+                        <button class="btn-option" onclick="selectOption(this, 'شكراً عبود', 'finish')">تمام، رح اشتغل بإيدي</button>
+                    </div>
+                </div>
+            `;
+        }
+        else if (step === 'finish') {
+            abboudResponse = `
+                <div class="message msg-abboud">
+                    بالتوفيق يا معلم ماجد.. أنا هون بالورشة ناطرك إذا لزمك شي تاني! 🔧☕
+                </div>
+            `;
+        }
+        // مسارات فرعية غير مكتملة
+        else {
+            abboudResponse = `
+                <div class="message msg-abboud">
+                    هاد العطل لسة عم نبرمجه يا معلم. بس لا تاكل هم، فيك ترفع صورة البوردة وبنشوفها بالـ AI!
+                    <div class="options-container">
+                        <button class="btn-option ai-vision-btn" onclick="window.location.href='ai-vision.html'"><i class="fa-solid fa-camera"></i> فحص البوردة بالذكاء الاصطناعي</button>
                     </div>
                 </div>
             `;
         }
 
-        chatBox.innerHTML += abboudResponse;
+        const msgDiv = document.createElement('div');
+        msgDiv.innerHTML = abboudResponse;
+        chatBox.insertBefore(msgDiv, typingIndicator);
+        
         scrollToBottom();
     }
 
