@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>maged tech | المساعد عبود للصيانة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --neon: #00ff88; --bg: #05050a; --chat-bg: #111116; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: #fff; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; }
+        
+        .chat-container { width: 100%; max-width: 500px; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border-radius: 24px; border: 1px solid rgba(0, 255, 136, 0.2); overflow: hidden; display: flex; flex-direction: column; height: 85vh; box-shadow: 0 8px 32px rgba(0,0,0,0.6); }
+        
+        header { background: rgba(0, 255, 136, 0.1); padding: 15px 20px; display: flex; align-items: center; border-bottom: 1px solid rgba(0, 255, 136, 0.3); }
+        .back-btn { color: var(--neon); text-decoration: none; font-size: 1.5rem; margin-left: 15px; }
+        .header-title { display: flex; flex-direction: column; }
+        .header-title h2 { margin: 0; font-size: 1.2rem; color: var(--neon); }
+        .header-title span { font-size: 0.8rem; color: #aaa; }
+
+        .chat-box { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        
+        .message { max-width: 85%; padding: 12px 16px; border-radius: 15px; font-size: 1rem; line-height: 1.5; position: relative; }
+        .msg-abboud { background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); align-self: flex-start; border-top-right-radius: 0; }
+        .msg-user { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); align-self: flex-end; border-top-left-radius: 0; }
+        
+        .options-container { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .btn-option { background: var(--chat-bg); border: 1px solid var(--neon); color: var(--neon); padding: 12px; border-radius: 10px; font-family: 'Tajawal'; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; text-align: right; }
+        .btn-option:hover { background: var(--neon); color: #000; }
+        
+        .ai-vision-btn { background: linear-gradient(45deg, #ff0055, #b30047); border: none; color: white; margin-top: 10px; }
+        .ai-vision-btn:hover { background: #ff0055; color: white; transform: scale(1.02); }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <header>
+        <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-right"></i></a>
+        <i class="fa-solid fa-robot" style="font-size: 2rem; color: var(--neon); margin-left: 15px;"></i>
+        <div class="header-title">
+            <h2>المساعد عبود</h2>
+            <span>متصل الآن | ورشة maged tech</span>
+        </div>
+    </header>
+
+    <div class="chat-box" id="chatBox">
+        <!-- الرسالة الترحيبية -->
+        <div class="message msg-abboud">
+            أهلين يا معلم! أنا عبود، مساعدك بالورشة. هات لشوف، شو الجهاز اللي مجننك اليوم؟ المشكلة بالهاردوير ولا بدك نشتغل سوفت وير وتخطي حمايات؟
+            
+            <div class="options-container" id="step1-options">
+                <button class="btn-option" onclick="selectOption('هاردوير (أعطال بورد، شاشة، شحن)', 'hardware')"><i class="fa-solid fa-microchip"></i> هاردوير وصيانة قطع</button>
+                <button class="btn-option" onclick="selectOption('سوفت وير (برمجة، تخطي FRP، تفليش)', 'software')"><i class="fa-solid fa-laptop-code"></i> سوفت وير وتخطي حمايات</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const chatBox = document.getElementById('chatBox');
+
+    function selectOption(userText, nextStep) {
+        // إخفاء الأزرار السابقة
+        const currentOptions = chatBox.querySelectorAll('.options-container');
+        currentOptions.forEach(opt => opt.style.display = 'none');
+
+        // إضافة رد المستخدم للشاشة
+        chatBox.innerHTML += `<div class="message msg-user">${userText}</div>`;
+        scrollToBottom();
+
+        // تأخير بسيط لمحاكاة كتابة عبود
+        setTimeout(() => {
+            loadNextStep(nextStep);
+        }, 600);
+    }
+
+    function loadNextStep(step) {
+        let abboudResponse = "";
+        
+        if (step === 'hardware') {
+            abboudResponse = `
+                <div class="message msg-abboud">
+                    حلو كتير، شغل كاوية اللحام وركز معي. شو قطاع الهاردوير اللي فاصل بالجهاز؟
+                    <div class="options-container">
+                        <button class="btn-option" onclick="selectOption('عطل إضاءة وبيانات', 'display_issue')">إضاءة وبيانات (LCD / OLED)</button>
+                        <button class="btn-option" onclick="selectOption('عطل شحن وهمي أو تسريب', 'charging_issue')">مشاكل الشحن والطاقة</button>
+                        <button class="btn-option btn-option ai-vision-btn" onclick="window.location.href='ai-vision.html'"><i class="fa-solid fa-camera"></i> العطل معقد؟ ارفع صورة البوردة للذكاء الاصطناعي</button>
+                    </div>
+                </div>
+            `;
+        } 
+        else if (step === 'software') {
+            abboudResponse = `
+                <div class="message msg-abboud">
+                    جهز الكيبل يا معلم. شو العملية المطلوبة؟
+                    <div class="options-container">
+                        <button class="btn-option" onclick="selectOption('تخطي حساب جوجل (FRP)', 'frp_bypass')">تخطي حماية FRP</button>
+                        <button class="btn-option" onclick="selectOption('تفليش روم وإصلاح بوت', 'flashing')">تفليش أو إصلاح البوت</button>
+                    </div>
+                </div>
+            `;
+        }
+        else if (step === 'display_issue') {
+            // هنا تبدأ شجرة القرارات اللي شفناها بالفيديو
+            abboudResponse = `
+                <div class="message msg-abboud">
+                    تمام، متل ما حكى المهندس أمير بالفيديو.. قبل ما نفحص الممانعات، الشاشة اللي راكبة شو نوعها؟
+                    <div class="options-container">
+                        <button class="btn-option" onclick="selectOption('شاشة IPS', 'ips_screen')">IPS LCD</button>
+                        <button class="btn-option" onclick="selectOption('شاشة OLED / AMOLED', 'oled_screen')">OLED / AMOLED</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        chatBox.innerHTML += abboudResponse;
+        scrollToBottom();
+    }
+
+    function scrollToBottom() {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+
+</body>
+</html>
