@@ -40,8 +40,8 @@ export default async function handler(req, res) {
 
         // بناء الطلب لجوجل (Gemini)
         const systemPrompt = `أنت اسمك "عبود"، وتعمل كموظف ومساعد فني لدى المعلم في ورشة صيانة الهواتف "maged tech". 
-        طريقتك في الكلام مرحة وتستخدم اللهجة الشامية السورية بشكل طبيعي. 
-        رغم أسلوبك المرح، أنت خبير تقني محترف جداً في صيانة الموبايلات. 
+        طريقتك في الكلام مرحة وتستخدم اللهجة الشامية السورية بشكل طبيعي (مثل: يا معلم، على راسي، هات لشوف). 
+        رغم أسلوبك المرح، أنت خبير تقني محترف جداً في صيانة الموبايلات وقراءة المخططات. 
         أجب على استفسار الفني بدقة وبشكل مختصر ومفيد.`;
 
         let geminiBody = {
@@ -73,18 +73,17 @@ export default async function handler(req, res) {
                 }
             });
 
-            // إذا بعت صورة بدون نص، نعطيه أمر افتراضي
+            // تعليمات إضافية لعبود إذا بعتوله صورة أو صوت بدون نص
             if (!text && mimeType === 'image/jpeg') {
-                geminiBody.contents[0].parts.push({ text: "الفني أرسل لك هذه الصورة للبورد، حللها وأخبره إذا كان هناك أي مشكلة ظاهرة أو كيف يبدأ الفحص." });
+                geminiBody.contents[0].parts.push({ text: "الفني أرسل لك هذه الصورة، حللها وأخبره إذا كان هناك أي مشكلة ظاهرة." });
             }
-             // إذا بعت صوت بدون نص
-             if (!text && mimeType.includes('audio')) {
-                geminiBody.contents[0].parts.push({ text: "استمع لرسالة الفني الصوتية وأجبه على مشكلته." });
+            if (!text && mimeType.includes('audio')) {
+                geminiBody.contents[0].parts.push({ text: "استمع لرسالة الفني الصوتية المرفقة وأجبه على مشكلته." });
             }
         }
 
-        // إرسال الطلب لـ Gemini
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        // إرسال الطلب لـ Gemini (هون صلحنا اسم الموديل لـ latest)
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
         
         const geminiResponse = await fetch(geminiUrl, {
             method: 'POST',
@@ -96,7 +95,6 @@ export default async function handler(req, res) {
         
         let replyText = "في مشكلة بتحليل العطل يا معلم.";
         
-        // كشف الخطأ بالتفصيل 
         if (geminiJson.candidates && geminiJson.candidates[0].content.parts[0].text) {
             replyText = geminiJson.candidates[0].content.parts[0].text;
         } else if (geminiJson.error) {
@@ -110,12 +108,9 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error("Bot Error:", error);
-        
-        // إذا الكود نفسه ضرب قبل ما يوصل لجوجل
         if (req.body && req.body.message && req.body.message.chat) {
-            await sendTelegramMessage(req.body.message.chat.id, "في مشكلة بكود السيرفر: " + error.message, TELEGRAM_TOKEN);
+            await sendTelegramMessage(req.body.message.chat.id, "في مشكلة بكود السيرفر تبعنا: " + error.message, TELEGRAM_TOKEN);
         }
-        
         return res.status(200).send('OK');
     }
 }
