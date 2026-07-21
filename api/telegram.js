@@ -82,8 +82,8 @@ export default async function handler(req, res) {
             }
         }
 
-        // إرسال الطلب لـ Gemini (هون صلحنا اسم الموديل لـ latest)
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
+        // إرسال الطلب لـ Gemini Pro
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${GEMINI_API_KEY}`;
         
         const geminiResponse = await fetch(geminiUrl, {
             method: 'POST',
