@@ -19,11 +19,12 @@ export default async function handler(req, res) {
         if (hasImage) {
             userRequest.contents[0].parts.unshift({
                 text: `أنت الآن في وضع "الفحص البصري الدقيق" كخبير صيانة هواتف. 
-                حلل الصورة بدقة متناهية، ابحث عن آثار حرق، أكسدة، أو اقرأ أي أرقام ظاهرة ولا تخمن معلومات غير موجودة.`
+                حلل الصورة بدقة متناهية، ابحث عن آثار حرق، أكسدة، أو اقرأ أي أرقام ظاهرة (مثل IMEI) بوضوح تام وبدون تأليف.`
             }); 
         }
 
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${GEMINI_API_KEY}`;
+        // غيرنا الموديل للـ flash لحل مشكلة الضغط
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
         const response = await fetch(geminiUrl, {
             method: 'POST',
