@@ -95,11 +95,14 @@ export default async function handler(req, res) {
         const geminiJson = await geminiResponse.json();
         
         let replyText = "في مشكلة بتحليل العطل يا معلم.";
+        
+        // كشف الخطأ بالتفصيل 
         if (geminiJson.candidates && geminiJson.candidates[0].content.parts[0].text) {
             replyText = geminiJson.candidates[0].content.parts[0].text;
         } else if (geminiJson.error) {
-            replyText = "السيرفر عليه ضغط يا معلم، ريح كاوية اللحام ثواني وارجع اسألني!";
-            console.error(geminiJson.error.message);
+            replyText = "يا معلم جوجل عم يعطيني هاد الخطأ: " + geminiJson.error.message;
+        } else {
+            replyText = "خطأ غير معروف من جوجل: " + JSON.stringify(geminiJson);
         }
 
         await sendTelegramMessage(chatId, replyText, TELEGRAM_TOKEN);
@@ -107,6 +110,12 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error("Bot Error:", error);
+        
+        // إذا الكود نفسه ضرب قبل ما يوصل لجوجل
+        if (req.body && req.body.message && req.body.message.chat) {
+            await sendTelegramMessage(req.body.message.chat.id, "في مشكلة بكود السيرفر: " + error.message, TELEGRAM_TOKEN);
+        }
+        
         return res.status(200).send('OK');
     }
 }
