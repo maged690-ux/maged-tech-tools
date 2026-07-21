@@ -56,7 +56,7 @@ export default async function handler(req, res) {
                 });
 
                 if (!text && mimeType.includes('image')) {
-                    parts.push({ text: "حلل هذه الصورة للبورد وأخبرني بالمشكلة." });
+                    parts.push({ text: "حلل هذه الصورة وأخبرني بالمشكلة." });
                 } else if (!text && mimeType.includes('audio')) {
                     parts.push({ text: "استمع لهذه البصمة الصوتية وأجبني." });
                 }
@@ -73,7 +73,8 @@ export default async function handler(req, res) {
         let replyText = "في مشكلة بتحليل العطل يا معلم.";
         
         if (aiData.error) {
-            replyText = "معلش يا معلم، السيرفر عليه ضغط. ريح كاوية اللحام ثواني وارجع اسألني!";
+            // هون خلينا البوت يفضح رسالة الخطأ الحقيقية
+            replyText = "يا معلم جوجل عطاني هاد الخطأ: " + JSON.stringify(aiData.error);
         } else if (aiData.candidates && aiData.candidates[0].content.parts[0].text) {
             replyText = aiData.candidates[0].content.parts[0].text;
         }
