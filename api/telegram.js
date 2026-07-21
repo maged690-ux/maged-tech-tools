@@ -1,52 +1,105 @@
 export default async function handler(req, res) {
-    if (req.method !== 'POST') {
-        return res.status(200).send('Maged Tech Telegram Bot is running!');
-    }
+    if (req.method !== 'POST') return res.status(200).send('OK');
 
-    const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN; 
+    const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
     try {
         const update = req.body;
-        
-        if (!update.message || !update.message.text) {
-            return res.status(200).send('OK');
-        }
+        if (!update.message) return res.status(200).send('OK');
 
         const chatId = update.message.chat.id;
-        const text = update.message.text;
+        
+        // جلب النص إذا موجود (أو النص المرفق مع الصورة)
+        let text = update.message.text || update.message.caption || "";
+        let fileId = null;
+        let mimeType = '';
 
+        // 1. فحص إذا الفني بعت صورة
+        if (update.message.photo) {
+            const photoArray = update.message.photo;
+            fileId = photoArray[photoArray.length - 1].file_id; // أعلى دقة للصورة
+            mimeType = 'image/jpeg';
+        } 
+        // 2. فحص إذا الفني بعت رسالة صوتية
+        else if (update.message.voice) {
+            fileId = update.message.voice.file_id;
+            mimeType = update.message.voice.mime_type || 'audio/ogg';
+        }
+
+        // الرد على أمر البدء
         if (text === '/start') {
-            await sendTelegramMessage(chatId, "أهلين يا معلم! أنا عبود، مساعدك بورشة maged tech. هات لشوف شو العطل اللي مجننك اليوم؟ 🤖🔧", TELEGRAM_TOKEN);
+            await sendTelegramMessage(chatId, "أهلين يا معلم! أنا عبود.. ابعتلي العطل كتابة، أو صورة للبورد، أو حتى بصمة صوتية ورح أعطيك الصافي! 🤖🔧", TELEGRAM_TOKEN);
             return res.status(200).send('OK');
         }
+
+        // إذا مافي لا نص ولا صورة ولا صوت، نتجاهل
+        if (!text && !fileId) return res.status(200).send('OK');
 
         await sendTelegramAction(chatId, 'typing', TELEGRAM_TOKEN);
 
+        // بناء الطلب لجوجل (Gemini)
         const systemPrompt = `أنت اسمك "عبود"، وتعمل كموظف ومساعد فني لدى المعلم في ورشة صيانة الهواتف "maged tech". 
-        طريقتك في الكلام مرحة وتستخدم اللهجة الشامية السورية بشكل طبيعي (مثل: يا معلم، على راسي، هات لشوف، كاوية اللحام، الآفو).
-        رغم أسلوبك المرح، أنت خبير تقني محترف جداً في صيانة الموبايلات.
-        العطل المطلوب حله هو: ${text}`;
+        طريقتك في الكلام مرحة وتستخدم اللهجة الشامية السورية بشكل طبيعي. 
+        رغم أسلوبك المرح، أنت خبير تقني محترف جداً في صيانة الموبايلات. 
+        أجب على استفسار الفني بدقة وبشكل مختصر ومفيد.`;
 
-        // السر هون: تلجرام عم يطلب المساعدة من ملف gemini تبع موقعك الأساسي!
-        const aiResponse = await fetch('https://maged-tech-tools.vercel.app/api/gemini', {
+        let geminiBody = {
+            contents: [{ parts: [{ text: systemPrompt }] }]
+        };
+
+        // إذا في نص، نضيفه
+        if (text) {
+            geminiBody.contents[0].parts.push({ text: `رسالة الفني: ${text}` });
+        }
+
+        // إذا في ملف (صورة أو صوت)، بنسحبه من تلجرام وبنبعته لجوجل
+        if (fileId) {
+            // أ. جلب مسار الملف من تلجرام
+            const fileRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/getFile?file_id=${fileId}`);
+            const fileData = await fileRes.json();
+            const filePath = fileData.result.file_path;
+
+            // ب. تحميل الملف وتحويله
+            const downloadRes = await fetch(`https://api.telegram.org/file/bot${TELEGRAM_TOKEN}/${filePath}`);
+            const arrayBuffer = await downloadRes.arrayBuffer();
+            const base64File = Buffer.from(arrayBuffer).toString('base64');
+
+            // ج. إضافته لجوجل
+            geminiBody.contents[0].parts.push({
+                inline_data: {
+                    mime_type: mimeType,
+                    data: base64File
+                }
+            });
+
+            // إذا بعت صورة بدون نص، نعطيه أمر افتراضي
+            if (!text && mimeType === 'image/jpeg') {
+                geminiBody.contents[0].parts.push({ text: "الفني أرسل لك هذه الصورة للبورد، حللها وأخبره إذا كان هناك أي مشكلة ظاهرة أو كيف يبدأ الفحص." });
+            }
+             // إذا بعت صوت بدون نص
+             if (!text && mimeType.includes('audio')) {
+                geminiBody.contents[0].parts.push({ text: "استمع لرسالة الفني الصوتية وأجبه على مشكلته." });
+            }
+        }
+
+        // إرسال الطلب لـ Gemini
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        
+        const geminiResponse = await fetch(geminiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: systemPrompt }] }]
-            })
+            body: JSON.stringify(geminiBody)
         });
 
-        const aiData = await aiResponse.json();
+        const geminiJson = await geminiResponse.json();
         
-        let replyText = "";
-        
-        // معالجة الرد بنفس طريقة الموقع تماماً
-        if (aiData.error) {
-            replyText = "معلش يا معلم، السيرفر عليه ضغط متل ما بصير بالموقع. ريح كاوية اللحام ثواني وارجع اسألني!";
-        } else if (aiData.candidates && aiData.candidates[0].content.parts[0].text) {
-            replyText = aiData.candidates[0].content.parts[0].text;
-        } else {
-            replyText = "في مشكلة بتحليل العطل يا معلم.";
+        let replyText = "في مشكلة بتحليل العطل يا معلم.";
+        if (geminiJson.candidates && geminiJson.candidates[0].content.parts[0].text) {
+            replyText = geminiJson.candidates[0].content.parts[0].text;
+        } else if (geminiJson.error) {
+            replyText = "السيرفر عليه ضغط يا معلم، ريح كاوية اللحام ثواني وارجع اسألني!";
+            console.error(geminiJson.error.message);
         }
 
         await sendTelegramMessage(chatId, replyText, TELEGRAM_TOKEN);
@@ -58,7 +111,7 @@ export default async function handler(req, res) {
     }
 }
 
-// دوال إرسال الرسائل لتلجرام
+// دوال مساعدة لتلجرام
 async function sendTelegramMessage(chatId, text, token) {
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: 'POST',
