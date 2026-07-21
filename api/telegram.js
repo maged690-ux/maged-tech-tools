@@ -1,67 +1,121 @@
 export default async function handler(req, res) {
-    // 1. التعامل مع طلبات CORS (السماح للموقع وتلجرام بالتواصل مع السيرفر)
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*'); // أو رابط موقعك
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader(
-        'Access-Control-Allow-Headers',
-        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    );
-
-    // الرد على طلبات الـ OPTIONS (جزء من عملية CORS)
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
+    if (req.method !== 'POST') {
+        return res.status(200).send('Maged Tech Telegram Bot is running!');
     }
 
-    // 2. التحقق من مفتاح API لجوجل
-    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-    if (!GEMINI_API_KEY) {
-        return res.status(500).json({ error: "Missing Gemini API Key in server environment variables." });
-    }
+    const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN; 
 
     try {
-        const userRequest = req.body;
+        const update = req.body;
         
-        // 3. إضافة "حقنة الذكاء البصري"
-        // نتحقق إذا كان الطلب بيحتوي على صورة (inline_data)
-        let hasImage = false;
-        if (userRequest.contents && userRequest.contents[0] && userRequest.contents[0].parts) {
-            hasImage = userRequest.contents[0].parts.some(part => part.inline_data);
+        if (!update.message) {
+            return res.status(200).send('OK');
         }
 
-        // إذا في صورة، نضيف تعليمات صارمة ليحلل كمهندس
-        if (hasImage) {
-            const visionPrompt = {
-                text: `أنت الآن في وضع "الفحص البصري الدقيق" كخبير صيانة هواتف. 
-                أمامك صورة للوحة أم (Board) أو قطعة هاتف. 
-                حلل الصورة بدقة متناهية: 
-                - ابحث عن آثار حرق، أكسدة (ماء)، أو مكونات مفقودة.
-                - اقرأ أي أرقام ظاهرة (مثل أرقام الآي سي، الباركود، أو السيريال).
-                - أعطِ الفني ملاحظات محددة عن المنطقة الظاهرة في الصورة، ولا تخمن معلومات غير موجودة.`
-            };
-            userRequest.contents[0].parts.unshift(visionPrompt); 
+        const chatId = update.message.chat.id;
+        
+        // جلب النص أو الصورة أو الصوت
+        let text = update.message.text || update.message.caption || "";
+        let fileId = null;
+        let mimeType = '';
+
+        if (update.message.photo) {
+            const photoArray = update.message.photo;
+            fileId = photoArray[photoArray.length - 1].file_id; 
+            mimeType = 'image/jpeg';
+        } else if (update.message.voice) {
+            fileId = update.message.voice.file_id;
+            mimeType = update.message.voice.mime_type || 'audio/ogg';
         }
 
-        // 4. إعداد رابط API لجوجل (استخدمنا pro-latest لأنه الأذكى بالصور)
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=${GEMINI_API_KEY}`;
+        if (text === '/start') {
+            await sendTelegramMessage(chatId, "أهلين يا معلم! أنا عبود، مساعدك بورشة maged tech. ابعتلي العطل كتابة، أو صورة، أو بصمة صوتية ورح أعطيك الصافي! 🤖🔧", TELEGRAM_TOKEN);
+            return res.status(200).send('OK');
+        }
 
-        // 5. إرسال الطلب إلى جوجل
-        const response = await fetch(geminiUrl, {
+        // إذا مافي لا نص ولا ملف، تجاهل
+        if (!text && !fileId) return res.status(200).send('OK');
+
+        await sendTelegramAction(chatId, 'typing', TELEGRAM_TOKEN);
+
+        const systemPrompt = `أنت اسمك "عبود"، وتعمل كموظف ومساعد فني لدى المعلم في ورشة صيانة الهواتف "maged tech". 
+        طريقتك في الكلام مرحة وتستخدم اللهجة الشامية السورية بشكل طبيعي (مثل: يا معلم، على راسي، هات لشوف، كاوية اللحام، الآفو).
+        رغم أسلوبك المرح، أنت خبير تقني محترف جداً في صيانة الموبايلات.
+        استفسار الفني: ${text}`;
+
+        let parts = [{ text: systemPrompt }];
+
+        // إذا الفني بعت صورة أو صوت، بنسحبها من تلجرام وبنحطها بالطلب
+        if (fileId) {
+            const fileRes = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/getFile?file_id=${fileId}`);
+            const fileData = await fileRes.json();
+            
+            if (fileData.ok) {
+                const filePath = fileData.result.file_path;
+                const downloadRes = await fetch(`https://api.telegram.org/file/bot${TELEGRAM_TOKEN}/${filePath}`);
+                const arrayBuffer = await downloadRes.arrayBuffer();
+                const base64File = Buffer.from(arrayBuffer).toString('base64');
+
+                parts.push({
+                    inline_data: {
+                        mime_type: mimeType,
+                        data: base64File
+                    }
+                });
+
+                if (!text && mimeType.includes('image')) {
+                    parts.push({ text: "حلل هذه الصورة للبورد وأخبرني بالمشكلة." });
+                } else if (!text && mimeType.includes('audio')) {
+                    parts.push({ text: "استمع لهذه البصمة الصوتية وأجبني." });
+                }
+            }
+        }
+
+        // إرسال الطلب لملف gemini تبع موقعك الأساسي (نفس الكود القديم اللي بيشتغل تمام)
+        const aiResponse = await fetch('https://maged-tech-tools.vercel.app/api/gemini', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userRequest)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: parts }]
+            })
         });
 
-        const data = await response.json();
+        const aiData = await aiResponse.json();
+        
+        let replyText = "";
+        
+        // معالجة الرد
+        if (aiData.error) {
+            replyText = "معلش يا معلم، السيرفر عليه ضغط متل ما بصير بالموقع. ريح كاوية اللحام ثواني وارجع اسألني!";
+            console.error("Site API Error:", aiData.error);
+        } else if (aiData.candidates && aiData.candidates[0].content.parts[0].text) {
+            replyText = aiData.candidates[0].content.parts[0].text;
+        } else {
+            replyText = "في مشكلة بتحليل العطل يا معلم.";
+        }
 
-        // 6. إرسال الرد من جوجل مرة أخرى إلى موقعك أو تلجرام
-        res.status(200).json(data);
+        await sendTelegramMessage(chatId, replyText, TELEGRAM_TOKEN);
+        return res.status(200).send('OK');
 
     } catch (error) {
-        console.error("Error communicating with Gemini API:", error);
-        res.status(500).json({ error: "Failed to fetch response from Gemini AI." });
+        console.error("Bot Error:", error);
+        return res.status(200).send('OK');
     }
+}
+
+// دوال إرسال الرسائل لتلجرام
+async function sendTelegramMessage(chatId, text, token) {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text: text })
+    });
+}
+
+async function sendTelegramAction(chatId, action, token) {
+    await fetch(`https://api.telegram.org/bot${token}/sendChatAction`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, action: action })
+    });
 }
