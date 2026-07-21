@@ -1,41 +1,33 @@
 export default async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*'); 
+    // 🌐 فتح الصلاحيات الأمنية للسماح للموقع بالاتصال
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+    res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
 
-    if (req.method === 'OPTIONS') return res.status(200).end();
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
 
-    const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'غير مسموح بهذا الإجراء' });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+        return res.status(500).json({ error: 'المفتاح السري غير موجود في إعدادات السيرفر' });
+    }
 
     try {
-        const userRequest = req.body;
-        
-        let hasImage = false;
-        if (userRequest.contents && userRequest.contents[0] && userRequest.contents[0].parts) {
-            hasImage = userRequest.contents[0].parts.some(part => part.inline_data);
-        }
-
-        if (hasImage) {
-            userRequest.contents[0].parts.unshift({
-                text: `أنت الآن في وضع "الفحص البصري الدقيق" كخبير صيانة هواتف. 
-                حلل الصورة بدقة متناهية، ابحث عن آثار حرق، أكسدة، أو اقرأ أي أرقام ظاهرة (مثل IMEI) بوضوح تام وبدون تأليف.`
-            }); 
-        }
-
-        // غيرنا الموديل للـ flash لحل مشكلة الضغط
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-        const response = await fetch(geminiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(userRequest)
+        // 🚀 الاتصال بالنسخة الأحدث والأقوى (gemini-2.5-flash) المعتمدة رسمياً
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(req.body)
         });
 
-        const data = await response.json();
-        res.status(200).json(data);
-
+        const result = await response.json();
+        return res.status(200).json(result);
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch response." });
+        return res.status(500).json({ error: error.message });
     }
 }
