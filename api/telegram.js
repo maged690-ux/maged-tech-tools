@@ -7,11 +7,9 @@ export default async function handler(req, res) {
 
     try {
         const update = req.body;
-        
         if (!update.message) return res.status(200).send('OK');
 
         const chatId = update.message.chat.id;
-        
         let text = update.message.text || update.message.caption || "";
         let fileId = null;
         let mimeType = '';
@@ -26,7 +24,7 @@ export default async function handler(req, res) {
         }
 
         if (text === '/start') {
-            await sendTelegramMessage(chatId, "أهلين يا معلم! أنا عبود، مساعدك بورشة maged tech. ابعتلي العطل كتابة، أو صورة للبورد، أو بصمة صوتية ورح أعطيك الصافي! 🤖🔧", TELEGRAM_TOKEN);
+            await sendTelegramMessage(chatId, "أهلين يا معلم! أنا عبود، مساعدك بورشة maged tech. ابعتلي العطل كتابة، أو صورة، أو بصمة صوتية ورح أعطيك الصافي! 🤖🔧", TELEGRAM_TOKEN);
             return res.status(200).send('OK');
         }
 
@@ -36,8 +34,7 @@ export default async function handler(req, res) {
 
         const systemPrompt = `أنت اسمك "عبود"، وتعمل كموظف ومساعد فني لدى المعلم في ورشة صيانة الهواتف "maged tech". 
         طريقتك في الكلام مرحة وتستخدم اللهجة الشامية السورية. 
-        أنت خبير تقني محترف جداً في صيانة الموبايلات.
-        استفسار الفني: ${text}`;
+        أنت خبير تقني محترف جداً في صيانة الموبايلات.`;
 
         let parts = [{ text: systemPrompt }];
 
@@ -55,14 +52,24 @@ export default async function handler(req, res) {
                     inline_data: { mime_type: mimeType, data: base64File }
                 });
 
-                if (!text && mimeType.includes('image')) {
-                    parts.push({ text: "حلل هذه الصورة وأخبرني بالمشكلة." });
-                } else if (!text && mimeType.includes('audio')) {
+                // 🔥 حقنة الذكاء البصري الصارمة 🔥
+                if (mimeType.includes('image')) {
+                    const smartVisionPrompt = `أنت الآن في وضع الفحص البصري الدقيق كمهندس صيانة.
+                    1. إذا كانت الصورة لكرتونة هاتف أو ملصق: استخرج جميع الأرقام الظاهرة بدقة متناهية (IMEI, السيريال، الموديل) واكتبها في قائمة واضحة ومفصلة.
+                    2. إذا كانت الصورة للوحة أم (Motherboard): ابحث عن أي آثار حرق، أكسدة (ماء)، أو مكونات مفقودة، واشرح المشكلة بالتفصيل.
+                    كن دقيقاً جداً ولا تخمن أي معلومات غير موجودة في الصورة.
+                    ${text ? 'السؤال المرفق من الفني: ' + text : 'حلل هذه الصورة وأعطني التفاصيل والأرقام المهمة.'}`;
+                    
+                    parts.push({ text: smartVisionPrompt });
+                } else if (mimeType.includes('audio')) {
                     parts.push({ text: "استمع لهذه البصمة الصوتية وأجبني." });
                 }
             }
+        } else if (text) {
+            parts.push({ text: `سؤال الفني: ${text}` });
         }
 
+        // إرسال الطلب لملف الموقع الأساسي
         const aiResponse = await fetch('https://maged-tech-tools.vercel.app/api/gemini', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -73,7 +80,6 @@ export default async function handler(req, res) {
         let replyText = "في مشكلة بتحليل العطل يا معلم.";
         
         if (aiData.error) {
-            // هون خلينا البوت يفضح رسالة الخطأ الحقيقية
             replyText = "يا معلم جوجل عطاني هاد الخطأ: " + JSON.stringify(aiData.error);
         } else if (aiData.candidates && aiData.candidates[0].content.parts[0].text) {
             replyText = aiData.candidates[0].content.parts[0].text;
