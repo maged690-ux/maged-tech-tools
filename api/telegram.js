@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
-        return res.status(200).send('Maged Tech Telegram Bot is running!');
+        return res.status(200).send('maged tech Telegram Bot is running!');
     }
 
     const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN; 
@@ -10,6 +10,23 @@ export default async function handler(req, res) {
         if (!update.message) return res.status(200).send('OK');
 
         const chatId = update.message.chat.id;
+        
+        // === كود حفظ الـ ID بقاعدة بيانات Upstash ===
+        const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
+        const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+        if (UPSTASH_URL && UPSTASH_TOKEN) {
+            try {
+                await fetch(`${UPSTASH_URL}/sadd/users/${chatId}`, {
+                    headers: { Authorization: `Bearer ${UPSTASH_TOKEN}` }
+                });
+                console.log(`تم حفظ الـ ID: ${chatId}`);
+            } catch (error) {
+                console.error("خطأ بحفظ الآيدي:", error);
+            }
+        }
+        // ============================================
+
         let text = update.message.text || update.message.caption || "";
         let fileId = null;
         let mimeType = '';
@@ -101,6 +118,7 @@ async function sendTelegramMessage(chatId, text, token) {
         body: JSON.stringify({ chat_id: chatId, text: text })
     });
 }
+
 async function sendTelegramAction(chatId, action, token) {
     await fetch(`https://api.telegram.org/bot${token}/sendChatAction`, {
         method: 'POST',
