@@ -111,7 +111,7 @@
         #live-clock { font-size: 2.8rem; font-weight: 900; color: var(--neon); letter-spacing: 2px; text-shadow: 0 0 20px rgba(0, 242, 255, 0.5); margin-bottom: 5px; }
         #date-text { color: #a0a0b0; font-size: 1rem; font-weight: 500; }
 
-        /* ---------------- الأزرار (3D) ---------------- */
+        /* ---------------- الأزرار (3D) الأساسية ---------------- */
         .btn-3d {
             width: 100%;
             max-width: 420px;
@@ -149,10 +149,10 @@
         .prayer-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); }
         .prayer-row:last-child { border-bottom: none; }
 
-        /* ---------------- السوشيال ميديا ---------------- */
+        /* ---------------- السوشيال ميديا والبوت ---------------- */
         .social-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
             width: 100%;
             max-width: 420px;
@@ -179,11 +179,16 @@
         .social-item:hover::after { opacity: 1; }
         .social-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
 
-        .fb { background: linear-gradient(135deg, #1877F2, #0d5bb5); grid-column: span 3; font-size: 1.4rem; gap: 12px; }
-        .ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); grid-column: span 3; font-size: 1.4rem; gap: 12px; }
+        /* الأزرار العريضة */
+        .bot { background: linear-gradient(135deg, #00b864, #005f33); grid-column: span 4; font-size: 1.4rem; gap: 12px; border: 1px solid #00ff88; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); }
+        .fb { background: linear-gradient(135deg, #1877F2, #0d5bb5); grid-column: span 4; font-size: 1.4rem; gap: 12px; }
+        .ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); grid-column: span 4; font-size: 1.4rem; gap: 12px; }
+        
+        /* الأزرار المربعة */
         .yt { background: linear-gradient(135deg, #FF0000, #b30000); aspect-ratio: 1 / 1; }
         .sc { background: linear-gradient(135deg, #FFFC00, #d4d100); color: #000 !important; aspect-ratio: 1 / 1; }
         .tg { background: linear-gradient(135deg, #0088CC, #005f8f); aspect-ratio: 1 / 1; }
+        .tk { background: linear-gradient(135deg, #000000, #25f4ee, #fe2c55); aspect-ratio: 1 / 1; }
 
         /* ---------------- نافذة التحويل الذكي ---------------- */
         #redirectModal { 
@@ -271,23 +276,28 @@
         <i class="fa-solid fa-brain" style="color: var(--neon-pink);"></i>
     </a>
 
-    <!-- الزر الجديد: المساعد عبود للصيانة -->
-    <a href="abboud-bot.html" class="btn-3d" style="border-right-color: #00ff88;">
-        <span style="color: #00ff88;">المساعد عبود للصيانة | Smart Repair Bot</span>
-        <i class="fa-solid fa-robot" style="color: #00ff88;"></i>
-    </a>
-
+    <!-- شبكة السوشيال ميديا والبوت -->
     <div class="social-grid">
-        <a href="https://www.facebook.com/share/1J8HF8p72E/" class="social-item fb">
+        
+        <!-- زر المساعد الذكي عبود (تلجرام) -->
+        <a href="https://t.me/magedtech_abboud_bot" target="_blank" class="social-item bot">
+            <i class="fa-solid fa-robot"></i> المساعد الذكي عبود
+        </a>
+        
+        <!-- فيسبوك وانستجرام -->
+        <a href="https://www.facebook.com/share/1J8HF8p72E/" target="_blank" class="social-item fb">
             <i class="fa-brands fa-facebook"></i> Maged Tech Facebook
         </a>
-        <a href="https://www.instagram.com/magedtech.official" class="social-item ig">
+        <a href="https://www.instagram.com/magedtech.official" target="_blank" class="social-item ig">
             <i class="fa-brands fa-instagram"></i> MagedTech.Official
         </a>
         
-        <a href="https://youtube.com/@maged115599" class="social-item yt"><i class="fa-brands fa-youtube"></i></a>
-        <a href="https://www.snapchat.com/add/maged-say" class="social-item sc"><i class="fa-brands fa-snapchat"></i></a>
-        <a href="https://t.me/Maged_Tech" class="social-item tg"><i class="fa-brands fa-telegram"></i></a>
+        <!-- الأزرار المربعة -->
+        <a href="https://youtube.com/@maged115599" target="_blank" class="social-item yt"><i class="fa-brands fa-youtube"></i></a>
+        <a href="https://www.snapchat.com/add/maged-say" target="_blank" class="social-item sc"><i class="fa-brands fa-snapchat"></i></a>
+        <a href="https://t.me/Maged_Tech" target="_blank" class="social-item tg"><i class="fa-brands fa-telegram"></i></a>
+        <a href="https://www.tiktok.com/@maged.tech1" target="_blank" class="social-item tk"><i class="fa-brands fa-tiktok"></i></a>
+        
     </div>
 
     <script>
