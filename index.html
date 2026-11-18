@@ -184,21 +184,6 @@
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.7);
         }
-        .video-wrapper {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            background: #000;
-            border: 1px solid rgba(255,204,0,0.3);
-        }
-        .video-wrapper iframe {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-        }
         .direct-yt-link {
             display: inline-block;
             background: linear-gradient(135deg, #ffcc00, #cc9900);
@@ -386,17 +371,27 @@
         <i class="fa-solid fa-tower-broadcast" style="color: var(--gold); font-size: 1.5rem;"></i>
     </div>
 
-    <!-- نافذة مشغل البث المباشر المدمجة (محدثة على البث الجديد HHDWXHx4ifg) -->
+    <!-- نافذة إذاعة أسفار النور الذكية (تعمل دائماً بدون أخطاء التضمين وتزيد ساعات القناة) -->
     <div id="live-stream-box">
-        <p style="color: var(--gold); font-weight: bold; margin-bottom: 10px; font-size: 0.95rem;">
-            🌙 بث مباشر متواصل: القرآن الكريم، الرقية الشرعية، وأذكار السكينة
-        </p>
-        <div class="video-wrapper">
-            <iframe id="yt-live-frame" src="https://www.youtube.com/embed/HHDWXHx4ifg?autoplay=0&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div style="background: radial-gradient(circle, rgba(255,204,0,0.15) 0%, rgba(10,10,15,0.95) 100%); border: 1px solid rgba(255,204,0,0.4); border-radius: 14px; padding: 25px 15px; margin-bottom: 5px; position: relative; overflow: hidden;">
+            
+            <!-- أيقونة الإذاعة النابضة -->
+            <div style="width: 70px; height: 70px; margin: 0 auto 12px; border-radius: 50%; background: rgba(255, 204, 0, 0.1); border: 2px solid var(--gold); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(255, 204, 0, 0.4); animation: pulseCount 2s infinite;">
+                <i class="fa-solid fa-book-quran" style="font-size: 2rem; color: var(--gold);"></i>
+            </div>
+
+            <h3 style="color: var(--gold); font-size: 1.2rem; margin-bottom: 6px; font-weight: 900;">
+                إذاعة أَسْفَار النُّور المباشرة 🌙
+            </h3>
+            <p style="color: #d0d0e0; font-size: 0.9rem; margin-bottom: 18px; line-height: 1.5;">
+                بث متواصل 24/7 للقرآن الكريم، الرقية الشرعية، وأذكار السكينة بصوت نقي وخاشع
+            </p>
+
+            <!-- زر التشغيل المباشر الدائم (لا يحتاج لتعديل الرابط أبداً) -->
+            <a href="https://www.youtube.com/channel/UCRTKzY4iG9IIwUSEKr5zvYA/live" target="_blank" class="direct-yt-link" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 14px; font-size: 1.05rem; box-shadow: 0 0 20px rgba(255, 204, 0, 0.3);">
+                <i class="fa-solid fa-circle-play" style="font-size: 1.3rem;"></i> اضغط هنا للاستماع والمشاهدة المباشرة
+            </a>
         </div>
-        <a href="https://www.youtube.com/live/HHDWXHx4ifg" target="_blank" class="direct-yt-link">
-            <i class="fa-brands fa-youtube"></i> فتح البث المباشر في تطبيق يوتيوب
-        </a>
     </div>
 
     <!-- 1. قناة أسفار النور -->
